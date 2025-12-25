@@ -1,26 +1,292 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ---------------- Sources ---------------- */
+@source "./**/*.{ts,tsx}";
+@source "../components/**/*.{ts,tsx}";
+@source "../client/**/*.{ts,tsx}";
+@source "../hooks/**/*.{ts,tsx}";
+@source "../lib/**/*.{ts,tsx}";
+@source "../servers/**/*.{ts,tsx}";
+@source "./pages/**/*.{ts,tsx}";
+@source "./app/**/*.{ts,tsx}";
+@source "./src/**/*.{ts,tsx}";
 
+/* ---------------- Variants ---------------- */
+@custom-variant dark (&:is(.dark *));
+
+/* ---------------- Theme ---------------- */
 @theme inline {
+  /* Breakpoints */
+  --breakpoint-xs: 375px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1440px;
+  --breakpoint-3xl: 1920px;
+
+  /* Fonts - Mobile-friendly, clean typography like Flipkart/Amazon */
+  --font-sans: "Roboto", "Arial", system-ui, sans-serif;
+  --font-mono: "Fira Code", monospace;
+
+  /* Radius - All set to 0 for sharp, modern edges */
+  --radius-xs: 0;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
+
+  /* Colors - Modern Vibrant Palette (Indigo/Violet) */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  /* Semantic Colors */
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+
+  /* Animations */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  --animate-fade-in: fade-in 0.3s ease-out;
+  --animate-slide-up: slide-up 0.4s ease-out;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ---------------- Root Variables ---------------- */
+:root {
+  /* Light Mode - Crisp, Clean, Indigo/Violet */
+  --background: oklch(0.985 0.002 247.839);
+  /* Slightly cool white */
+  --foreground: oklch(0.13 0.02 260);
+  /* Deep dark slate */
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.13 0.02 260);
+
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.13 0.02 260);
+
+  /* Primary: Vibrant Indigo */
+  --primary: oklch(0.45 0.24 280);
+  --primary-foreground: oklch(1 0 0);
+
+  /* Secondary: Soft Lavender */
+  --secondary: oklch(0.94 0.03 280);
+  --secondary-foreground: oklch(0.45 0.24 280);
+
+  /* Muted */
+  --muted: oklch(0.96 0.01 260);
+  --muted-foreground: oklch(0.55 0.02 260);
+
+  /* Accent: Vivid Violet/Pink for highlights */
+  --accent: oklch(0.96 0.01 280);
+  --accent-foreground: oklch(0.45 0.24 280);
+
+  --destructive: oklch(0.6 0.18 20);
+  --destructive-foreground: oklch(1 0 0);
+
+  --success: oklch(0.7 0.15 150);
+  --warning: oklch(0.85 0.15 85);
+  --info: oklch(0.65 0.15 240);
+
+  --border: oklch(0.92 0.01 260);
+  --input: oklch(0.92 0.01 260);
+  --ring: oklch(0.45 0.24 280 / 0.5);
+
+  --radius: 0.75rem;
+}
+
+.dark {
+  /* Dark Mode - Deep Space Blue/Gray */
+  --background: oklch(0.12 0.02 270);
+  /* Very dark cool gray/blue */
+  --foreground: oklch(0.98 0 0);
+
+  --card: oklch(0.17 0.03 270);
+  --card-foreground: oklch(0.98 0 0);
+
+  --popover: oklch(0.17 0.03 270);
+  --popover-foreground: oklch(0.98 0 0);
+
+  /* Primary: Lighter Electric Indigo for dark mode contrast */
+  --primary: oklch(0.65 0.22 280);
+  --primary-foreground: oklch(0.12 0.02 270);
+
+  /* Secondary: Deep Purple/Slate */
+  --secondary: oklch(0.25 0.05 280);
+  --secondary-foreground: oklch(0.90 0.05 280);
+
+  --muted: oklch(0.25 0.02 270);
+  --muted-foreground: oklch(0.70 0.02 270);
+
+  --accent: oklch(0.25 0.05 280);
+  --accent-foreground: oklch(0.98 0 0);
+
+  --destructive: oklch(0.6 0.18 20);
+  --destructive-foreground: oklch(1 0 0);
+
+  --success: oklch(0.7 0.15 150);
+  --warning: oklch(0.85 0.15 85);
+  --info: oklch(0.65 0.15 240);
+
+  --border: oklch(0.25 0.02 270);
+  --input: oklch(0.25 0.02 270);
+  --ring: oklch(0.65 0.22 280 / 0.5);
+}
+
+/* ---------------- Base Styles ---------------- */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased font-sans selection:bg-primary/20 selection:text-primary overflow-x-hidden;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+}
+
+/* ---------------- Utilities ---------------- */
+
+
+/* Global radius override for sharp edges */
+.rounded-none-all,
+.rounded-none-all * {
+  border-radius: 0 !important;
+}
+
+/* Sticky mobile bottom bar - for Buy Now/Add to Cart on product pages */
+.sticky-bottom-bar {
+  @apply fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-t border-border px-3 pt-2 pb-3 shadow-2xl;
+  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+}
+
+/* Layout */
+.container-custom {
+  @apply w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 max-w-[1920px];
+}
+
+.container-wide {
+  @apply w-full mx-auto px-4 sm:px-6 lg:px-8 max-w-[1920px];
+}
+
+/* Glassmorphism */
+.glass {
+  @apply bg-white/70 dark:bg-black/30 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-sm;
+}
+
+.glass-card {
+  @apply bg-card/80 backdrop-blur-sm border border-border/50 shadow-sm hover:shadow-md transition-all duration-300;
+}
+
+/* Typography */
+.text-balance-header {
+  text-wrap: balance;
+}
+
+/* Gradients */
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-500 to-pink-500;
+}
+
+.bg-gradient-soft {
+  @apply bg-gradient-to-br from-indigo-50/50 via-white to-purple-50/50 dark:from-indigo-950/30 dark:via-background dark:to-purple-900/20;
+}
+
+/* Animations */
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+
+  to {
+    height: var(--radix-accordion-content-height);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+
+  to {
+    height: 0;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-accordion-down {
+  animation: accordion-down 0.2s ease-out;
+}
+
+.animate-accordion-up {
+  animation: accordion-up 0.2s ease-out;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.5s ease-out forwards;
+}
+
+/* Scrollbar - Clean */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
