@@ -265,7 +265,7 @@ export const VariantsStep = ({
                     onChange={(e) => setAttrName(e.target.value)}
                     className="h-11"
                   />
-                  <p className="text-[10px] text-muted-foreground">The name of the attribute customers will see.</p>
+                  <p className="text-[10px] text-muted-foreground">The name of the attribute buyers will see.</p>
                 </div>
                 <div className="md:col-span-6 space-y-2">
                   <Label>Values</Label>

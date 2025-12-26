@@ -257,7 +257,7 @@ export const resolvers = {
                 orders: allOrderItems.map((oi: any) => ({
                     id: oi.id,
                     orderNumber: oi.order.orderNumber,
-                    customerName: oi.order.buyer.name,
+                    buyerName: oi.order.buyer.name,
                     quantity: oi.quantity,
                     totalPrice: Number(oi.totalPrice),
                     createdAt: oi.order.createdAt.toISOString()

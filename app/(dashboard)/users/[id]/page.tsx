@@ -526,7 +526,7 @@ function ShopProfileTab({ profile, stats }: { profile: any, stats: any }) {
                     </div>
 
                     <Button className="w-full h-14 rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-sm">
-                        Request Merchant Audit
+                        Request Seller Audit
                     </Button>
                 </div>
             </div>

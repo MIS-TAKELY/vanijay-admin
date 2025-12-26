@@ -48,7 +48,7 @@ export const typeDefs = `
   type OrderInfo {
     id: String!
     orderNumber: String!
-    customerName: String!
+    buyerName: String!
     quantity: Int
     totalPrice: Float
     createdAt: String
