@@ -138,6 +138,7 @@ export const typeDefs = `
       description: String
       isActive: Boolean
       parentName: String
+      parentId: String
   }
 
   type Offer {
@@ -340,6 +341,31 @@ export const typeDefs = `
     conditions: String
   }
 
+  input CreateCategoryInput {
+    name: String!
+    slug: String!
+    description: String
+    parentId: String
+    isActive: Boolean
+  }
+
+  input CategoryTreeInput {
+    name: String!
+    slug: String!
+    parentId: String
+    description: String
+    isActive: Boolean
+    children: [CategoryTreeInput]
+  }
+
+  input UpdateCategoryInput {
+    name: String
+    slug: String
+    description: String
+    parentId: String
+    isActive: Boolean
+  }
+
   type Query {
     hello: String
     user(id: String!): User
@@ -364,5 +390,9 @@ export const typeDefs = `
     bulkBanUsers(userIds: [String!]!): [User]
     bulkUnbanUsers(userIds: [String!]!): [User]
     updateProduct(id: String!, input: UpdateProductInput!): Product
+    createCategory(input: CreateCategoryInput!): Category
+    createCategoryTree(input: [CategoryTreeInput!]!): [Category]
+    updateCategory(id: String!, input: UpdateCategoryInput!): Category
+    deleteCategory(id: String!, force: Boolean): Boolean!
   }
 `;

@@ -8,7 +8,9 @@ import { toast } from "sonner";
 import { useMutation, gql } from "@apollo/client";
 import { transformProductToFormData } from "@/utils/product/transformProductData";
 import { buildProductInput } from "@/utils/product/validateSteps";
-import { Loader2, Plus, Trash2, GripVertical } from "lucide-react";
+import { Loader2, Plus, Trash2, GripVertical, Clipboard } from "lucide-react";
+import { parseTableFromClipboard } from "@/utils/product/table-parser";
+import { useCallback } from "react";
 
 const UPDATE_PRODUCT = gql`
   mutation UpdateProduct($id: String!, $input: UpdateProductInput!) {
@@ -104,6 +106,33 @@ export default function EditSpecificationsDialog({ product, open, onOpenChange, 
         }));
     };
 
+    const handlePaste = useCallback(
+        (e: React.ClipboardEvent) => {
+            const parsed = parseTableFromClipboard(e.clipboardData);
+            if (parsed) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                // Intelligent Paste: If column counts match and we have data, append!
+                const hasActualData = specTable.rows.some(row => row.some(cell => cell.trim()));
+
+                if (hasActualData && specTable.headers.length === parsed.headers.length) {
+                    // Remove empty placeholder rows from the end/start if they exist
+                    const cleanExistingRows = specTable.rows.filter(row => row.some(cell => cell.trim()));
+                    setSpecTable({
+                        ...specTable,
+                        rows: [...cleanExistingRows, ...parsed.rows]
+                    });
+                } else {
+                    // Otherwise replace (usually for the first paste or when column structure changes)
+                    setSpecTable(parsed);
+                }
+                toast.success("Table data pasted successfully");
+            }
+        },
+        [specTable]
+    );
+
     const handleSave = async () => {
         try {
             // 1. Get full form data from product
@@ -177,11 +206,19 @@ export default function EditSpecificationsDialog({ product, open, onOpenChange, 
                     <DialogTitle>Edit Specifications</DialogTitle>
                     <DialogDescription>
                         Modify technical specifications. Add rows for more details.
+                        <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground italic bg-muted/30 p-2 rounded-md">
+                            <Clipboard className="h-3 w-3" />
+                            Tip: You can paste (Ctrl+V) a table from Excel, Google Sheets, or web pages directly into the table below.
+                        </div>
                     </DialogDescription>
                 </DialogHeader>
 
                 <div className="space-y-4 py-4">
-                    <div className="border rounded-md overflow-hidden">
+                    <div
+                        className="border rounded-md overflow-hidden focus-within:ring-2 focus-within:ring-primary/20 outline-none"
+                        onPaste={handlePaste}
+                        tabIndex={0}
+                    >
                         <div className="grid bg-muted/50 border-b" style={{ gridTemplateColumns: `repeat(${specTable.headers.length}, 1fr) 40px` }}>
                             {specTable.headers.map((header, i) => (
                                 <div key={i} className="p-2 border-r relative group">

@@ -67,20 +67,39 @@ const GET_PRODUCT = gql`
   }
 `;
 
+const GET_CATEGORIES = gql`
+  query GetCategories {
+    categories {
+      id
+      name
+      slug
+      parentId
+      isActive
+    }
+  }
+`;
+
 export default async function ProductDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const client = getServerClient();
 
-  let data;
+  let productData, categoriesData;
   try {
-    const result = await client.query({
-      query: GET_PRODUCT,
-      variables: { id },
-      fetchPolicy: 'no-cache',
-    });
-    data = result.data;
+    const [productResult, categoriesResult] = await Promise.all([
+      client.query({
+        query: GET_PRODUCT,
+        variables: { id },
+        fetchPolicy: 'no-cache',
+      }),
+      client.query({
+        query: GET_CATEGORIES,
+        fetchPolicy: 'no-cache',
+      }),
+    ]);
+    productData = productResult.data;
+    categoriesData = categoriesResult.data;
   } catch (error: any) {
-    console.error('Failed to fetch product:', error);
+    console.error('Failed to fetch data:', error);
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -91,7 +110,7 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
     );
   }
 
-  const product = data?.product;
+  const product = productData?.product;
   if (!product) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -103,5 +122,10 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
     );
   }
 
-  return <AdminProductDetail product={JSON.parse(JSON.stringify(product))} />;
+  return (
+    <AdminProductDetail
+      product={JSON.parse(JSON.stringify(product))}
+      categories={JSON.parse(JSON.stringify(categoriesData?.categories || []))}
+    />
+  );
 }

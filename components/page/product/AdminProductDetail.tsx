@@ -28,13 +28,16 @@ import EditBasicInfoDialog from "./edit/EditBasicInfoDialog";
 import EditDeliveryDialog from "./edit/EditDeliveryDialog";
 import EditImagesDialog from "./edit/EditImagesDialog";
 import EditSpecificationsDialog from "./edit/EditSpecificationsDialog";
+import EditCategoryDialog from "./edit/EditCategoryDialog";
 
 interface AdminProductDetailProps {
   product: any;
+  categories?: any[];
 }
 
 export default function AdminProductDetail({
   product,
+  categories = [],
 }: AdminProductDetailProps) {
   const router = useRouter();
   const [imageHoverData, setImageHoverData] = useState({
@@ -47,6 +50,7 @@ export default function AdminProductDetail({
   const [editBasicInfoOpen, setEditBasicInfoOpen] = useState(false);
   const [editSpecsOpen, setEditSpecsOpen] = useState(false);
   const [editDeliveryOpen, setEditDeliveryOpen] = useState(false);
+  const [editCategoryOpen, setEditCategoryOpen] = useState(false);
 
   // Initialize selectedAttributes based on default variant
   const [selectedAttributes, setSelectedAttributes] = useState<
@@ -520,9 +524,19 @@ export default function AdminProductDetail({
               <p className="text-muted-foreground">Product ID</p>
               <p className="font-mono font-medium">{product.id}</p>
             </div>
-            <div>
-              <p className="text-muted-foreground">Category</p>
-              <p className="font-medium">{product.category || "N/A"}</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-muted-foreground">Category</p>
+                <p className="font-medium">{product.category || "N/A"}</p>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setEditCategoryOpen(true)}
+                className="text-muted-foreground hover:text-primary h-8 w-8"
+              >
+                <Edit className="w-4 h-4" />
+              </Button>
             </div>
             <div>
               <p className="text-muted-foreground">Seller</p>
@@ -562,6 +576,12 @@ export default function AdminProductDetail({
         open={editDeliveryOpen}
         onOpenChange={setEditDeliveryOpen}
         onSuccess={() => router.refresh()}
+      />
+      <EditCategoryDialog
+        product={product}
+        categories={categories}
+        open={editCategoryOpen}
+        onOpenChange={setEditCategoryOpen}
       />
     </div>
   );

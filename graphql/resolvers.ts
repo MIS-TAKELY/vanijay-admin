@@ -510,7 +510,8 @@ export const resolvers = {
                 slug: c.slug,
                 description: c.description,
                 isActive: c.isActive,
-                parentName: c.parent?.name
+                parentName: c.parent?.name,
+                parentId: c.parentId
             }));
         },
         offers: async () => {
@@ -797,6 +798,130 @@ export const resolvers = {
                     conditions: rp.conditions
                 }))
             };
+        },
+        createCategory: async (_: any, { input }: { input: any }) => {
+            const category = await prismaMain.category.create({
+                data: {
+                    ...input,
+                },
+                include: { parent: true }
+            });
+            return {
+                ...category,
+                parentName: category.parent?.name
+            };
+        },
+        createCategoryTree: async (_: any, { input }: { input: any[] }) => {
+            const createdCategories: any[] = [];
+
+            await prismaMain.$transaction(async (tx) => {
+                const createRecursive = async (item: any, parentId: string | null = null) => {
+                    const { name, slug, description, isActive, children, parentId: itemParentId } = item;
+                    const finalParentId = parentId || (itemParentId === 'none' ? null : itemParentId);
+
+                    const category = await tx.category.create({
+                        data: {
+                            name,
+                            slug,
+                            description,
+                            isActive: isActive ?? true,
+                            parentId: finalParentId,
+                        }
+                    });
+                    createdCategories.push(category);
+
+                    if (children && children.length > 0) {
+                        for (const child of children) {
+                            await createRecursive(child, category.id);
+                        }
+                    }
+                };
+
+                for (const rootItem of input) {
+                    await createRecursive(rootItem);
+                }
+            });
+
+            return createdCategories;
+        },
+        updateCategory: async (_: any, { id, input }: { id: string, input: any }) => {
+            const category = await prismaMain.category.update({
+                where: { id },
+                data: {
+                    ...input,
+                    parentId: input.parentId === 'none' ? null : input.parentId
+                },
+                include: { parent: true }
+            });
+            return {
+                ...category,
+                parentName: category.parent?.name
+            };
+        },
+        deleteCategory: async (_: any, { id, force }: { id: string, force?: boolean }) => {
+            const category = await prismaMain.category.findUnique({
+                where: { id },
+                include: { children: true }
+            });
+
+            if (!category) {
+                throw new Error("Category not found");
+            }
+
+            if (category.children.length > 0 && !force) {
+                throw new Error("This category has subcategories. Please move or delete them before removing this category, or use force delete.");
+            }
+
+            // Recursive function to get all category IDs in the tree
+            const getCategoryTreeIds = async (catId: string): Promise<string[]> => {
+                const ids = [catId];
+                const subcats = await prismaMain.category.findMany({
+                    where: { parentId: catId },
+                    select: { id: true }
+                });
+                for (const sub of subcats) {
+                    const subIds = await getCategoryTreeIds(sub.id);
+                    ids.push(...subIds);
+                }
+                return ids;
+            };
+
+            const allIdsToDelete = force ? await getCategoryTreeIds(id) : [id];
+
+            await prismaMain.$transaction(async (tx) => {
+                // 1. Unlink products for all categories being deleted
+                await tx.product.updateMany({
+                    where: { categoryId: { in: allIdsToDelete } },
+                    data: { categoryId: null }
+                });
+
+                // 2. Delete categories (bottom-up would be safer if there were foreign key constraints on parentId, 
+                // but since we are in a transaction and Prisma handles it well, we can just deleteMany)
+                // Actually, Prisma deleteMany might fail if there are self-referencing foreign keys.
+                // Let's delete in reverse order of depth or just one by one.
+                // However, many databases allow deferred constraints or we can just delete based on parentId.
+
+                // To be safe with parentId constraints, we delete from leaf to root.
+                // But getCategoryTreeIds can be used to just delete everything in any order IF constraints allow.
+                // Let's assume we need to delete from bottom up.
+
+                if (force) {
+                    // Sort IDs by depth or just use a loop to delete children first.
+                    // A simpler way: deleteMany where id in allIdsToDelete might work if ON DELETE is set.
+                    // If not, we can loop.
+                    for (let i = allIdsToDelete.length - 1; i >= 0; i--) {
+                        await tx.category.delete({
+                            where: { id: allIdsToDelete[i] }
+                        });
+                    }
+                } else {
+                    await tx.category.delete({
+                        where: { id }
+                    });
+                }
+            });
+
+            return true;
         }
     }
 };
