@@ -4,6 +4,7 @@ import { ApolloWrapper } from '@/lib/apollo-wrapper';
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import AuthGate from "@/components/auth/AuthGate";
+import { CommandPalette } from "@/components/layout/CommandPalette";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +39,7 @@ export default function RootLayout({
             <AuthGate>
               {children}
             </AuthGate>
+            <CommandPalette />
             <Toaster position="top-right" duration={2500} richColors closeButton />
           </ThemeProvider>
         </ApolloWrapper>

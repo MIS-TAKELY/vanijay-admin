@@ -4,11 +4,19 @@ export const typeDefs = `
     email: String!
     name: String
     role: String
+    roles: [String]
     isSeller: Boolean
+    isBanned: Boolean
+    lastProductAdded: String
     createdAt: String
   }
 
-  type SellerProfile {
+  type UsersResponse {
+    items: [User]
+    totalCount: Int
+  }
+
+  type SellerProfileSchema {
     id: String!
     shopName: String!
     email: String
@@ -17,14 +25,110 @@ export const typeDefs = `
     isActive: Boolean
   }
 
-  type Product {
+  type UserDetails {
+    sales: Int
+    revenue: Float
+    inCartCount: Int
+    inWishlistCount: Int
+    returnedCount: Int
+  }
+
+  type ProductWithOrders {
     id: String!
     name: String!
     price: Float
     stock: Int
     status: String
     category: String
+    images: [String]
+    metadata: String
+    orders: [OrderInfo]
+  }
+
+  type OrderInfo {
+    id: String!
+    orderNumber: String!
+    customerName: String!
+    quantity: Int
+    totalPrice: Float
+    createdAt: String
+  }
+
+  type Product {
+    id: String!
+    name: String!
+    brand: String
+    description: String
+    price: Float
+    stock: Int
+    status: String
+    category: String
     sellerName: String
+    createdAt: String
+    updatedAt: String
+    variants: [ProductVariant]
+    images: [ProductImage]
+    specificationTable: String # JSON string
+    deliveryOptions: [DeliveryOption]
+    warranty: [Warranty]
+    returnPolicy: [ReturnPolicy]
+  }
+
+  type ProductsResponse {
+    items: [Product]
+    totalCount: Int
+  }
+
+  type ProductVariant {
+    id: String!
+    sku: String!
+    price: Float!
+    mrp: Float!
+    stock: Int!
+    soldCount: Int
+    attributes: String # JSON string
+    specificationTable: String # JSON string
+    specifications: [Specification]
+    isDefault: Boolean
+    createdAt: String
+  }
+
+  type Specification {
+    id: String!
+    key: String!
+    value: String!
+  }
+
+  type DeliveryOption {
+    id: String!
+    title: String!
+    description: String
+    isDefault: Boolean
+  }
+
+  type Warranty {
+    id: String!
+    type: String!
+    duration: Int
+    unit: String
+    description: String
+  }
+
+  type ReturnPolicy {
+    id: String!
+    type: String!
+    duration: Int
+    unit: String
+    conditions: String
+  }
+
+  type ProductImage {
+    id: String!
+    url: String!
+    altText: String
+    sortOrder: Int
+    mediaType: String
+    fileType: String
   }
 
   type Category {
@@ -52,11 +156,202 @@ export const typeDefs = `
     totalSales: Float
   }
 
+  type BuyerDetails {
+      profile: UserProfileInfo
+      cartItems: [CartItemInfo]
+      wishlistItems: [WishlistItemInfo]
+      orders: [BuyerOrderInfo]
+      cancelledOrders: [CancelledOrderInfo]
+  }
+
+  type UserProfileInfo {
+      id: String!
+      name: String
+      email: String
+      username: String
+      phone: String
+      avatarImageUrl: String
+      addresses: [AddressInfo]
+      createdAt: String
+  }
+
+  type AddressInfo {
+      id: String!
+      type: String
+      line1: String
+      line2: String
+      city: String
+      state: String
+      country: String
+      postalCode: String
+      isDefault: Boolean
+  }
+
+  type CartItemInfo {
+      id: String!
+      productId: String!
+      productName: String!
+      productImage: String
+      variantName: String
+      price: Float
+      quantity: Int
+  }
+
+  type WishlistItemInfo {
+      id: String!
+      productId: String!
+      productName: String!
+      productImage: String
+      price: Float
+  }
+
+  type BuyerOrderInfo {
+      id: String!
+      orderNumber: String!
+      status: String
+      total: Float
+      itemCount: Int
+      createdAt: String
+  }
+
+  type CancelledOrderInfo {
+      id: String!
+      orderNumber: String!
+      productName: String
+      reason: String
+      description: String
+      createdAt: String
+  }
+
+  type SellerFullDetails {
+      profile: SellerStoreInfo
+      orders: [SellerOrderInfo]
+      payouts: [PayoutInfo]
+  }
+
+  type SellerStoreInfo {
+      id: String!
+      shopName: String
+      slug: String
+      logo: String
+      banner: String
+      description: String
+      tagline: String
+      businessName: String
+      businessRegNo: String
+      businessType: String
+      phone: String
+      altPhone: String
+      email: String
+      returnPolicy: String
+      shippingPolicy: String
+      about: String
+      verificationStatus: String
+      isActive: Boolean
+      averageRating: Float
+      totalReviews: Int
+      totalSales: Int
+      createdAt: String
+  }
+
+  type SellerOrderInfo {
+      id: String!
+      orderNumber: String!
+      status: String
+      total: Float
+      subtotal: Float
+      tax: Float
+      shippingFee: Float
+      commission: Float
+      createdAt: String
+      buyerName: String
+      items: [SellerOrderItemInfo]
+  }
+
+  type SellerOrderItemInfo {
+      id: String!
+      productName: String
+      variantName: String
+      quantity: Int
+      unitPrice: Float
+      totalPrice: Float
+  }
+
+  type PayoutInfo {
+      id: String!
+      amount: Float
+      currency: String
+      status: String
+      scheduledFor: String
+      processedAt: String
+      createdAt: String
+  }
+
+  input UpdateProductInput {
+    name: String
+    brand: String
+    description: String
+    categoryId: String
+    status: String
+    specificationTable: String
+    variants: [UpdateProductVariantInput]
+    images: [UpdateProductImageInput]
+    deliveryOptions: [UpdateDeliveryOptionInput]
+    warranty: [UpdateWarrantyInput]
+    returnPolicy: [UpdateReturnPolicyInput]
+  }
+
+  input UpdateProductVariantInput {
+    id: String
+    sku: String
+    price: Float
+    mrp: Float
+    stock: Int
+    isDefault: Boolean
+    attributes: String # JSON string
+    specificationTable: String # JSON string
+  }
+
+  input UpdateProductImageInput {
+    url: String!
+    altText: String
+    sortOrder: Int
+    mediaType: String
+    fileType: String
+  }
+
+  input UpdateDeliveryOptionInput {
+    title: String!
+    description: String
+    isDefault: Boolean
+  }
+
+  input UpdateWarrantyInput {
+    type: String!
+    duration: Int
+    unit: String
+    description: String
+  }
+
+  input UpdateReturnPolicyInput {
+    type: String!
+    duration: Int
+    unit: String
+    conditions: String
+  }
+
   type Query {
     hello: String
-    users(take: Int, skip: Int): [User]
-    sellers(take: Int, skip: Int): [SellerProfile]
-    products(take: Int, skip: Int): [Product]
+    user(id: String!): User
+    users(take: Int, skip: Int, search: String, role: String, isBanned: Boolean, sortBy: String): UsersResponse
+    buyerDetails(userId: String!): BuyerDetails
+    sellerFullDetails(userId: String!): SellerFullDetails
+    productWithOrders(productId: String!): ProductWithOrders
+    sellers(take: Int, skip: Int): [SellerProfileSchema]
+    products(take: Int, skip: Int): ProductsResponse
+    product(id: String!): Product
+    sellerProducts(sellerId: String!, take: Int, skip: Int): [Product]
+    userDetails(userId: String!): UserDetails
     categories: [Category]
     offers: [Offer]
     dashboardStats: DashboardStats
@@ -64,5 +359,10 @@ export const typeDefs = `
 
   type Mutation {
     loginAdmin(email: String!): String
+    banUser(userId: String!): User
+    unbanUser(userId: String!): User
+    bulkBanUsers(userIds: [String!]!): [User]
+    bulkUnbanUsers(userIds: [String!]!): [User]
+    updateProduct(id: String!, input: UpdateProductInput!): Product
   }
 `;

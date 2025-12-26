@@ -5516,6 +5516,7 @@ export namespace Prisma {
     otpExpiresAt: Date | null
     gender: $Enums.Gender | null
     dob: Date | null
+    isBanned: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -5539,6 +5540,7 @@ export namespace Prisma {
     otpExpiresAt: Date | null
     gender: $Enums.Gender | null
     dob: Date | null
+    isBanned: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -5562,6 +5564,7 @@ export namespace Prisma {
     otpExpiresAt: number
     gender: number
     dob: number
+    isBanned: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -5587,6 +5590,7 @@ export namespace Prisma {
     otpExpiresAt?: true
     gender?: true
     dob?: true
+    isBanned?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -5610,6 +5614,7 @@ export namespace Prisma {
     otpExpiresAt?: true
     gender?: true
     dob?: true
+    isBanned?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -5633,6 +5638,7 @@ export namespace Prisma {
     otpExpiresAt?: true
     gender?: true
     dob?: true
+    isBanned?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -5729,6 +5735,7 @@ export namespace Prisma {
     otpExpiresAt: Date | null
     gender: $Enums.Gender | null
     dob: Date | null
+    isBanned: boolean
     createdAt: Date
     updatedAt: Date
     _count: UserCountAggregateOutputType | null
@@ -5769,6 +5776,7 @@ export namespace Prisma {
     otpExpiresAt?: boolean
     gender?: boolean
     dob?: boolean
+    isBanned?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     sessions?: boolean | User$sessionsArgs<ExtArgs>
@@ -5816,6 +5824,7 @@ export namespace Prisma {
     otpExpiresAt?: boolean
     gender?: boolean
     dob?: boolean
+    isBanned?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
@@ -5839,6 +5848,7 @@ export namespace Prisma {
     otpExpiresAt?: boolean
     gender?: boolean
     dob?: boolean
+    isBanned?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
@@ -5917,6 +5927,7 @@ export namespace Prisma {
       otpExpiresAt: Date | null
       gender: $Enums.Gender | null
       dob: Date | null
+      isBanned: boolean
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["user"]>
@@ -6353,6 +6364,7 @@ export namespace Prisma {
     readonly otpExpiresAt: FieldRef<"User", 'DateTime'>
     readonly gender: FieldRef<"User", 'Gender'>
     readonly dob: FieldRef<"User", 'DateTime'>
+    readonly isBanned: FieldRef<"User", 'Boolean'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
@@ -48992,6 +49004,7 @@ export namespace Prisma {
     otpExpiresAt: 'otpExpiresAt',
     gender: 'gender',
     dob: 'dob',
+    isBanned: 'isBanned',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -50038,6 +50051,7 @@ export namespace Prisma {
     otpExpiresAt?: DateTimeNullableFilter<"User"> | Date | string | null
     gender?: EnumGenderNullableFilter<"User"> | $Enums.Gender | null
     dob?: DateTimeNullableFilter<"User"> | Date | string | null
+    isBanned?: BoolFilter<"User"> | boolean
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     sessions?: SessionListRelationFilter
@@ -50084,6 +50098,7 @@ export namespace Prisma {
     otpExpiresAt?: SortOrderInput | SortOrder
     gender?: SortOrderInput | SortOrder
     dob?: SortOrderInput | SortOrder
+    isBanned?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     sessions?: SessionOrderByRelationAggregateInput
@@ -50133,6 +50148,7 @@ export namespace Prisma {
     otpExpiresAt?: DateTimeNullableFilter<"User"> | Date | string | null
     gender?: EnumGenderNullableFilter<"User"> | $Enums.Gender | null
     dob?: DateTimeNullableFilter<"User"> | Date | string | null
+    isBanned?: BoolFilter<"User"> | boolean
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     sessions?: SessionListRelationFilter
@@ -50179,6 +50195,7 @@ export namespace Prisma {
     otpExpiresAt?: SortOrderInput | SortOrder
     gender?: SortOrderInput | SortOrder
     dob?: SortOrderInput | SortOrder
+    isBanned?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
@@ -50208,6 +50225,7 @@ export namespace Prisma {
     otpExpiresAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     gender?: EnumGenderNullableWithAggregatesFilter<"User"> | $Enums.Gender | null
     dob?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    isBanned?: BoolWithAggregatesFilter<"User"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
@@ -53503,6 +53521,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -53549,6 +53568,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -53595,6 +53615,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -53641,6 +53662,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -53687,6 +53709,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -53710,6 +53733,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -53733,6 +53757,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -57547,6 +57572,7 @@ export namespace Prisma {
     otpExpiresAt?: SortOrder
     gender?: SortOrder
     dob?: SortOrder
+    isBanned?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -57570,6 +57596,7 @@ export namespace Prisma {
     otpExpiresAt?: SortOrder
     gender?: SortOrder
     dob?: SortOrder
+    isBanned?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -57593,6 +57620,7 @@ export namespace Prisma {
     otpExpiresAt?: SortOrder
     gender?: SortOrder
     dob?: SortOrder
+    isBanned?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -65913,6 +65941,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -65958,6 +65987,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -66019,6 +66049,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -66064,6 +66095,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -66148,6 +66180,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -66193,6 +66226,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -66299,6 +66333,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -66344,6 +66379,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -66389,6 +66425,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -66434,6 +66471,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -66495,6 +66533,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -66540,6 +66579,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -66640,6 +66680,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -66685,6 +66726,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -66735,6 +66777,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -66780,6 +66823,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -66962,6 +67006,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -67007,6 +67052,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -67063,6 +67109,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -67108,6 +67155,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -67214,6 +67262,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -67259,6 +67308,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -67381,6 +67431,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -67426,6 +67477,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -67571,6 +67623,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -67616,6 +67669,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -67706,6 +67760,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -67751,6 +67806,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -67831,6 +67887,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -67876,6 +67933,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -68003,6 +68061,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -68048,6 +68107,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -69395,6 +69455,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -69440,6 +69501,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -69878,6 +69940,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -69923,6 +69986,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -70808,6 +70872,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -70853,6 +70918,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -70955,6 +71021,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -71000,6 +71067,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -71129,6 +71197,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -71174,6 +71243,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -71462,6 +71532,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -71507,6 +71578,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -71857,6 +71929,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -71902,6 +71975,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -72005,6 +72079,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -72050,6 +72125,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -72383,6 +72459,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -72428,6 +72505,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -72596,6 +72674,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -72641,6 +72720,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -72828,6 +72908,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -72873,6 +72954,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -72977,6 +73059,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -73022,6 +73105,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -73147,6 +73231,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -73192,6 +73277,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -73277,6 +73363,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -73322,6 +73409,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -73583,6 +73671,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -73628,6 +73717,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -73784,6 +73874,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -73829,6 +73920,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -74107,6 +74199,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -74152,6 +74245,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -74213,6 +74307,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -74258,6 +74353,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -74358,6 +74454,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -74403,6 +74500,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -74551,6 +74649,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -74596,6 +74695,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -74682,6 +74782,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -74727,6 +74828,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -74819,6 +74921,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -74864,6 +74967,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -74909,6 +75013,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountCreateNestedManyWithoutUserInput
@@ -74954,6 +75059,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
@@ -75015,6 +75121,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
@@ -75060,6 +75167,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
@@ -75105,6 +75213,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -75150,6 +75259,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -75211,6 +75321,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -75256,6 +75367,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -75383,6 +75495,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -75428,6 +75541,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -75583,6 +75697,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -75628,6 +75743,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -75673,6 +75789,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -75718,6 +75835,7 @@ export namespace Prisma {
     otpExpiresAt?: Date | string | null
     gender?: $Enums.Gender | null
     dob?: Date | string | null
+    isBanned?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -75834,6 +75952,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -75879,6 +75998,7 @@ export namespace Prisma {
     otpExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     gender?: NullableEnumGenderFieldUpdateOperationsInput | $Enums.Gender | null
     dob?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isBanned?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput

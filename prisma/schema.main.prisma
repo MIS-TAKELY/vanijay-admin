@@ -179,6 +179,7 @@ model User {
     otpExpiresAt   DateTime? // OTP expiry
     gender         Gender?
     dob            DateTime?
+    isBanned       Boolean   @default(false)
     createdAt      DateTime  @default(now())
     updatedAt      DateTime  @updatedAt
 
