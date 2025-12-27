@@ -31,7 +31,8 @@ import {
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Copy, ClipboardPaste } from 'lucide-react';
+import { Copy, ClipboardPaste, Table } from 'lucide-react';
+import { parseTableFromClipboard } from "@/utils/product/table-parser";
 
 
 interface CategoryNode {
@@ -665,15 +666,32 @@ function BulkEditDialog({ open, setOpen, categories, allCategories, onRefresh, o
         });
     }, []);
 
-    const handleSubPaste = useCallback((parentId: string, depth: number, text: string) => {
-        const names = text.split('\n').map(n => n.trim()).filter(Boolean);
+    const handleSubPaste = useCallback((parentId: string, depth: number, text: string, clipboardData?: DataTransfer) => {
+        let items: { name: string, description?: string }[] = [];
+
+        if (clipboardData) {
+            const parsedTable = parseTableFromClipboard(clipboardData);
+            if (parsedTable && parsedTable.rows.length > 0) {
+                items = parsedTable.rows.map(row => ({
+                    name: row[0] || '',
+                    description: row[1] || ''
+                })).filter(item => item.name.trim());
+            }
+        }
+
+        if (items.length === 0) {
+            items = text.split('\n').map(n => n.trim()).filter(Boolean).map(name => ({ name }));
+        }
+
+        if (items.length === 0) return;
+
         setRows(prev => {
             const parentIndex = prev.findIndex(r => r.id === parentId);
-            const insertedRows = names.map(name => ({
+            const insertedRows = items.map(item => ({
                 id: Math.random().toString(36).substr(2, 9),
-                name,
-                slug: name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
-                description: '',
+                name: item.name,
+                slug: item.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
+                description: item.description || '',
                 parentId: parentId,
                 isActive: true,
                 depth: depth + 1,
@@ -683,6 +701,7 @@ function BulkEditDialog({ open, setOpen, categories, allCategories, onRefresh, o
             newRows.splice(parentIndex + 1, 0, ...insertedRows);
             return newRows;
         });
+        toast.success(`Pasted ${items.length} sub-categories`);
     }, []);
 
     const removeRow = useCallback((id: string, isNew: boolean) => {
@@ -878,7 +897,7 @@ const BulkEditRow = memo(({
     onToggleCollapse: (id: string) => void;
     onToggleBranchActive: (id: string, active: boolean) => void;
     onAddSubRow: (id: string, depth: number) => void;
-    onHandleSubPaste: (id: string, depth: number, text: string) => void;
+    onHandleSubPaste: (id: string, depth: number, text: string, clipboardData?: DataTransfer) => void;
     onRemoveRow: (id: string, isNew: boolean) => void;
 }) => {
     return (
@@ -991,6 +1010,13 @@ const BulkEditRow = memo(({
                                         if (e.key === 'Enter' && e.ctrlKey) {
                                             onHandleSubPaste(row.id, row.depth, e.currentTarget.value);
                                             e.currentTarget.value = '';
+                                        }
+                                    }}
+                                    onPaste={(e) => {
+                                        const parsedTable = parseTableFromClipboard(e.clipboardData);
+                                        if (parsedTable) {
+                                            e.preventDefault();
+                                            onHandleSubPaste(row.id, row.depth, '', e.clipboardData);
                                         }
                                     }}
                                 />
@@ -1162,26 +1188,40 @@ function AddCategoryDialog({ categories, onRefresh }: { categories: any[], onRef
         }));
     }, []);
 
-    const handlePaste = () => {
-        if (!pasteValue.trim()) return;
+    const handlePaste = (clipboardData?: DataTransfer) => {
+        let items: { name: string, description?: string }[] = [];
 
-        const names = pasteValue.split('\n').map(n => n.trim()).filter(Boolean);
+        if (clipboardData) {
+            const parsedTable = parseTableFromClipboard(clipboardData);
+            if (parsedTable && parsedTable.rows.length > 0) {
+                items = parsedTable.rows.map(row => ({
+                    name: row[0] || '',
+                    description: row[1] || ''
+                })).filter(item => item.name.trim());
+            }
+        }
+
+        if (items.length === 0 && pasteValue.trim()) {
+            items = pasteValue.split('\n').map(n => n.trim()).filter(Boolean).map(name => ({ name }));
+        }
+
+        if (items.length === 0) return;
+
         const newRows = [...rows];
-
-        // Find last empty row or use it if it exists
         const lastRow = newRows[newRows.length - 1];
         let startIndex = newRows.length;
         if (lastRow && !lastRow.name) {
             startIndex = newRows.length - 1;
         }
 
-        names.forEach((name, i) => {
+        items.forEach((item, i) => {
             const id = Math.random().toString(36).substr(2, 9);
-            const slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+            const slug = item.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
             const row = {
                 id,
-                name,
+                name: item.name,
                 slug,
+                description: item.description || '',
                 parentId: 'none',
                 isActive: true,
                 level: 0
@@ -1196,21 +1236,39 @@ function AddCategoryDialog({ categories, onRefresh }: { categories: any[], onRef
         setRows(newRows);
         setPasteValue('');
         setIsPasteOpen(false);
-        toast.success(`Added ${names.length} categories`);
+        toast.success(`Added ${items.length} categories`);
     };
 
-    const handleSubPaste = (parentIndex: number, text: string) => {
-        const names = text.split('\n').map(n => n.trim()).filter(Boolean);
+    const handleSubPaste = (parentIndex: number, text: string, clipboardData?: DataTransfer) => {
+        let items: { name: string, description?: string }[] = [];
+
+        if (clipboardData) {
+            const parsedTable = parseTableFromClipboard(clipboardData);
+            if (parsedTable && parsedTable.rows.length > 0) {
+                items = parsedTable.rows.map(row => ({
+                    name: row[0] || '',
+                    description: row[1] || ''
+                })).filter(item => item.name.trim());
+            }
+        }
+
+        if (items.length === 0) {
+            items = text.split('\n').map(n => n.trim()).filter(Boolean).map(name => ({ name }));
+        }
+
+        if (items.length === 0) return;
+
         const parent = rows[parentIndex];
         const insertedRows: any[] = [];
 
-        names.forEach((name) => {
+        items.forEach((item) => {
             const id = Math.random().toString(36).substr(2, 9);
-            const slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+            const slug = item.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
             insertedRows.push({
                 id,
-                name,
+                name: item.name,
                 slug,
+                description: item.description || '',
                 parentId: parent.id,
                 isActive: true,
                 level: parent.level + 1
@@ -1220,7 +1278,7 @@ function AddCategoryDialog({ categories, onRefresh }: { categories: any[], onRef
         const newRows = [...rows];
         newRows.splice(parentIndex + 1, 0, ...insertedRows);
         setRows(newRows);
-        toast.success(`Added ${names.length} sub-categories`);
+        toast.success(`Added ${items.length} sub-categories`);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -1345,11 +1403,18 @@ function AddCategoryDialog({ categories, onRefresh }: { categories: any[], onRef
                                             onChange={(e) => setPasteValue(e.target.value)}
                                             placeholder="Electronics&#10;Fashion&#10;Home Decor"
                                             className="min-h-[120px]"
+                                            onPaste={(e) => {
+                                                const parsedTable = parseTableFromClipboard(e.clipboardData);
+                                                if (parsedTable) {
+                                                    e.preventDefault();
+                                                    handlePaste(e.clipboardData);
+                                                }
+                                            }}
                                         />
                                         <Button
                                             type="button"
                                             className="w-full"
-                                            onClick={handlePaste}
+                                            onClick={() => handlePaste()}
                                             disabled={!pasteValue.trim()}
                                         >
                                             Apply
@@ -1388,7 +1453,7 @@ const AddCategoryRow = memo(({
     flatCategories: any[];
     onUpdate: (index: number, field: string, value: any) => void;
     onAddSubRow: (index: number) => void;
-    onHandleSubPaste: (index: number, text: string) => void;
+    onHandleSubPaste: (index: number, text: string, clipboardData?: DataTransfer) => void;
     onRemoveRow: (index: number) => void;
 }) => {
     return (
@@ -1480,6 +1545,13 @@ const AddCategoryRow = memo(({
                                         if (e.key === 'Enter' && e.ctrlKey) {
                                             onHandleSubPaste(index, e.currentTarget.value);
                                             e.currentTarget.value = '';
+                                        }
+                                    }}
+                                    onPaste={(e) => {
+                                        const parsedTable = parseTableFromClipboard(e.clipboardData);
+                                        if (parsedTable) {
+                                            e.preventDefault();
+                                            onHandleSubPaste(index, '', e.clipboardData);
                                         }
                                     }}
                                 />
