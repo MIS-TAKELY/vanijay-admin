@@ -910,8 +910,8 @@ export const resolvers = {
                         await createRecursive(rootItem);
                     }
                 }, {
-                    maxWait: 50000,
-                    timeout: 150000
+                    maxWait: 5000,
+                    timeout: 15000
                 });
 
                 // Invalidate Cache
