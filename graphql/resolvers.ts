@@ -910,8 +910,8 @@ export const resolvers = {
                         await createRecursive(rootItem);
                     }
                 }, {
-                    maxWait: 10000,
-                    timeout: 60000
+                    maxWait: 5000,
+                    timeout: 15000
                 });
 
                 // Invalidate Cache
@@ -1011,8 +1011,8 @@ export const resolvers = {
                         });
                     }
                 }, {
-                    maxWait: 15000,
-                    timeout: 60000
+                    maxWait: 5000,
+                    timeout: 15000
                 });
 
                 // Invalidate Cache
@@ -1155,7 +1155,7 @@ export const resolvers = {
                     }
                 }, {
                     maxWait: 5000,
-                    timeout: 30000
+                    timeout: 15000
                 });
                 return {
                     success: true,
@@ -1215,8 +1215,8 @@ export const resolvers = {
                         });
                     }
                 }, {
-                    maxWait: 15000,
-                    timeout: 90000 // Increased for larger bulk updates
+                    maxWait: 5000,
+                    timeout: 15000
                 });
 
                 // Invalidate Cache
