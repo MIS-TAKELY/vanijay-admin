@@ -464,6 +464,12 @@ const BULK_UPDATE_CATEGORIES = gql`
   }
 `;
 
+const BULK_DELETE_CATEGORIES = gql`
+  mutation BulkDeleteCategories($ids: [String!]!, $force: Boolean) {
+    bulkDeleteCategories(ids: $ids, force: $force)
+  }
+`;
+
 function BulkEditDialog({ open, setOpen, categories, allCategories, onRefresh, onClearSelection, onToggleSelection }: {
     open: boolean;
     setOpen: (open: boolean) => void;
@@ -1537,7 +1543,22 @@ export default function ContentPage() {
     const { data, loading, error, refetch } = useQuery(GET_CONTENT);
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [isBulkEditDialogOpen, setIsBulkEditDialogOpen] = useState(false);
+    const [isBulkDeleteDialogOpen, setIsBulkDeleteDialogOpen] = useState(false);
+    const [bulkDeleteForce, setBulkDeleteForce] = useState(false);
     const [showInactive, setShowInactive] = useState(true);
+
+    const [bulkDeleteCategories, { loading: bulkDeleteLoading }] = useMutation(BULK_DELETE_CATEGORIES, {
+        onCompleted: () => {
+            toast.success("Selected categories deleted successfully");
+            setSelectedIds([]);
+            setIsBulkDeleteDialogOpen(false);
+            setBulkDeleteForce(false);
+            refetch();
+        },
+        onError: (error) => {
+            toast.error(error.message || "Failed to delete categories");
+        }
+    });
 
     const [bulkUpdateCategories] = useMutation(BULK_UPDATE_CATEGORIES, {
         onCompleted: () => {
@@ -1546,6 +1567,15 @@ export default function ContentPage() {
         },
         onError: (e) => toast.error(e.message)
     });
+
+    const handleBulkDelete = async () => {
+        await bulkDeleteCategories({
+            variables: {
+                ids: selectedIds,
+                force: bulkDeleteForce
+            }
+        });
+    };
 
     const handleBulkVisibility = async (active: boolean) => {
         const input = selectedIds.map(id => {
@@ -1629,6 +1659,14 @@ export default function ContentPage() {
                                     <EyeOff className="h-3.5 w-3.5" /> Hide Selected
                                 </Button>
                                 <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() => setIsBulkDeleteDialogOpen(true)}
+                                    className="flex items-center gap-2"
+                                >
+                                    <Trash2 className="h-3.5 w-3.5" /> Delete Selected
+                                </Button>
+                                <Button
                                     variant="ghost"
                                     size="sm"
                                     onClick={() => setSelectedIds([])}
@@ -1653,6 +1691,52 @@ export default function ContentPage() {
                     onClearSelection={() => setSelectedIds([])}
                     onToggleSelection={toggleSelection}
                 />
+
+                <AlertDialog open={isBulkDeleteDialogOpen} onOpenChange={(open) => {
+                    setIsBulkDeleteDialogOpen(open);
+                    if (!open) setBulkDeleteForce(false);
+                }}>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Bulk Delete Categories</AlertDialogTitle>
+                            <AlertDialogDescription className="space-y-4">
+                                <p>Are you sure you want to delete <strong>{selectedIds.length}</strong> selected categories? This action cannot be undone.</p>
+
+                                <div className="mt-4 p-3 bg-destructive/10 border border-destructive/20 rounded-md space-y-3">
+                                    <p className="text-sm text-destructive font-medium">
+                                        Recursive Deletion Option
+                                    </p>
+                                    <div className="flex items-center space-x-2">
+                                        <Switch
+                                            id="bulk-force-delete"
+                                            checked={bulkDeleteForce}
+                                            onCheckedChange={setBulkDeleteForce}
+                                        />
+                                        <Label htmlFor="bulk-force-delete" className="text-xs font-normal cursor-pointer text-foreground">
+                                            Force delete subcategories of selected items
+                                        </Label>
+                                    </div>
+                                    <p className="text-[10px] text-muted-foreground italic">
+                                        Note: If not checked, categories with subcategories will cause the entire bulk operation to fail.
+                                    </p>
+                                </div>
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel onClick={() => setBulkDeleteForce(false)}>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    handleBulkDelete();
+                                }}
+                                disabled={bulkDeleteLoading}
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            >
+                                {bulkDeleteLoading ? "Deleting..." : "Delete All Selected"}
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
 
                 <div className="rounded-md border p-4">
                     <div className="flex justify-end mb-4">

@@ -412,6 +412,7 @@ export const typeDefs = `
     deleteLandingPageBanner(id: String!): LandingPageBannerPayload!
     reorderLandingPageBanners(ids: [String!]!): LandingPageBannerPayload!
     bulkUpdateCategories(input: [BulkUpdateCategoryInput!]!): [Category]
+    bulkDeleteCategories(ids: [String!]!, force: Boolean): Boolean!
   }
 
   input BulkUpdateCategoryInput {

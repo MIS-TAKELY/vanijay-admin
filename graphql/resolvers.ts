@@ -1235,6 +1235,77 @@ export const resolvers = {
                 }
                 throw new Error(error.message || "Failed to bulk update categories");
             }
+        },
+        bulkDeleteCategories: async (_: any, { ids, force }: { ids: string[], force?: boolean }) => {
+            try {
+                const getCategoryTreeIds = async (catId: string): Promise<string[]> => {
+                    const idsList = [catId];
+                    const subcats = await prismaMain.category.findMany({
+                        where: { parentId: catId },
+                        select: { id: true }
+                    });
+                    for (const sub of subcats) {
+                        const subIds = await getCategoryTreeIds(sub.id);
+                        idsList.push(...subIds);
+                    }
+                    return idsList;
+                };
+
+                let allIdsToDelete: string[] = [];
+                if (force) {
+                    for (const id of ids) {
+                        const treeIds = await getCategoryTreeIds(id);
+                        allIdsToDelete.push(...treeIds);
+                    }
+                    allIdsToDelete = Array.from(new Set(allIdsToDelete));
+                } else {
+                    const categoriesWithChildren = await prismaMain.category.findMany({
+                        where: { id: { in: ids } },
+                        include: { children: true }
+                    });
+                    for (const cat of categoriesWithChildren) {
+                        if (cat.children.length > 0) {
+                            throw new Error(`Category "${cat.name}" has subcategories. Please move or delete them, or use force delete.`);
+                        }
+                    }
+                    allIdsToDelete = ids;
+                }
+
+                await prismaMain.$transaction(async (tx) => {
+                    await tx.product.updateMany({
+                        where: { categoryId: { in: allIdsToDelete } },
+                        data: { categoryId: null }
+                    });
+
+                    await tx.landingPageCategoryCard.deleteMany({
+                        where: { categoryId: { in: allIdsToDelete } }
+                    });
+
+                    for (let i = allIdsToDelete.length - 1; i >= 0; i--) {
+                        try {
+                            await tx.category.delete({
+                                where: { id: allIdsToDelete[i] }
+                            });
+                        } catch (e: any) {
+                            if (e.code !== 'P2025') throw e;
+                        }
+                    }
+                }, {
+                    maxWait: 5000,
+                    timeout: 15000
+                });
+
+                try {
+                    await redis.del('products:all');
+                } catch (e) {
+                    console.error("Cache invalidation failed (bulkDeleteCategories):", e);
+                }
+
+                return true;
+            } catch (error: any) {
+                console.error("Bulk delete categories error:", error);
+                throw new Error(error.message || "Failed to bulk delete categories");
+            }
         }
     }
 };
