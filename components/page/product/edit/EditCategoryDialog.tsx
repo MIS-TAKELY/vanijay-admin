@@ -74,11 +74,19 @@ export default function EditCategoryDialog({
 
         setIsLoading(true);
         try {
+            const selectedCategory = categories.find(c => c.id === selectedCategoryId);
             await updateProductCategory({
                 variables: {
                     id: product.id,
                     input: { categoryId: selectedCategoryId },
                 },
+                optimisticResponse: {
+                    updateProduct: {
+                        __typename: "Product",
+                        id: product.id,
+                        category: selectedCategory ? selectedCategory.name : product.category
+                    }
+                }
             });
             toast.success("Category Updated", {
                 description: "Product category has been successfully updated.",

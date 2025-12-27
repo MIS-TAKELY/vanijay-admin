@@ -35,6 +35,7 @@ import {
     CREATE_CATEGORY_SWIPER,
     UPDATE_CATEGORY_SWIPER,
     DELETE_CATEGORY_SWIPER,
+    GET_LANDING_PAGE_CATEGORY_SWIPERS,
 } from "@/graphql/landing-page.queries";
 import { buildCategoryTree, flattenCategories } from "@/lib/utils";
 
@@ -62,9 +63,39 @@ export default function CategorySwipersManager({ swipers, refetch, categories }:
         isActive: true,
     });
 
-    const [createSwiper, { loading: creating }] = useMutation(CREATE_CATEGORY_SWIPER);
+    const [createSwiper, { loading: creating }] = useMutation(CREATE_CATEGORY_SWIPER, {
+        update(cache, { data: { createCategorySwiper } }) {
+            if (createCategorySwiper) {
+                const existingData: any = cache.readQuery({ query: GET_LANDING_PAGE_CATEGORY_SWIPERS });
+                if (existingData) {
+                    cache.writeQuery({
+                        query: GET_LANDING_PAGE_CATEGORY_SWIPERS,
+                        data: {
+                            getLandingPageCategorySwipers: [...existingData.getLandingPageCategorySwipers, createCategorySwiper],
+                        },
+                    });
+                }
+            }
+        }
+    });
+
     const [updateSwiper, { loading: updating }] = useMutation(UPDATE_CATEGORY_SWIPER);
-    const [deleteSwiper, { loading: deleting }] = useMutation(DELETE_CATEGORY_SWIPER);
+
+    const [deleteSwiper, { loading: deleting }] = useMutation(DELETE_CATEGORY_SWIPER, {
+        update(cache, _, { variables }) {
+            const existingData: any = cache.readQuery({ query: GET_LANDING_PAGE_CATEGORY_SWIPERS });
+            if (existingData) {
+                cache.writeQuery({
+                    query: GET_LANDING_PAGE_CATEGORY_SWIPERS,
+                    data: {
+                        getLandingPageCategorySwipers: existingData.getLandingPageCategorySwipers.filter(
+                            (s: any) => s.id !== variables?.id
+                        ),
+                    },
+                });
+            }
+        }
+    });
 
     // Build category tree and flatten for display
     const categoryTree = useMemo(
@@ -109,6 +140,18 @@ export default function CategorySwipersManager({ swipers, refetch, categories }:
             if (editingSwiper) {
                 await updateSwiper({
                     variables: { id: editingSwiper.id, input },
+                    optimisticResponse: {
+                        updateCategorySwiper: {
+                            __typename: "CategorySwiper",
+                            id: editingSwiper.id,
+                            title: input.title,
+                            category: input.category,
+                            sortOrder: input.sortOrder,
+                            isActive: input.isActive,
+                            createdAt: new Date().toISOString(),
+                            updatedAt: new Date().toISOString(),
+                        }
+                    }
                 });
                 toast.success("Category swiper updated successfully");
             } else {
@@ -119,7 +162,7 @@ export default function CategorySwipersManager({ swipers, refetch, categories }:
             }
 
             setIsDialogOpen(false);
-            refetch();
+            // refetch(); // No longer needed with cache updates
         } catch (error: any) {
             toast.error(error.message || "Failed to save category swiper");
         }
@@ -129,9 +172,14 @@ export default function CategorySwipersManager({ swipers, refetch, categories }:
         if (!confirm("Are you sure you want to delete this category swiper?")) return;
 
         try {
-            await deleteSwiper({ variables: { id } });
+            await deleteSwiper({
+                variables: { id },
+                optimisticResponse: {
+                    deleteCategorySwiper: true
+                }
+            });
             toast.success("Category swiper deleted successfully");
-            refetch();
+            // refetch(); // No longer needed with cache updates
         } catch (error: any) {
             toast.error(error.message || "Failed to delete category swiper");
         }

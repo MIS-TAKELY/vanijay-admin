@@ -26,6 +26,7 @@ import {
     CREATE_LANDING_PAGE_BANNER,
     UPDATE_LANDING_PAGE_BANNER,
     DELETE_LANDING_PAGE_BANNER,
+    GET_LANDING_PAGE_BANNERS,
 } from "@/graphql/landing-page-banner.queries";
 import { FileUpload, FileWithPreview } from "@/components/fileUpload";
 import { uploadToCloudinary } from "@/utils/uploadToCloudinary";
@@ -62,9 +63,39 @@ export default function BannerManager({ banners, refetch }: Props) {
         mediaType: "IMAGE",
     });
 
-    const [createBanner, { loading: creating }] = useMutation(CREATE_LANDING_PAGE_BANNER);
+    const [createBanner, { loading: creating }] = useMutation(CREATE_LANDING_PAGE_BANNER, {
+        update(cache, { data: { createLandingPageBanner } }) {
+            if (createLandingPageBanner?.success && createLandingPageBanner?.banner) {
+                const existingData: any = cache.readQuery({ query: GET_LANDING_PAGE_BANNERS });
+                if (existingData) {
+                    cache.writeQuery({
+                        query: GET_LANDING_PAGE_BANNERS,
+                        data: {
+                            getLandingPageBanners: [...existingData.getLandingPageBanners, createLandingPageBanner.banner],
+                        },
+                    });
+                }
+            }
+        }
+    });
     const [updateBanner, { loading: updating }] = useMutation(UPDATE_LANDING_PAGE_BANNER);
-    const [deleteBanner, { loading: deleting }] = useMutation(DELETE_LANDING_PAGE_BANNER);
+    const [deleteBanner, { loading: deleting }] = useMutation(DELETE_LANDING_PAGE_BANNER, {
+        update(cache, { data: { deleteLandingPageBanner } }, { variables }) {
+            if (deleteLandingPageBanner?.success) {
+                const existingData: any = cache.readQuery({ query: GET_LANDING_PAGE_BANNERS });
+                if (existingData) {
+                    cache.writeQuery({
+                        query: GET_LANDING_PAGE_BANNERS,
+                        data: {
+                            getLandingPageBanners: existingData.getLandingPageBanners.filter(
+                                (b: any) => b.id !== variables?.id
+                            ),
+                        },
+                    });
+                }
+            }
+        }
+    });
 
     const handleOpenSheet = (banner?: Banner) => {
         if (banner) {
@@ -130,6 +161,18 @@ export default function BannerManager({ banners, refetch }: Props) {
             if (editingBanner) {
                 await updateBanner({
                     variables: { id: editingBanner.id, input },
+                    optimisticResponse: {
+                        updateLandingPageBanner: {
+                            __typename: "BannerResponse",
+                            success: true,
+                            message: "Banner updated successfully",
+                            banner: {
+                                __typename: "LandingPageBanner",
+                                id: editingBanner.id,
+                                ...input,
+                            }
+                        }
+                    }
                 });
                 toast.success("Banner updated successfully");
             } else {
@@ -140,7 +183,7 @@ export default function BannerManager({ banners, refetch }: Props) {
             }
 
             setIsSheetOpen(false);
-            refetch();
+            // refetch(); // No longer needed with cache updates
         } catch (error: any) {
             toast.error(error.message || "Failed to save banner");
         }
@@ -151,9 +194,18 @@ export default function BannerManager({ banners, refetch }: Props) {
         if (!confirm("Are you sure you want to delete this banner?")) return;
 
         try {
-            await deleteBanner({ variables: { id } });
+            await deleteBanner({
+                variables: { id },
+                optimisticResponse: {
+                    deleteLandingPageBanner: {
+                        __typename: "BannerResponse",
+                        success: true,
+                        message: "Banner deleted successfully"
+                    }
+                }
+            });
             toast.success("Banner deleted successfully");
-            refetch();
+            // refetch(); // No longer needed with cache updates
         } catch (error: any) {
             toast.error(error.message || "Failed to delete banner");
         }

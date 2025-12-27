@@ -885,6 +885,9 @@ export const resolvers = {
                 for (const rootItem of input) {
                     await createRecursive(rootItem);
                 }
+            }, {
+                maxWait: 50000,
+                timeout: 3000
             });
 
             return createdCategories;
@@ -1071,14 +1074,17 @@ export const resolvers = {
         },
         reorderLandingPageBanners: async (_: any, { ids }: { ids: string[] }) => {
             try {
-                await prismaBuyer.$transaction(
-                    ids.map((id, index) =>
-                        prismaBuyer.landingPageBanner.update({
-                            where: { id },
-                            data: { sortOrder: index }
-                        })
-                    )
-                );
+                await prismaBuyer.$transaction(async (tx) => {
+                    for (let i = 0; i < ids.length; i++) {
+                        await tx.landingPageBanner.update({
+                            where: { id: ids[i] },
+                            data: { sortOrder: i }
+                        });
+                    }
+                }, {
+                    maxWait: 5000,
+                    timeout: 30000
+                });
                 return {
                     success: true,
                     message: "Banners reordered successfully"
@@ -1114,6 +1120,28 @@ export const resolvers = {
         deleteProductGrid: async (_: any, { id }: { id: string }) => {
             await prismaBuyer.landingPageProductGrid.delete({ where: { id } });
             return true;
+        },
+        bulkUpdateCategories: async (_: any, { input }: { input: any[] }) => {
+            const updatedCategories: any[] = [];
+            await prismaMain.$transaction(async (tx) => {
+                for (const item of input) {
+                    const { id, ...data } = item;
+                    if (data.parentId === 'none') data.parentId = null;
+                    const updated = await tx.category.update({
+                        where: { id },
+                        data,
+                        include: { parent: true }
+                    });
+                    updatedCategories.push({
+                        ...updated,
+                        parentName: updated.parent?.name
+                    });
+                }
+            }, {
+                maxWait: 5000,
+                timeout: 30000
+            });
+            return updatedCategories;
         }
     }
 };

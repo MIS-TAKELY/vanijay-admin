@@ -411,6 +411,16 @@ export const typeDefs = `
     updateLandingPageBanner(id: String!, input: CreateBannerInput!): LandingPageBannerPayload!
     deleteLandingPageBanner(id: String!): LandingPageBannerPayload!
     reorderLandingPageBanners(ids: [String!]!): LandingPageBannerPayload!
+    bulkUpdateCategories(input: [BulkUpdateCategoryInput!]!): [Category]
+  }
+
+  input BulkUpdateCategoryInput {
+    id: String!
+    name: String
+    slug: String
+    description: String
+    parentId: String
+    isActive: Boolean
   }
 
   # Landing Page Content Management Types

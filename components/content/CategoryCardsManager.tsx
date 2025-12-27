@@ -35,6 +35,7 @@ import {
     CREATE_CATEGORY_CARD,
     UPDATE_CATEGORY_CARD,
     DELETE_CATEGORY_CARD,
+    GET_LANDING_PAGE_CATEGORY_CARDS,
 } from "@/graphql/landing-page.queries";
 import { FileUpload, FileWithPreview } from "@/components/fileUpload";
 import { uploadToCloudinary } from "@/utils/uploadToCloudinary";
@@ -80,9 +81,39 @@ export default function CategoryCardsManager({ cards, refetch }: Props) {
     });
 
     const { data: categoriesData } = useQuery(GET_CATEGORIES);
-    const [createCard, { loading: creating }] = useMutation(CREATE_CATEGORY_CARD);
+    const [createCard, { loading: creating }] = useMutation(CREATE_CATEGORY_CARD, {
+        update(cache, { data: { createCategoryCard } }) {
+            if (createCategoryCard) {
+                const existingData: any = cache.readQuery({ query: GET_LANDING_PAGE_CATEGORY_CARDS });
+                if (existingData) {
+                    cache.writeQuery({
+                        query: GET_LANDING_PAGE_CATEGORY_CARDS,
+                        data: {
+                            getLandingPageCategoryCards: [...existingData.getLandingPageCategoryCards, createCategoryCard],
+                        },
+                    });
+                }
+            }
+        }
+    });
+
     const [updateCard, { loading: updating }] = useMutation(UPDATE_CATEGORY_CARD);
-    const [deleteCard, { loading: deleting }] = useMutation(DELETE_CATEGORY_CARD);
+
+    const [deleteCard, { loading: deleting }] = useMutation(DELETE_CATEGORY_CARD, {
+        update(cache, _, { variables }) {
+            const existingData: any = cache.readQuery({ query: GET_LANDING_PAGE_CATEGORY_CARDS });
+            if (existingData) {
+                cache.writeQuery({
+                    query: GET_LANDING_PAGE_CATEGORY_CARDS,
+                    data: {
+                        getLandingPageCategoryCards: existingData.getLandingPageCategoryCards.filter(
+                            (c: any) => c.id !== variables?.id
+                        ),
+                    },
+                });
+            }
+        }
+    });
 
     const handleOpenDialog = (card?: CategoryCard) => {
         if (card) {
@@ -144,8 +175,25 @@ export default function CategoryCardsManager({ cards, refetch }: Props) {
             };
 
             if (editingCard) {
+                const selectedCategory = categoriesData?.categories?.find((c: any) => c.id === formData.categoryId);
                 await updateCard({
                     variables: { id: editingCard.id, input },
+                    optimisticResponse: {
+                        updateCategoryCard: {
+                            __typename: "LandingPageCategoryCard",
+                            id: editingCard.id,
+                            categoryId: input.categoryId,
+                            categoryName: selectedCategory ? selectedCategory.name : "Unknown Category",
+                            image: input.image,
+                            count: editingCard.count || "0",
+                            color: input.color,
+                            darkColor: input.darkColor,
+                            sortOrder: input.sortOrder || 0,
+                            isActive: input.isActive ?? true,
+                            createdAt: new Date().toISOString(),
+                            updatedAt: new Date().toISOString(),
+                        }
+                    }
                 });
                 toast.success("Category card updated successfully");
             } else {
@@ -156,7 +204,7 @@ export default function CategoryCardsManager({ cards, refetch }: Props) {
             }
 
             setIsDialogOpen(false);
-            refetch();
+            // refetch(); // No longer needed with cache updates
         } catch (error: any) {
             toast.error(error.message || "Failed to save category card");
         }
@@ -166,9 +214,14 @@ export default function CategoryCardsManager({ cards, refetch }: Props) {
         if (!confirm("Are you sure you want to delete this category card?")) return;
 
         try {
-            await deleteCard({ variables: { id } });
+            await deleteCard({
+                variables: { id },
+                optimisticResponse: {
+                    deleteCategoryCard: true
+                }
+            });
             toast.success("Category card deleted successfully");
-            refetch();
+            // refetch(); // No longer needed with cache updates
         } catch (error: any) {
             toast.error(error.message || "Failed to delete category card");
         }
