@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Users, ShoppingBag, Settings, Store, Globe } from 'lucide-react';
+import { LayoutDashboard, Users, ShoppingBag, Settings, Store, Globe, Container } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -12,6 +12,7 @@ const navItems = [
     // { href: '/sellers', label: 'Sellers', icon: Store },
     { href: '/products', label: 'Products', icon: ShoppingBag },
     { href: '/category', label: 'Category', icon: Globe },
+    { href: '/content', label: 'Content', icon: Container },
     { href: '/settings', label: 'Settings', icon: Settings },
 ];
 

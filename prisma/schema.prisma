@@ -88,3 +88,48 @@ model Verification {
 
     @@map("verification")
 }
+
+// Landing Page Content Management Models
+
+// Landing Page Category Cards (shown at top of homepage)
+model LandingPageCategoryCard {
+  id        String   @id @default(cuid())
+  categoryId String  // ID of the category from the main database
+  image     String?  // Image URL (optional, replaces icon)
+  // count removed, will be calculated dynamically
+  color     String   // Gradient classes, e.g., "from-blue-500 to-purple-600"
+  darkColor String?  // Dark mode gradient
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("landing_page_category_cards")
+}
+
+// Category Swiper Sections (horizontal scrolling product sections)
+model LandingPageCategorySwiper {
+  id        String   @id @default(cuid())
+  title     String   // e.g., "Best Deals on Electronics"
+  category  String   // Category name to filter products
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("landing_page_category_swipers")
+}
+
+// Product Grid Sections (grid layout product sections)
+model LandingPageProductGrid {
+  id           String   @id @default(cuid())
+  title        String   // e.g., "Featured Products"
+  topDealAbout String   // Category/tag to filter products
+  productIds   String[] // Optional: specific product IDs to show
+  sortOrder    Int      @default(0)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("landing_page_product_grids")
+}

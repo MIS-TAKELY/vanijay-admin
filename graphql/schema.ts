@@ -381,6 +381,10 @@ export const typeDefs = `
     categories: [Category]
     offers: [Offer]
     dashboardStats: DashboardStats
+    getLandingPageCategoryCards: [LandingPageCategoryCard!]!
+    getLandingPageCategorySwipers: [LandingPageCategorySwiper!]!
+    getLandingPageProductGrids: [LandingPageProductGrid!]!
+    getLandingPageBanners: [LandingPageBanner!]!
   }
 
   type Mutation {
@@ -394,5 +398,108 @@ export const typeDefs = `
     createCategoryTree(input: [CategoryTreeInput!]!): [Category]
     updateCategory(id: String!, input: UpdateCategoryInput!): Category
     deleteCategory(id: String!, force: Boolean): Boolean!
+    createCategoryCard(input: CategoryCardInput!): LandingPageCategoryCard!
+    updateCategoryCard(id: String!, input: CategoryCardInput!): LandingPageCategoryCard!
+    deleteCategoryCard(id: String!): Boolean!
+    createCategorySwiper(input: CategorySwiperInput!): LandingPageCategorySwiper!
+    updateCategorySwiper(id: String!, input: CategorySwiperInput!): LandingPageCategorySwiper!
+    deleteCategorySwiper(id: String!): Boolean!
+    createProductGrid(input: ProductGridInput!): LandingPageProductGrid!
+    updateProductGrid(id: String!, input: ProductGridInput!): LandingPageProductGrid!
+    deleteProductGrid(id: String!): Boolean!
+    createLandingPageBanner(input: CreateBannerInput!): LandingPageBannerPayload!
+    updateLandingPageBanner(id: String!, input: CreateBannerInput!): LandingPageBannerPayload!
+    deleteLandingPageBanner(id: String!): LandingPageBannerPayload!
+    reorderLandingPageBanners(ids: [String!]!): LandingPageBannerPayload!
+  }
+
+  # Landing Page Content Management Types
+  
+  type LandingPageCategoryCard {
+    id: String!
+    categoryId: String!
+    categoryName: String
+    image: String
+    count: String
+    color: String!
+    darkColor: String
+    sortOrder: Int!
+    isActive: Boolean!
+    createdAt: String!
+    updatedAt: String!
+  }
+
+  type LandingPageCategorySwiper {
+    id: String!
+    title: String!
+    category: String!
+    sortOrder: Int!
+    isActive: Boolean!
+    createdAt: String!
+    updatedAt: String!
+  }
+
+  type LandingPageProductGrid {
+    id: String!
+    title: String!
+    topDealAbout: String!
+    productIds: [String!]
+    sortOrder: Int!
+    isActive: Boolean!
+    createdAt: String!
+    updatedAt: String!
+  }
+
+  input CategoryCardInput {
+    categoryId: String!
+    image: String
+    color: String!
+    darkColor: String
+    sortOrder: Int
+    isActive: Boolean
+  }
+
+  input CategorySwiperInput {
+    title: String!
+    category: String!
+    sortOrder: Int
+    isActive: Boolean
+  }
+
+  input ProductGridInput {
+    title: String!
+    topDealAbout: String!
+    productIds: [String!]
+    sortOrder: Int
+    isActive: Boolean
+  }
+
+  type LandingPageBanner {
+    id: String!
+    title: String!
+    description: String
+    imageUrl: String!
+    link: String
+    sortOrder: Int!
+    isActive: Boolean!
+    mediaType: String
+    createdAt: String!
+    updatedAt: String!
+  }
+
+  type LandingPageBannerPayload {
+    success: Boolean!
+    message: String
+    banner: LandingPageBanner
+  }
+
+  input CreateBannerInput {
+    title: String!
+    description: String
+    imageUrl: String!
+    link: String
+    sortOrder: Int!
+    isActive: Boolean!
+    mediaType: String
   }
 `;
