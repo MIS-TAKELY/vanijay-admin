@@ -704,7 +704,7 @@ function BulkEditDialog({ open, setOpen, categories, allCategories, onRefresh, o
             name: r.name,
             slug: r.slug,
             description: r.description,
-            parentId: r.parentId,
+            parentId: r.parentId === 'none' ? null : r.parentId,
             isActive: r.isActive
         }));
 

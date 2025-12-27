@@ -419,9 +419,54 @@ model Category {
     categorySpecification CategorySpecification[]
     // categoryDiscounts     CategoryDiscount[] // Add this line
     categoryOffers        CategoryOffer[]
+    landingPageCategoryCards LandingPageCategoryCard[]
 
     @@index([slug])
     @@map("categories")
+}
+
+// Landing Page Content Management Models (shared physical DB)
+
+model LandingPageCategoryCard {
+    id        String   @id @default(cuid())
+    categoryId String
+    image     String?
+    color     String?
+    darkColor String?
+    sortOrder Int      @default(0)
+    isActive  Boolean  @default(true)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    category  Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+    @@index([categoryId])
+    @@map("landing_page_category_cards")
+}
+
+model LandingPageCategorySwiper {
+    id        String   @id @default(cuid())
+    title     String
+    category  String
+    sortOrder Int      @default(0)
+    isActive  Boolean  @default(true)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("landing_page_category_swipers")
+}
+
+model LandingPageProductGrid {
+    id           String   @id @default(cuid())
+    title        String
+    topDealAbout String
+    productIds   String[]
+    sortOrder    Int      @default(0)
+    isActive     Boolean  @default(true)
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+
+    @@map("landing_page_product_grids")
 }
 
 model Offer {

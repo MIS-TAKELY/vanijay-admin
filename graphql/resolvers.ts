@@ -845,16 +845,34 @@ export const resolvers = {
             };
         },
         createCategory: async (_: any, { input }: { input: any }) => {
-            const category = await prismaMain.category.create({
-                data: {
-                    ...input,
-                },
-                include: { parent: true }
-            });
-            return {
-                ...category,
-                parentName: category.parent?.name
-            };
+            try {
+                const { parentName, __typename, ...cleanInput } = input;
+                const category = await prismaMain.category.create({
+                    data: {
+                        ...cleanInput,
+                        parentId: cleanInput.parentId === 'none' ? null : cleanInput.parentId
+                    },
+                    include: { parent: true }
+                });
+
+                // Invalidate Cache
+                try {
+                    await redis.del('products:all');
+                } catch (e) {
+                    console.error("Cache invalidation failed (createCategory):", e);
+                }
+
+                return {
+                    ...category,
+                    parentName: category.parent?.name
+                };
+            } catch (error: any) {
+                console.error("Create category error:", error);
+                if (error.code === 'P2002') {
+                    throw new Error(`Category with this name or slug already exists.`);
+                }
+                throw new Error(error.message || "Failed to create category");
+            }
         },
         createCategoryTree: async (_: any, { input }: { input: any[] }) => {
             const createdCategories: any[] = [];
@@ -863,16 +881,21 @@ export const resolvers = {
                 await prismaMain.$transaction(async (tx) => {
                     const createRecursive = async (item: any, parentId: string | null = null) => {
                         const { name, slug, description, isActive, children, parentId: itemParentId } = item;
+
+                        // Sanitize inputs
+                        const cleanName = name?.trim();
+                        const cleanSlug = slug?.trim() || cleanName?.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+
                         const finalParentId = parentId || (itemParentId === 'none' ? null : itemParentId);
 
                         const category = await tx.category.create({
                             data: {
-                                name,
-                                slug,
+                                name: cleanName,
+                                slug: cleanSlug,
                                 description,
                                 isActive: isActive ?? true,
                                 parentId: finalParentId,
-                            }
+                            },
                         });
                         createdCategories.push(category);
 
@@ -891,9 +914,19 @@ export const resolvers = {
                     timeout: 60000
                 });
 
+                // Invalidate Cache
+                try {
+                    await redis.del('products:all');
+                } catch (e) {
+                    console.error("Cache invalidation failed (createCategoryTree):", e);
+                }
+
                 return createdCategories;
             } catch (error: any) {
                 console.error("Bulk create categories error:", error);
+                if (error.code === 'P2002') {
+                    throw new Error(`Category with this name or slug already exists: ${error.meta?.target}`);
+                }
                 throw new Error(error.message || "Failed to create categories");
             }
         },
@@ -908,12 +941,23 @@ export const resolvers = {
                     },
                     include: { parent: true }
                 });
+
+                // Invalidate Cache
+                try {
+                    await redis.del('products:all');
+                } catch (e) {
+                    console.error("Cache invalidation failed (updateCategory):", e);
+                }
+
                 return {
                     ...category,
                     parentName: category.parent?.name
                 };
             } catch (error: any) {
                 console.error("Update category error:", error);
+                if (error.code === 'P2002') {
+                    throw new Error(`Category with this name or slug already exists.`);
+                }
                 throw new Error(error.message || "Failed to update category");
             }
         },
@@ -932,6 +976,7 @@ export const resolvers = {
                     throw new Error("This category has subcategories. Please move or delete them before removing this category, or use force delete.");
                 }
 
+                // Helper to get all descendant IDs
                 const getCategoryTreeIds = async (catId: string): Promise<string[]> => {
                     const ids = [catId];
                     const subcats = await prismaMain.category.findMany({
@@ -948,26 +993,34 @@ export const resolvers = {
                 const allIdsToDelete = force ? await getCategoryTreeIds(id) : [id];
 
                 await prismaMain.$transaction(async (tx) => {
+                    // 1. Decouple products from categories being deleted
                     await tx.product.updateMany({
                         where: { categoryId: { in: allIdsToDelete } },
                         data: { categoryId: null }
                     });
 
-                    if (force) {
-                        for (let i = allIdsToDelete.length - 1; i >= 0; i--) {
-                            await tx.category.delete({
-                                where: { id: allIdsToDelete[i] }
-                            });
-                        }
-                    } else {
+                    // 2. Clear landing page category cards (manual cleanup to be safe, though onDelete: Cascade is set)
+                    await tx.landingPageCategoryCard.deleteMany({
+                        where: { categoryId: { in: allIdsToDelete } }
+                    });
+
+                    // 3. Delete categories in reverse order (bottom-up) to avoid constraint issues
+                    for (let i = allIdsToDelete.length - 1; i >= 0; i--) {
                         await tx.category.delete({
-                            where: { id }
+                            where: { id: allIdsToDelete[i] }
                         });
                     }
                 }, {
-                    maxWait: 10000,
+                    maxWait: 15000,
                     timeout: 60000
                 });
+
+                // Invalidate Cache
+                try {
+                    await redis.del('products:all');
+                } catch (e) {
+                    console.error("Cache invalidation failed (deleteCategory):", e);
+                }
 
                 return true;
             } catch (error: any) {
@@ -1146,6 +1199,8 @@ export const resolvers = {
                 await prismaMain.$transaction(async (tx) => {
                     for (const item of input) {
                         const { id, parentName, __typename, ...data } = item;
+
+                        // Sanitize parentId
                         if (data.parentId === 'none') data.parentId = null;
 
                         const updated = await tx.category.update({
@@ -1160,9 +1215,17 @@ export const resolvers = {
                         });
                     }
                 }, {
-                    maxWait: 10000,
-                    timeout: 60000
+                    maxWait: 15000,
+                    timeout: 90000 // Increased for larger bulk updates
                 });
+
+                // Invalidate Cache
+                try {
+                    await redis.del('products:all');
+                } catch (e) {
+                    console.error("Cache invalidation failed (bulkUpdateCategories):", e);
+                }
+
                 return updatedCategories;
             } catch (error: any) {
                 console.error("Bulk update categories error:", error);
