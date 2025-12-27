@@ -35,6 +35,7 @@ import {
     CREATE_PRODUCT_GRID,
     UPDATE_PRODUCT_GRID,
     DELETE_PRODUCT_GRID,
+    GET_LANDING_PAGE_PRODUCT_GRIDS,
 } from "@/graphql/landing-page.queries";
 import { buildCategoryTree, flattenCategories } from "@/lib/utils";
 
@@ -64,9 +65,39 @@ export default function ProductGridsManager({ grids, refetch, categories }: Prop
         isActive: true,
     });
 
-    const [createGrid, { loading: creating }] = useMutation(CREATE_PRODUCT_GRID);
+    const [createGrid, { loading: creating }] = useMutation(CREATE_PRODUCT_GRID, {
+        update(cache, { data: { createProductGrid } }) {
+            if (createProductGrid) {
+                const existingData: any = cache.readQuery({ query: GET_LANDING_PAGE_PRODUCT_GRIDS });
+                if (existingData) {
+                    cache.writeQuery({
+                        query: GET_LANDING_PAGE_PRODUCT_GRIDS,
+                        data: {
+                            getLandingPageProductGrids: [...existingData.getLandingPageProductGrids, createProductGrid],
+                        },
+                    });
+                }
+            }
+        }
+    });
+
     const [updateGrid, { loading: updating }] = useMutation(UPDATE_PRODUCT_GRID);
-    const [deleteGrid, { loading: deleting }] = useMutation(DELETE_PRODUCT_GRID);
+
+    const [deleteGrid, { loading: deleting }] = useMutation(DELETE_PRODUCT_GRID, {
+        update(cache, _, { variables }) {
+            const existingData: any = cache.readQuery({ query: GET_LANDING_PAGE_PRODUCT_GRIDS });
+            if (existingData) {
+                cache.writeQuery({
+                    query: GET_LANDING_PAGE_PRODUCT_GRIDS,
+                    data: {
+                        getLandingPageProductGrids: existingData.getLandingPageProductGrids.filter(
+                            (g: any) => g.id !== variables?.id
+                        ),
+                    },
+                });
+            }
+        }
+    });
 
     // Build category tree and flatten for display
     const categoryTree = useMemo(
@@ -116,6 +147,15 @@ export default function ProductGridsManager({ grids, refetch, categories }: Prop
             if (editingGrid) {
                 await updateGrid({
                     variables: { id: editingGrid.id, input },
+                    optimisticResponse: {
+                        updateProductGrid: {
+                            __typename: "LandingPageProductGrid",
+                            id: editingGrid.id,
+                            ...input,
+                            createdAt: new Date().toISOString(),
+                            updatedAt: new Date().toISOString(),
+                        }
+                    }
                 });
                 toast.success("Product grid updated successfully");
             } else {
@@ -126,7 +166,7 @@ export default function ProductGridsManager({ grids, refetch, categories }: Prop
             }
 
             setIsDialogOpen(false);
-            refetch();
+            // refetch();
         } catch (error: any) {
             toast.error(error.message || "Failed to save product grid");
         }
@@ -136,9 +176,12 @@ export default function ProductGridsManager({ grids, refetch, categories }: Prop
         if (!confirm("Are you sure you want to delete this product grid?")) return;
 
         try {
-            await deleteGrid({ variables: { id } });
+            await deleteGrid({
+                variables: { id },
+                optimisticResponse: { deleteLandingPageProductGrid: true }
+            });
             toast.success("Product grid deleted successfully");
-            refetch();
+            // refetch();
         } catch (error: any) {
             toast.error(error.message || "Failed to delete product grid");
         }

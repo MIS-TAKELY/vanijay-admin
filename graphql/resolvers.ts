@@ -859,105 +859,121 @@ export const resolvers = {
         createCategoryTree: async (_: any, { input }: { input: any[] }) => {
             const createdCategories: any[] = [];
 
-            await prismaMain.$transaction(async (tx) => {
-                const createRecursive = async (item: any, parentId: string | null = null) => {
-                    const { name, slug, description, isActive, children, parentId: itemParentId } = item;
-                    const finalParentId = parentId || (itemParentId === 'none' ? null : itemParentId);
+            try {
+                await prismaMain.$transaction(async (tx) => {
+                    const createRecursive = async (item: any, parentId: string | null = null) => {
+                        const { name, slug, description, isActive, children, parentId: itemParentId } = item;
+                        const finalParentId = parentId || (itemParentId === 'none' ? null : itemParentId);
 
-                    const category = await tx.category.create({
-                        data: {
-                            name,
-                            slug,
-                            description,
-                            isActive: isActive ?? true,
-                            parentId: finalParentId,
-                        }
-                    });
-                    createdCategories.push(category);
+                        const category = await tx.category.create({
+                            data: {
+                                name,
+                                slug,
+                                description,
+                                isActive: isActive ?? true,
+                                parentId: finalParentId,
+                            }
+                        });
+                        createdCategories.push(category);
 
-                    if (children && children.length > 0) {
-                        for (const child of children) {
-                            await createRecursive(child, category.id);
+                        if (children && children.length > 0) {
+                            for (const child of children) {
+                                await createRecursive(child, category.id);
+                            }
                         }
+                    };
+
+                    for (const rootItem of input) {
+                        await createRecursive(rootItem);
                     }
-                };
+                }, {
+                    maxWait: 10000,
+                    timeout: 60000
+                });
 
-                for (const rootItem of input) {
-                    await createRecursive(rootItem);
-                }
-            }, {
-                maxWait: 50000,
-                timeout: 3000
-            });
-
-            return createdCategories;
+                return createdCategories;
+            } catch (error: any) {
+                console.error("Bulk create categories error:", error);
+                throw new Error(error.message || "Failed to create categories");
+            }
         },
         updateCategory: async (_: any, { id, input }: { id: string, input: any }) => {
-            const category = await prismaMain.category.update({
-                where: { id },
-                data: {
-                    ...input,
-                    parentId: input.parentId === 'none' ? null : input.parentId
-                },
-                include: { parent: true }
-            });
-            return {
-                ...category,
-                parentName: category.parent?.name
-            };
+            try {
+                const { parentName, __typename, ...cleanInput } = input;
+                const category = await prismaMain.category.update({
+                    where: { id },
+                    data: {
+                        ...cleanInput,
+                        parentId: cleanInput.parentId === 'none' ? null : cleanInput.parentId
+                    },
+                    include: { parent: true }
+                });
+                return {
+                    ...category,
+                    parentName: category.parent?.name
+                };
+            } catch (error: any) {
+                console.error("Update category error:", error);
+                throw new Error(error.message || "Failed to update category");
+            }
         },
         deleteCategory: async (_: any, { id, force }: { id: string, force?: boolean }) => {
-            const category = await prismaMain.category.findUnique({
-                where: { id },
-                include: { children: true }
-            });
-
-            if (!category) {
-                throw new Error("Category not found");
-            }
-
-            if (category.children.length > 0 && !force) {
-                throw new Error("This category has subcategories. Please move or delete them before removing this category, or use force delete.");
-            }
-
-            const getCategoryTreeIds = async (catId: string): Promise<string[]> => {
-                const ids = [catId];
-                const subcats = await prismaMain.category.findMany({
-                    where: { parentId: catId },
-                    select: { id: true }
+            try {
+                const category = await prismaMain.category.findUnique({
+                    where: { id },
+                    include: { children: true }
                 });
-                for (const sub of subcats) {
-                    const subIds = await getCategoryTreeIds(sub.id);
-                    ids.push(...subIds);
+
+                if (!category) {
+                    throw new Error("Category not found");
                 }
-                return ids;
-            };
 
-            const allIdsToDelete = force ? await getCategoryTreeIds(id) : [id];
+                if (category.children.length > 0 && !force) {
+                    throw new Error("This category has subcategories. Please move or delete them before removing this category, or use force delete.");
+                }
 
-            await prismaMain.$transaction(async (tx) => {
-                await tx.product.updateMany({
-                    where: { categoryId: { in: allIdsToDelete } },
-                    data: { categoryId: null }
-                });
+                const getCategoryTreeIds = async (catId: string): Promise<string[]> => {
+                    const ids = [catId];
+                    const subcats = await prismaMain.category.findMany({
+                        where: { parentId: catId },
+                        select: { id: true }
+                    });
+                    for (const sub of subcats) {
+                        const subIds = await getCategoryTreeIds(sub.id);
+                        ids.push(...subIds);
+                    }
+                    return ids;
+                };
 
-                if (force) {
-                    for (let i = allIdsToDelete.length - 1; i >= 0; i--) {
+                const allIdsToDelete = force ? await getCategoryTreeIds(id) : [id];
+
+                await prismaMain.$transaction(async (tx) => {
+                    await tx.product.updateMany({
+                        where: { categoryId: { in: allIdsToDelete } },
+                        data: { categoryId: null }
+                    });
+
+                    if (force) {
+                        for (let i = allIdsToDelete.length - 1; i >= 0; i--) {
+                            await tx.category.delete({
+                                where: { id: allIdsToDelete[i] }
+                            });
+                        }
+                    } else {
                         await tx.category.delete({
-                            where: { id: allIdsToDelete[i] }
+                            where: { id }
                         });
                     }
-                } else {
-                    await tx.category.delete({
-                        where: { id }
-                    });
-                }
-            }, {
-                maxWait: 5000,
-                timeout: 30000
-            });
+                }, {
+                    maxWait: 10000,
+                    timeout: 60000
+                });
 
-            return true;
+                return true;
+            } catch (error: any) {
+                console.error("Delete category error:", error);
+                throw new Error(error.message || "Failed to delete category");
+            }
         },
         // Landing Page Content Management Mutations
         createCategoryCard: async (_: any, { input }: { input: any }) => {
@@ -1126,25 +1142,36 @@ export const resolvers = {
         },
         bulkUpdateCategories: async (_: any, { input }: { input: any[] }) => {
             const updatedCategories: any[] = [];
-            await prismaMain.$transaction(async (tx) => {
-                for (const item of input) {
-                    const { id, ...data } = item;
-                    if (data.parentId === 'none') data.parentId = null;
-                    const updated = await tx.category.update({
-                        where: { id },
-                        data,
-                        include: { parent: true }
-                    });
-                    updatedCategories.push({
-                        ...updated,
-                        parentName: updated.parent?.name
-                    });
+            try {
+                await prismaMain.$transaction(async (tx) => {
+                    for (const item of input) {
+                        const { id, parentName, __typename, ...data } = item;
+                        if (data.parentId === 'none') data.parentId = null;
+
+                        const updated = await tx.category.update({
+                            where: { id },
+                            data,
+                            include: { parent: true }
+                        });
+
+                        updatedCategories.push({
+                            ...updated,
+                            parentName: updated.parent?.name
+                        });
+                    }
+                }, {
+                    maxWait: 10000,
+                    timeout: 60000
+                });
+                return updatedCategories;
+            } catch (error: any) {
+                console.error("Bulk update categories error:", error);
+                if (error.code === 'P2002') {
+                    const target = error.meta?.target || [];
+                    throw new Error(`Unique constraint failed on ${target.join(', ')}. Please check for duplicate names or slugs.`);
                 }
-            }, {
-                maxWait: 5000,
-                timeout: 30000
-            });
-            return updatedCategories;
+                throw new Error(error.message || "Failed to bulk update categories");
+            }
         }
     }
 };

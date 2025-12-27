@@ -422,6 +422,10 @@ const CREATE_CATEGORY_TREE = gql`
       id
       name
       slug
+      isActive
+      parentId
+      parentName
+      description
     }
   }
 `;
@@ -454,6 +458,8 @@ const BULK_UPDATE_CATEGORIES = gql`
       slug
       isActive
       parentId
+      parentName
+      description
     }
   }
 `;
@@ -556,9 +562,39 @@ function BulkEditDialog({ open, setOpen, categories, allCategories, onRefresh, o
         );
     }, []);
 
-    const [createCategoryTree, { loading: createLoading }] = useMutation(CREATE_CATEGORY_TREE);
+    const [createCategoryTree, { loading: createLoading }] = useMutation(CREATE_CATEGORY_TREE, {
+        update(cache, { data }) {
+            if (data?.createCategoryTree) {
+                const existingData: any = cache.readQuery({ query: GET_CONTENT });
+                if (existingData && existingData.categories) {
+                    cache.writeQuery({
+                        query: GET_CONTENT,
+                        data: {
+                            categories: [...existingData.categories, ...data.createCategoryTree]
+                        }
+                    });
+                }
+            }
+        }
+    });
 
     const [bulkUpdateCategories, { loading: updateLoading }] = useMutation(BULK_UPDATE_CATEGORIES, {
+        update(cache, { data }) {
+            if (data?.bulkUpdateCategories) {
+                const existingData: any = cache.readQuery({ query: GET_CONTENT });
+                if (existingData && existingData.categories) {
+                    const updatedMap = new Map(data.bulkUpdateCategories.map((c: any) => [c.id, c]));
+                    const newCategories = existingData.categories.map((c: any) => {
+                        const updated = updatedMap.get(c.id);
+                        return updated ? { ...c, ...updated, __typename: 'Category' } : c;
+                    });
+                    cache.writeQuery({
+                        query: GET_CONTENT,
+                        data: { categories: newCategories }
+                    });
+                }
+            }
+        },
         onCompleted: async () => {
             const newRows = rows.filter(r => r.isNew);
             if (newRows.length > 0) {
@@ -594,7 +630,7 @@ function BulkEditDialog({ open, setOpen, categories, allCategories, onRefresh, o
             }
             setOpen(false);
             onClearSelection();
-            onRefresh();
+            // onRefresh(); // Cache update handles this
         },
         onError: (error) => {
             toast.error(error.message || "Failed to update categories");
@@ -673,7 +709,18 @@ function BulkEditDialog({ open, setOpen, categories, allCategories, onRefresh, o
         }));
 
         if (toUpdate.length > 0) {
-            await bulkUpdateCategories({ variables: { input: toUpdate } });
+            await bulkUpdateCategories({
+                variables: { input: toUpdate },
+                optimisticResponse: {
+                    bulkUpdateCategories: toUpdate.map(cat => ({
+                        __typename: "Category",
+                        ...cat,
+                        parentId: cat.parentId === 'none' ? null : cat.parentId,
+                        parentName: allCategories.find(c => c.id === cat.parentId)?.name || null,
+                        description: cat.description || null
+                    }))
+                }
+            });
         } else {
             // If only creates, we need to trigger the same logic as onCompleted of update
             // (Alternatively, just move the logic to a separate function)
@@ -701,7 +748,7 @@ function BulkEditDialog({ open, setOpen, categories, allCategories, onRefresh, o
             toast.success("Categories created successfully");
             setOpen(false);
             onClearSelection();
-            onRefresh();
+            // onRefresh();
         }
     };
 
@@ -1025,16 +1072,31 @@ function AddCategoryDialog({ categories, onRefresh }: { categories: any[], onRef
     const [isPasteOpen, setIsPasteOpen] = useState(false);
 
     const [createCategoryTree, { loading }] = useMutation(CREATE_CATEGORY_TREE, {
+        update(cache, { data }) {
+            if (data?.createCategoryTree) {
+                const existingData: any = cache.readQuery({ query: GET_CONTENT });
+                if (existingData && existingData.categories) {
+                    cache.writeQuery({
+                        query: GET_CONTENT,
+                        data: {
+                            categories: [...existingData.categories, ...data.createCategoryTree]
+                        }
+                    });
+                }
+            }
+        },
         onCompleted: () => {
             toast.success("Categories created successfully");
             setOpen(false);
             setRows([{ id: '1', name: '', slug: '', parentId: 'none', isActive: true, level: 0 }]);
-            onRefresh();
+            // onRefresh();
         },
         onError: (error) => {
             toast.error(error.message || "Failed to create categories");
         }
     });
+
+
 
     const flatCategories = useMemo(() =>
         flattenCategories(buildCategoryTree(categories)),
