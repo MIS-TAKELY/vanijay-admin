@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback, memo } from 'react';
 import { clsx } from 'clsx';
-import { MoreHorizontal, Plus, ChevronRight, ChevronDown, Loader2, Edit, Trash2, Eye, EyeOff } from 'lucide-react';
+import { MoreHorizontal, Plus, ChevronRight, ChevronDown, Loader2, Edit, Trash2, Eye, EyeOff, Search } from 'lucide-react';
 import { useQuery, useMutation, gql } from '@apollo/client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -640,6 +640,7 @@ function BulkEditDialog({ open, setOpen, categories, allCategories, onRefresh, o
             // onRefresh(); // Cache update handles this
         },
         onError: (error) => {
+            console.error("Bulk Update Categories Error:", error);
             toast.error(error.message || "Failed to update categories");
         }
     });
@@ -1124,6 +1125,7 @@ function AddCategoryDialog({ categories, onRefresh }: { categories: any[], onRef
             // onRefresh();
         },
         onError: (error) => {
+            console.error("Create Category Tree Error:", error);
             toast.error(error.message || "Failed to create categories");
         }
     });
@@ -1599,8 +1601,8 @@ AddCategoryRow.displayName = 'AddCategoryRow';
 
 
 const GET_CONTENT = gql`
-  query GetContent {
-    categories {
+  query GetContent($search: String) {
+    categories(search: $search) {
       id
       name
       slug
@@ -1612,7 +1614,19 @@ const GET_CONTENT = gql`
 `;
 
 export default function ContentPage() {
-    const { data, loading, error, refetch } = useQuery(GET_CONTENT);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [debouncedSearch, setDebouncedSearch] = useState('');
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(searchQuery);
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
+
+    const { data, loading, error, refetch } = useQuery(GET_CONTENT, {
+        variables: { search: debouncedSearch }
+    });
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [isBulkEditDialogOpen, setIsBulkEditDialogOpen] = useState(false);
     const [isBulkDeleteDialogOpen, setIsBulkDeleteDialogOpen] = useState(false);
@@ -1749,7 +1763,16 @@ export default function ContentPage() {
                             </>
                         )}
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 items-center">
+                        <div className="relative w-64">
+                            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                            <Input
+                                placeholder="Search categories..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="pl-8 h-9"
+                            />
+                        </div>
                         <AddCategoryDialog categories={data?.categories || []} onRefresh={() => refetch()} />
                     </div>
                 </div>
@@ -1822,12 +1845,39 @@ export default function ContentPage() {
                             {showInactive ? "Viewing All Categories" : "Showing Active Only"}
                         </Button>
                     </div>
-                    <CategoryTree
-                        categories={(data?.categories || []).filter((c: any) => showInactive || c.isActive)}
-                        onRefresh={() => refetch()}
-                        selectedIds={selectedIds}
-                        onToggleSelection={toggleSelection}
-                    />
+                    {debouncedSearch ? (
+                        <div className="space-y-2">
+                            <div className="text-sm text-muted-foreground mb-4">
+                                Found {data.categories.length} results for "{debouncedSearch}"
+                            </div>
+                            {data.categories.length > 0 ? (
+                                <div className="space-y-1">
+                                    {data.categories.filter((c: any) => showInactive || c.isActive).map((cat: any) => (
+                                        <CategoryItem
+                                            key={cat.id}
+                                            node={{ ...cat, children: [] }}
+                                            allCategories={data.categories}
+                                            onRefresh={() => refetch()}
+                                            depth={0}
+                                            selectedIds={selectedIds}
+                                            onToggleSelection={toggleSelection}
+                                        />
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-center py-12 border-2 border-dashed rounded-lg">
+                                    <p className="text-muted-foreground">No categories found matching your search.</p>
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        <CategoryTree
+                            categories={(data?.categories || []).filter((c: any) => showInactive || c.isActive)}
+                            onRefresh={() => refetch()}
+                            selectedIds={selectedIds}
+                            onToggleSelection={toggleSelection}
+                        />
+                    )}
                 </div>
             </div>
         </div>

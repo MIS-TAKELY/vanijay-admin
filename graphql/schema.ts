@@ -378,7 +378,7 @@ export const typeDefs = `
     product(id: String!): Product
     sellerProducts(sellerId: String!, take: Int, skip: Int): [Product]
     userDetails(userId: String!): UserDetails
-    categories: [Category]
+    categories(search: String): [Category]
     offers: [Offer]
     dashboardStats: DashboardStats
     getLandingPageCategoryCards: [LandingPageCategoryCard!]!

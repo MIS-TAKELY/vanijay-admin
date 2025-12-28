@@ -500,20 +500,33 @@ export const resolvers = {
                 returnedCount
             };
         },
-        categories: async () => {
-            const categories = await prismaMain.category.findMany({
-                orderBy: { name: 'asc' },
-                include: { parent: true }
-            });
-            return categories.map((c: any) => ({
-                id: c.id,
-                name: c.name,
-                slug: c.slug,
-                description: c.description,
-                isActive: c.isActive,
-                parentName: c.parent?.name,
-                parentId: c.parentId
-            }));
+        categories: async (_: any, { search }: { search?: string }) => {
+            try {
+                const where = search ? {
+                    OR: [
+                        { name: { contains: search, mode: 'insensitive' as any } },
+                        { slug: { contains: search, mode: 'insensitive' as any } }
+                    ]
+                } : {};
+
+                const categories = await prismaMain.category.findMany({
+                    where,
+                    orderBy: { name: 'asc' },
+                    include: { parent: true }
+                });
+                return categories.map((c: any) => ({
+                    id: c.id,
+                    name: c.name,
+                    slug: c.slug,
+                    description: c.description,
+                    isActive: c.isActive,
+                    parentName: c.parent?.name,
+                    parentId: c.parentId
+                }));
+            } catch (error) {
+                console.error("Categories Query Error:", error);
+                throw new Error("Failed to fetch categories");
+            }
         },
         offers: async () => {
             const offers = await prismaMain.offer.findMany({
@@ -869,13 +882,19 @@ export const resolvers = {
             } catch (error: any) {
                 console.error("Create category error:", error);
                 if (error.code === 'P2002') {
-                    throw new Error(`Category with this name or slug already exists.`);
+                    const target = error.meta?.target;
+                    const field = Array.isArray(target) ? target.join(', ') : 'name or slug';
+                    const conflictInfo = `Name: "${input.name}", Slug: "${input.slug}"`;
+                    const message = `Category conflict: A category with this ${field} already exists. (${conflictInfo})`;
+                    console.error(message, error);
+                    throw new Error(message);
                 }
                 throw new Error(error.message || "Failed to create category");
             }
         },
         createCategoryTree: async (_: any, { input }: { input: any[] }) => {
             const createdCategories: any[] = [];
+            let currentItemInfo = "";
 
             try {
                 await prismaMain.$transaction(async (tx) => {
@@ -885,6 +904,8 @@ export const resolvers = {
                         // Sanitize inputs
                         const cleanName = name?.trim();
                         const cleanSlug = slug?.trim() || cleanName?.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+
+                        currentItemInfo = `Name: "${cleanName}", Slug: "${cleanSlug}"`;
 
                         const finalParentId = parentId || (itemParentId === 'none' ? null : itemParentId);
 
@@ -925,7 +946,11 @@ export const resolvers = {
             } catch (error: any) {
                 console.error("Bulk create categories error:", error);
                 if (error.code === 'P2002') {
-                    throw new Error(`Category with this name or slug already exists: ${error.meta?.target}`);
+                    const target = error.meta?.target;
+                    const field = Array.isArray(target) ? target.join(', ') : 'name or slug';
+                    const message = `Bulk creation failed: A category with this ${field} already exists in the list or database. Conflict at [${currentItemInfo}]`;
+                    console.error(message, error);
+                    throw new Error(message);
                 }
                 throw new Error(error.message || "Failed to create categories");
             }
@@ -956,7 +981,12 @@ export const resolvers = {
             } catch (error: any) {
                 console.error("Update category error:", error);
                 if (error.code === 'P2002') {
-                    throw new Error(`Category with this name or slug already exists.`);
+                    const target = error.meta?.target;
+                    const field = Array.isArray(target) ? target.join(', ') : 'name or slug';
+                    const conflictInfo = `Name: "${input.name}", Slug: "${input.slug}"`;
+                    const message = `Update failed: A category with this ${field} already exists. (${conflictInfo})`;
+                    console.error(message, error);
+                    throw new Error(message);
                 }
                 throw new Error(error.message || "Failed to update category");
             }
@@ -1230,8 +1260,9 @@ export const resolvers = {
             } catch (error: any) {
                 console.error("Bulk update categories error:", error);
                 if (error.code === 'P2002') {
-                    const target = error.meta?.target || [];
-                    throw new Error(`Unique constraint failed on ${target.join(', ')}. Please check for duplicate names or slugs.`);
+                    const target = error.meta?.target;
+                    const field = Array.isArray(target) ? target.join(', ') : 'name or slug';
+                    throw new Error(`Bulk update failed: A category with this ${field} already exists (likely name or slug duplicate).`);
                 }
                 throw new Error(error.message || "Failed to bulk update categories");
             }
