@@ -357,7 +357,7 @@ model ConversationParticipant {
   userId         String
   lastReadAt     DateTime?
 
-  user         User         @relation(fields: [userId], references: [id])
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   conversation Conversation @relation(fields: [conversationId], references: [id])
 
   @@unique([conversationId, userId])

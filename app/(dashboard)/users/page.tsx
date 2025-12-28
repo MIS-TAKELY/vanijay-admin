@@ -82,6 +82,29 @@ const UNBAN_USER = gql`
   }
 `;
 
+const DELETE_USER = gql`
+  mutation DeleteUser($userId: String!) {
+    deleteUser(userId: $userId)
+  }
+`;
+
+const HARD_DELETE_USER = gql`
+  mutation HardDeleteUser($userId: String!) {
+    hardDeleteUser(userId: $userId)
+  }
+`;
+
+const BULK_DELETE_USERS = gql`
+  mutation BulkDeleteUsers($userIds: [String!]!, $force: Boolean) {
+    bulkDeleteUsers(userIds: $userIds, force: $force) {
+      success
+      deletedCount
+      message
+    }
+  }
+`;
+
+
 interface SavedView {
     id: string;
     name: string;
@@ -102,6 +125,11 @@ export default function UsersPage() {
     const [activeViewId, setActiveViewId] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 10;
+
+    // Delete confirmation dialog state
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [deleteTarget, setDeleteTarget] = useState<{ id: string, name: string } | null>(null);
+    const [isHardDelete, setIsHardDelete] = useState(false);
 
     // Persistence Layer
     useEffect(() => {
@@ -173,6 +201,9 @@ export default function UsersPage() {
     const [unbanUser] = useMutation(UNBAN_USER);
     const [bulkBan] = useMutation(BULK_BAN_USERS);
     const [bulkUnban] = useMutation(BULK_UNBAN_USERS);
+    const [deleteUser] = useMutation(DELETE_USER);
+    const [hardDeleteUser] = useMutation(HARD_DELETE_USER);
+    const [bulkDeleteUsers] = useMutation(BULK_DELETE_USERS);
 
     const users = data?.users?.items || [];
     const totalCount = data?.users?.totalCount || 0;
@@ -225,6 +256,51 @@ export default function UsersPage() {
                 return `Successfully processed ${selectedIds.length} users.`;
             },
             error: 'Bulk operation failed.'
+        });
+    };
+
+    const handleDeleteUser = (user: any) => {
+        setDeleteTarget({ id: user.id, name: user.name || 'Anonymous' });
+        setIsHardDelete(false);
+        setDeleteDialogOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!deleteTarget) return;
+
+        const mutation = isHardDelete ? hardDeleteUser : deleteUser;
+        const actionLabel = isHardDelete ? 'permanently deleted' : 'soft deleted';
+
+        const promise = mutation({
+            variables: { userId: deleteTarget.id }
+        });
+
+        toast.promise(promise, {
+            loading: isHardDelete ? 'Permanently deleting user...' : 'Deleting user...',
+            success: () => {
+                setDeleteDialogOpen(false);
+                setDeleteTarget(null);
+                setIsHardDelete(false);
+                refetch();
+                return `User ${deleteTarget.name} has been ${actionLabel}.`;
+            },
+            error: 'Failed to delete user.'
+        });
+    };
+
+    const handleBulkDelete = async (force: boolean) => {
+        const promise = bulkDeleteUsers({
+            variables: { userIds: selectedIds, force }
+        });
+
+        toast.promise(promise, {
+            loading: force ? `Permanently deleting ${selectedIds.length} users...` : `Deleting ${selectedIds.length} users...`,
+            success: (data: any) => {
+                setSelectedIds([]);
+                refetch();
+                return data.data.bulkDeleteUsers.message || `Successfully deleted ${selectedIds.length} users.`;
+            },
+            error: 'Bulk delete operation failed.'
         });
     };
 
@@ -472,6 +548,15 @@ export default function UsersPage() {
                                                             {user.isBanned ? <ShieldCheck className="h-3 w-3 mr-1" /> : <ShieldAlert className="h-3 w-3 mr-1" />}
                                                             {user.isBanned ? 'Restore' : 'Restrict'}
                                                         </Button>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            onClick={() => handleDeleteUser(user)}
+                                                            className="h-8 px-3 rounded-lg text-[10px] font-black uppercase tracking-widest text-red-600 hover:text-red-700 hover:bg-red-50 transition-all"
+                                                        >
+                                                            <Trash2 className="h-3 w-3 mr-1" />
+                                                            Delete
+                                                        </Button>
                                                         <Button variant="secondary" size="sm" asChild className="h-8 rounded-lg shadow-sm">
                                                             <a href={`/users/${user.id}`} className="text-[10px] font-black uppercase tracking-widest flex items-center">
                                                                 View Logs <ChevronRight className="h-3 w-3 ml-1" />
@@ -582,8 +667,13 @@ export default function UsersPage() {
                             <Button
                                 variant="destructive"
                                 className="h-12 px-6 rounded-2xl font-black uppercase text-[10px] tracking-[0.2em] shadow-lg shadow-rose-500/20 transition-all flex items-center gap-2"
+                                onClick={() => {
+                                    setDeleteTarget({ id: 'bulk', name: `${selectedIds.length} users` });
+                                    setIsHardDelete(false);
+                                    setDeleteDialogOpen(true);
+                                }}
                             >
-                                <Trash2 className="h-4 w-4" /> Finalize Purge
+                                <Trash2 className="h-4 w-4" /> Delete Selected
                             </Button>
                         </div>
 
@@ -595,6 +685,84 @@ export default function UsersPage() {
                                 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-foreground"
                             >
                                 Cancel Session
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Delete Confirmation Dialog */}
+            {deleteDialogOpen && deleteTarget && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-card border border-border/40 rounded-[2rem] p-8 max-w-md w-full mx-4 shadow-2xl shadow-black/20 animate-in zoom-in-95 duration-200">
+                        <div className="flex items-start gap-4 mb-6">
+                            <div className="h-12 w-12 rounded-2xl bg-red-100 flex items-center justify-center flex-shrink-0">
+                                <Trash2 className="h-6 w-6 text-red-600" />
+                            </div>
+                            <div className="flex-1">
+                                <h2 className="text-2xl font-black tracking-tight mb-2">Confirm Deletion</h2>
+                                <p className="text-sm text-muted-foreground">
+                                    {deleteTarget.id === 'bulk'
+                                        ? `You are about to delete ${deleteTarget.name}.`
+                                        : `You are about to delete user "${deleteTarget.name}".`
+                                    }
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="bg-muted/50 border border-border/40 rounded-xl p-4 mb-6">
+                            <label className="flex items-start gap-3 cursor-pointer group">
+                                <input
+                                    type="checkbox"
+                                    checked={isHardDelete}
+                                    onChange={(e) => setIsHardDelete(e.target.checked)}
+                                    className="h-4 w-4 mt-0.5 rounded border-border/50 text-red-600 accent-red-600 cursor-pointer"
+                                />
+                                <div className="flex-1">
+                                    <p className="text-sm font-bold text-foreground group-hover:text-red-600 transition-colors">
+                                        Hard Delete (Permanent)
+                                    </p>
+                                    <p className="text-xs text-muted-foreground mt-1">
+                                        Permanently remove all user data including products, orders, reviews, and related records. This action cannot be undone.
+                                    </p>
+                                </div>
+                            </label>
+                        </div>
+
+                        {!isHardDelete && (
+                            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+                                <p className="text-xs text-blue-800 flex items-start gap-2">
+                                    <Info className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                                    <span>Soft delete will ban the user but keep their data in the database for record-keeping purposes.</span>
+                                </p>
+                            </div>
+                        )}
+
+                        <div className="flex items-center gap-3">
+                            <Button
+                                variant="outline"
+                                className="flex-1 h-11 rounded-xl font-bold"
+                                onClick={() => {
+                                    setDeleteDialogOpen(false);
+                                    setDeleteTarget(null);
+                                    setIsHardDelete(false);
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                variant="destructive"
+                                className="flex-1 h-11 rounded-xl font-bold shadow-lg shadow-red-500/20"
+                                onClick={() => {
+                                    if (deleteTarget.id === 'bulk') {
+                                        handleBulkDelete(isHardDelete);
+                                    } else {
+                                        confirmDelete();
+                                    }
+                                    setDeleteDialogOpen(false);
+                                }}
+                            >
+                                {isHardDelete ? 'Delete Permanently' : 'Delete'}
                             </Button>
                         </div>
                     </div>

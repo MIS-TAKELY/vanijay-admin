@@ -653,6 +653,128 @@ export const resolvers = {
                 createdAt: u.createdAt.toISOString()
             }));
         },
+        deleteUser: async (_: any, { userId }: { userId: string }) => {
+            // Soft delete - ban the user
+            const user = await prismaMain.user.update({
+                where: { id: userId },
+                data: { isBanned: true }
+            });
+            return true;
+        },
+        hardDeleteUser: async (_: any, { userId }: { userId: string }) => {
+            try {
+                // First check if user exists
+                const user = await prismaMain.user.findUnique({
+                    where: { id: userId },
+                    include: {
+                        sellerProfile: true,
+                        products: { select: { id: true } },
+                        orders: { select: { id: true } }
+                    }
+                });
+
+                if (!user) {
+                    throw new Error("User not found");
+                }
+
+                console.log(`Attempting to delete user ${userId}:`, {
+                    hasSellerProfile: !!user.sellerProfile,
+                    productCount: user.products.length,
+                    orderCount: user.orders.length
+                });
+
+                await prismaMain.$transaction(async (tx) => {
+                    // Delete user - Prisma cascade deletes will handle related records
+                    await tx.user.delete({
+                        where: { id: userId }
+                    });
+                }, {
+                    maxWait: 10000,
+                    timeout: 30000
+                });
+
+                // Clear any Redis cache entries for the user
+                try {
+                    const keysToDelete = [
+                        `user:${userId}`,
+                        `user:details:${userId}`,
+                        `products:all` // Invalidate product cache if user was a seller
+                    ];
+                    await redis.del(...keysToDelete);
+                } catch (error) {
+                    console.error("Failed to invalidate user cache:", error);
+                }
+
+                console.log(`Successfully deleted user ${userId}`);
+                return true;
+            } catch (error: any) {
+                console.error("Hard delete user error:", error);
+                console.error("Error details:", {
+                    message: error.message,
+                    code: error.code,
+                    meta: error.meta
+                });
+
+                // Provide more specific error message
+                if (error.code === 'P2003') {
+                    throw new Error(`Cannot delete user: Foreign key constraint failed. User has related data that cannot be deleted.`);
+                } else if (error.code === 'P2025') {
+                    throw new Error("User not found");
+                } else {
+                    throw new Error(`Failed to delete user: ${error.message}`);
+                }
+            }
+        },
+        bulkDeleteUsers: async (_: any, { userIds, force }: { userIds: string[], force?: boolean }) => {
+            try {
+                if (force) {
+                    // Hard delete - permanently remove users
+                    await prismaMain.$transaction(async (tx) => {
+                        await tx.user.deleteMany({
+                            where: { id: { in: userIds } }
+                        });
+                    });
+
+                    // Clear cache
+                    try {
+                        const keysToDelete = userIds.flatMap(id => [
+                            `user:${id}`,
+                            `user:details:${id}`
+                        ]);
+                        keysToDelete.push('products:all');
+                        await redis.del(...keysToDelete);
+                    } catch (error) {
+                        console.error("Failed to invalidate cache:", error);
+                    }
+
+                    return {
+                        success: true,
+                        deletedCount: userIds.length,
+                        message: `Successfully deleted ${userIds.length} user(s) permanently`
+                    };
+                } else {
+                    // Soft delete - ban users
+                    await prismaMain.user.updateMany({
+                        where: { id: { in: userIds } },
+                        data: { isBanned: true }
+                    });
+
+                    return {
+                        success: true,
+                        deletedCount: userIds.length,
+                        message: `Successfully banned ${userIds.length} user(s)`
+                    };
+                }
+            } catch (error) {
+                console.error("Bulk delete users error:", error);
+                return {
+                    success: false,
+                    deletedCount: 0,
+                    message: "Failed to delete users"
+                };
+            }
+        },
+
         updateProduct: async (_: any, { id, input }: { id: string, input: any }) => {
             const {
                 name,

@@ -387,12 +387,21 @@ export const typeDefs = `
     getLandingPageBanners: [LandingPageBanner!]!
   }
 
+  type BulkDeleteResult {
+    success: Boolean!
+    deletedCount: Int!
+    message: String
+  }
+
   type Mutation {
     loginAdmin(email: String!): String
     banUser(userId: String!): User
     unbanUser(userId: String!): User
     bulkBanUsers(userIds: [String!]!): [User]
     bulkUnbanUsers(userIds: [String!]!): [User]
+    deleteUser(userId: String!): Boolean!
+    hardDeleteUser(userId: String!): Boolean!
+    bulkDeleteUsers(userIds: [String!]!, force: Boolean): BulkDeleteResult!
     updateProduct(id: String!, input: UpdateProductInput!): Product
     createCategory(input: CreateCategoryInput!): Category
     createCategoryTree(input: [CategoryTreeInput!]!): [Category]
