@@ -1,0 +1,39 @@
+services:
+  admin:
+    container_name: vanijay_admin
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - ADMIN_DATABASE_URL=${ADMIN_DATABASE_URL}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - NEXTAUTH_URL=${NEXTAUTH_URL}
+    restart: always
+    networks:
+      - vanijay_network
+    depends_on:
+      - admin_db
+
+  admin_db:
+    image: postgres:15-alpine
+    container_name: vanijay_admin_database
+    environment:
+      POSTGRES_USER: ${ADMIN_DB_USER:-admin}
+      POSTGRES_PASSWORD: ${ADMIN_DB_PASSWORD:-adminpassword}
+      POSTGRES_DB: ${ADMIN_DB_NAME:-vanijay_admin}
+    volumes:
+      - admin_db_data:/var/lib/postgresql/data
+    networks:
+      - vanijay_network
+    ports:
+      - "5433:5432"
+
+volumes:
+  admin_db_data:
+
+networks:
+  vanijay_network:
+    external: true

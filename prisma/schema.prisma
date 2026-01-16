@@ -1,10 +1,12 @@
 datasource db {
   provider = "postgresql"
-  url      = env("ADMIN_DATABASE_URL")
+  extensions = [vector]
 }
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions", "driverAdapters"]
+  binaryTargets   = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 model User {
