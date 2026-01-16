@@ -96,9 +96,18 @@ jobs:
             # We use the app image to run migrations because it contains the schema and prisma client
             docker run --rm \
               --network vanijay_network \
-              --env DATABASE_URL=postgresql://${ADMIN_DB_USER:-admin}:${ADMIN_DB_PASSWORD:-adminpassword}@vanijay_admin_database:5432/${ADMIN_DB_NAME:-vanijay_admin}?schema=public \
+              --env ADMIN_DATABASE_URL=postgresql://${ADMIN_DB_USER:-admin}:${ADMIN_DB_PASSWORD:-adminpassword}@vanijay_admin_database:5432/${ADMIN_DB_NAME:-vanijay_admin} \
+              --env DATABASE_URL=postgresql://${ADMIN_DB_USER:-admin}:${ADMIN_DB_PASSWORD:-adminpassword}@vanijay_buyer_seller_database:5432/${ADMIN_DB_NAME:-vanijay_buyer_seller} \
               ghcr.io/sachinsharma-lordheydes/vanijay-admin:latest \
-              npx prisma migrate deploy
+              npx prisma migrate deploy --config prisma.config.ts
+
+            echo "Running Shared Prisma migrations..."
+            docker run --rm \
+              --network vanijay_network \
+              --env ADMIN_DATABASE_URL=postgresql://${ADMIN_DB_USER:-admin}:${ADMIN_DB_PASSWORD:-adminpassword}@vanijay_admin_database:5432/${ADMIN_DB_NAME:-vanijay_admin} \
+              --env DATABASE_URL=postgresql://${ADMIN_DB_USER:-admin}:${ADMIN_DB_PASSWORD:-adminpassword}@vanijay_buyer_seller_database:5432/${ADMIN_DB_NAME:-vanijay_buyer_seller} \
+              ghcr.io/sachinsharma-lordheydes/vanijay-admin:latest \
+              npx prisma migrate deploy --config prisma.main.config.ts
 
             echo "Starting application containers..."
             # This recreates the app container with the new image
