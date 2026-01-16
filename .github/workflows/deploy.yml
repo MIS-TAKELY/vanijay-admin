@@ -92,20 +92,27 @@ jobs:
             echo "Connecting shared database to network..."
             docker network connect vanijay_network vanijay_buyer_seller_database || true
 
-            echo "Running Prisma migrations..."
+            # Load environment variables from .env if it exists
+            if [ -f .env ]; then
+              set -o allexport
+              source .env
+              set +o allexport
+            fi
+
+            echo "Running Prisma migrations (Admin DB)..."
             # We use the app image to run migrations because it contains the schema and prisma client
             docker run --rm \
               --network vanijay_network \
-              --env ADMIN_DATABASE_URL=postgresql://${ADMIN_DB_USER:-admin}:${ADMIN_DB_PASSWORD:-adminpassword}@vanijay_admin_database:5432/${ADMIN_DB_NAME:-vanijay_admin} \
-              --env DATABASE_URL=postgresql://${ADMIN_DB_USER:-admin}:${ADMIN_DB_PASSWORD:-adminpassword}@vanijay_buyer_seller_database:5432/${ADMIN_DB_NAME:-vanijay_buyer_seller} \
+              --env ADMIN_DATABASE_URL="$ADMIN_DATABASE_URL" \
+              --env DATABASE_URL="$DATABASE_URL" \
               ghcr.io/sachinsharma-lordheydes/vanijay-admin:latest \
               npx prisma migrate deploy --config prisma.config.ts
 
             echo "Running Shared Prisma migrations..."
             docker run --rm \
               --network vanijay_network \
-              --env ADMIN_DATABASE_URL=postgresql://${ADMIN_DB_USER:-admin}:${ADMIN_DB_PASSWORD:-adminpassword}@vanijay_admin_database:5432/${ADMIN_DB_NAME:-vanijay_admin} \
-              --env DATABASE_URL=postgresql://${ADMIN_DB_USER:-admin}:${ADMIN_DB_PASSWORD:-adminpassword}@vanijay_buyer_seller_database:5432/${ADMIN_DB_NAME:-vanijay_buyer_seller} \
+              --env ADMIN_DATABASE_URL="$ADMIN_DATABASE_URL" \
+              --env DATABASE_URL="$DATABASE_URL" \
               ghcr.io/sachinsharma-lordheydes/vanijay-admin:latest \
               npx prisma migrate deploy --config prisma.main.config.ts
 
