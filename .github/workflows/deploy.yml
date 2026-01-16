@@ -85,6 +85,8 @@ jobs:
             docker compose up -d admin_db
 
             echo "Waiting for database to be ready..."
+            until docker compose exec -T admin_db pg_isready -h localhost -p 5432; do
+              sleep 2
             done
 
             echo "Connecting shared database to network..."
