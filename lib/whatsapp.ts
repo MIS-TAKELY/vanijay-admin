@@ -1,13 +1,12 @@
 export async function sendWhatsAppOTP(phone: string, otp: string) {
     // Use the provided URL or fallback to environment variable
 
-    const WPP_CONNECT=process.env.WPP_CONNECT
-    const wppConnectUrl = WPP_CONNECT
-
-    if(!wppConnectUrl){
-        console.log("❌ WhatsApp API URL not found");
-        return;
+    const wppConnectUrl = process.env.WPP_CONNECT;
+    if (!wppConnectUrl) {
+        throw new Error("WhatsApp API URL (WPP_CONNECT) is not defined in environment variables");
     }
+
+    console.log("✅ WhatsApp API URL found:", wppConnectUrl);
 
     // Clean phone number: remove all non-digits
     const cleanPhone = phone.toString().replace(/\D/g, "");
