@@ -2,10 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: 'standalone',
-  // @ts-ignore
-  turbopack: {
-    root: '/home/mistakely/Desktop/project/dai/admin',
-  },
+
   images: {
     remotePatterns: [
       {
