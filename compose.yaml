@@ -13,6 +13,7 @@ services:
       # - NEXTAUTH_URL=${NEXTAUTH_URL}
       - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
       - BETTER_AUTH_URL=${BETTER_AUTH_URL}
+      - WPP_CONNECT=${WPP_CONNECT}
     restart: always
     networks:
       - vanijay_network
