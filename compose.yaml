@@ -11,6 +11,8 @@ services:
       - ADMIN_DATABASE_URL=${ADMIN_DATABASE_URL}
       # - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
       # - NEXTAUTH_URL=${NEXTAUTH_URL}
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
+      - BETTER_AUTH_URL=${BETTER_AUTH_URL}
     restart: always
     networks:
       - vanijay_network
