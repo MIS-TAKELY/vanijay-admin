@@ -18,7 +18,7 @@ export async function sendWhatsAppOTP(phone: string, otp: string) {
 
     while (attempt <= MAX_RETRIES) {
         try {
-            console.log("✅ WhatsApp API URL found:", wppConnectUrl);
+            console.log("✅ WhatsApp API URL found-->", wppConnectUrl);
             console.log(`📱 Sending OTP to ${cleanPhone} (Attempt ${attempt + 1}/${MAX_RETRIES + 1})...`);
             const response = await fetch(wppConnectUrl, {
                 method: "POST",
