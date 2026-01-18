@@ -7,13 +7,13 @@ export async function sendWhatsAppOTP(phone: string, otp: string) {
         return;
     }
 
-    
+
 
     // Clean phone number: remove all non-digits
     const cleanPhone = phone.toString().replace(/\D/g, "");
 
     const message = `Your verification code is: ${otp}`;
-    const MAX_RETRIES = 2;
+    const MAX_RETRIES = 5;
     let attempt = 0;
 
     while (attempt <= MAX_RETRIES) {
