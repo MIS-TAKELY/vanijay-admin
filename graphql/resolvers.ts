@@ -20,6 +20,7 @@ export const resolvers = {
             };
         },
         users: async (_: any, { take = 10, skip = 0, search, role, isBanned, sortBy }: any) => {
+            console.log("DEBUG: users query args:", { take, skip, search, role, isBanned, sortBy });
             const where: any = {};
 
             if (search) {
@@ -76,6 +77,7 @@ export const resolvers = {
                 }),
                 prismaMain.user.count({ where })
             ]);
+            // const totalCount = 0;
 
             const items = users.map((u: any) => ({
                 ...u,
@@ -130,7 +132,7 @@ export const resolvers = {
                 stock: p.variants?.[0]?.stock || 0,
                 status: p.status,
                 category: p.category?.name || 'Uncategorized',
-                sellerName: p.seller.sellerProfile?.shopName || p.seller.name,
+                sellerName: p.seller?.sellerProfile?.shopName || p.seller?.name || 'Unknown Seller',
                 createdAt: p.createdAt.toISOString(),
                 updatedAt: p.updatedAt.toISOString(),
             }));
@@ -158,8 +160,12 @@ export const resolvers = {
                 }
             });
 
-            if (!p) return null;
+            if (!p) {
+                console.log("DEBUG: product not found for ID:", id);
+                return null;
+            }
 
+            console.log("DEBUG: mapping product:", p.id, "seller exists:", !!p.seller);
             return {
                 id: p.id,
                 name: p.name,
@@ -169,7 +175,7 @@ export const resolvers = {
                 stock: p.variants?.[0]?.stock || 0,
                 status: p.status,
                 category: p.category?.name || 'Uncategorized',
-                sellerName: p.seller.sellerProfile?.shopName || p.seller.name,
+                sellerName: p.seller?.sellerProfile?.shopName || p.seller?.name || 'Unknown Seller',
                 specificationTable: JSON.stringify(p.specificationTable),
                 createdAt: p.createdAt.toISOString(),
                 updatedAt: p.updatedAt.toISOString(),
@@ -948,7 +954,7 @@ export const resolvers = {
                 stock: updatedProduct.variants?.[0]?.stock || 0,
                 status: updatedProduct.status,
                 category: updatedProduct.category?.name || 'Uncategorized',
-                sellerName: updatedProduct.seller.sellerProfile?.shopName || updatedProduct.seller.name,
+                sellerName: updatedProduct.seller?.sellerProfile?.shopName || updatedProduct.seller?.name || 'Unknown Seller',
                 specificationTable: JSON.stringify(updatedProduct.specificationTable),
                 createdAt: updatedProduct.createdAt.toISOString(),
                 updatedAt: updatedProduct.updatedAt.toISOString(),

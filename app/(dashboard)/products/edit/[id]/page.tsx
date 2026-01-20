@@ -76,23 +76,8 @@ const GET_CATEGORIES = gql`
       slug
       description
       parentId
+      parentName
       isActive
-      parent {
-        id
-        name
-        parent {
-          id
-          name
-        }
-      }
-      children {
-        id
-        name
-        children {
-          id
-          name
-        }
-      }
     }
   }
 `;

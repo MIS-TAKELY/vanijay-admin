@@ -209,6 +209,8 @@ export default function UsersPage() {
     const totalCount = data?.users?.totalCount || 0;
     const totalPages = Math.ceil(totalCount / pageSize);
 
+    console.log("user --->",users);
+
     const handleBanToggle = async (user: any) => {
         const promise = user.isBanned
             ? unbanUser({

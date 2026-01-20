@@ -58,6 +58,7 @@ ENV NODE_ENV=production
 # ENV NEXT_TELEMETRY_DISABLED=1
 
 # Install minimal runtime dependencies (openssl for Prisma compatibility)
+# Install minimal runtime dependencies (openssl for Prisma compatibility)
 # Alpine uses apk, not apt-get
 RUN apk add --no-cache openssl
 
@@ -76,13 +77,14 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/prisma.config.ts ./prisma.config.ts
 COPY --from=builder --chown=nextjs:nodejs /app/prisma.main.config.ts ./prisma.main.config.ts
+COPY --from=builder --chown=nextjs:nodejs /app/lib/generated ./lib/generated
 
 USER nextjs
 
 ENV HOME=/home/nextjs
 
-EXPOSE 3000
-ENV PORT=3000
+EXPOSE 3002
+ENV PORT=3002
 ENV HOSTNAME="0.0.0.0"
 
 CMD ["node", "server.js"]

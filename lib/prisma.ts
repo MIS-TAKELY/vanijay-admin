@@ -1,19 +1,16 @@
+import { Pool } from 'pg';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
 import { PrismaClient as PrismaClientMain } from './generated/client-main';
 
-import { Pool } from 'pg';
-import { PrismaPg } from '@prisma/adapter-pg';
-
 const prismaClientSingleton = () => {
-    const connectionString = process.env.ADMIN_DATABASE_URL;
-    const pool = new Pool({ connectionString });
+    const pool = new Pool({ connectionString: process.env.ADMIN_DATABASE_URL });
     const adapter = new PrismaPg(pool);
     return new PrismaClient({ adapter });
 };
 
 const prismaMainClientSingleton = () => {
-    const connectionString = process.env.DATABASE_URL;
-    const pool = new Pool({ connectionString });
+    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
     const adapter = new PrismaPg(pool);
     return new PrismaClientMain({ adapter });
 };

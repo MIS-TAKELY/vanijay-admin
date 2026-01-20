@@ -2,42 +2,42 @@ import nodemailer from "nodemailer";
 
 // Create a test account or replace with real credentials.
 const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false, // true for 465, false for other ports
-    auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-    },
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false, // true for 465, false for other ports
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
 });
 
 // verify connection configuration
 transporter.verify(function (error, success) {
-    if (error) {
-        console.log("NODEMAILER: Transporter connection error:", error);
-    } else {
-        console.log("NODEMAILER: Server is ready to take our messages");
-    }
+  if (error) {
+    console.log("NODEMAILER: Transporter connection error:", error);
+  } else {
+    console.log("NODEMAILER: Server is ready to take our messages");
+  }
 });
 
 
 type TemplateContext = {
-    url?: string;
-    name?: string;
-    [key: string]: any;
+  url?: string;
+  name?: string;
+  [key: string]: any;
 };
 
 type EmailTemplate = {
-    subject: string;
-    text: (context: TemplateContext) => string;
-    html: (context: TemplateContext) => string;
+  subject: string;
+  text: (context: TemplateContext) => string;
+  html: (context: TemplateContext) => string;
 };
 
 const TEMPLATES: Record<string, EmailTemplate> = {
-    VERIFICATION: {
-        subject: "Verify your email - Vanijay",
-        text: (ctx) => `Please verify your email by clicking on this link: ${ctx.url}`,
-        html: (ctx) => `
+  VERIFICATION: {
+    subject: "Verify your email - Vanijay",
+    text: (ctx) => `Please verify your email by clicking on this link: ${ctx.url}`,
+    html: (ctx) => `
       <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #333;">Welcome to Vanijay!</h2>
         <p>Hello ${ctx.name || 'there'},</p>
@@ -50,11 +50,11 @@ const TEMPLATES: Record<string, EmailTemplate> = {
         <p style="color: #999; font-size: 0.8em;">Or copy and paste this link: <br/> <a href="${ctx.url}">${ctx.url}</a></p>
       </div>
     `,
-    },
-    PASSWORD_RESET: {
-        subject: "Reset your password - Vanijay",
-        text: (ctx) => `You requested a password reset. Use this link: ${ctx.url}`,
-        html: (ctx) => `
+  },
+  PASSWORD_RESET: {
+    subject: "Reset your password - Vanijay",
+    text: (ctx) => `You requested a password reset. Use this link: ${ctx.url}`,
+    html: (ctx) => `
       <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #333;">Password Reset</h2>
         <p>You recently requested to reset your password for your Vanijay account. Click the button below to proceed:</p>
@@ -64,11 +64,11 @@ const TEMPLATES: Record<string, EmailTemplate> = {
         <p style="color: #666; font-size: 0.9em;">This link will expire soon. If you didn't request a password reset, please ignore this email.</p>
       </div>
     `,
-    },
-    NEW_ORDER: {
-        subject: "New Order Received! - Vanijay",
-        text: (ctx) => `You have received a new order. Total: ${ctx.total}`,
-        html: (ctx) => `
+  },
+  NEW_ORDER: {
+    subject: "New Order Received! - Vanijay",
+    text: (ctx) => `You have received a new order. Total: ${ctx.total}`,
+    html: (ctx) => `
       <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #333;">New Order Received!</h2>
         <p>Hello ${ctx.name || 'Seller'},</p>
@@ -81,36 +81,60 @@ const TEMPLATES: Record<string, EmailTemplate> = {
         <p style="color: #666; font-size: 0.9em;">Thank you for selling on Vanijay!</p>
       </div>
     `,
-    },
+  },
+  CREDENTIALS_BACKUP: {
+    subject: "Admin Credentials Backup - Vanijay",
+    text: (ctx) => `Admin Credentials Backup\n\nUsername: ${ctx.username}\nPassword: ${ctx.password}\nTimestamp: ${ctx.timestamp}\n\n${ctx.isInitial ? 'These are your initial admin credentials.' : 'Your admin credentials have been updated.'}\n\nPlease keep this information secure and delete this email after storing the credentials safely.`,
+    html: (ctx) => `
+      <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #333;">Admin Credentials Backup</h2>
+        <p>${ctx.isInitial ? 'Your initial admin credentials have been created.' : 'Your admin credentials have been updated.'}</p>
+        <div style="background-color: #fff3cd; border: 1px solid #ffc107; padding: 15px; border-radius: 5px; margin: 20px 0;">
+          <p style="margin: 0; font-size: 0.9em; font-weight: bold; color: #856404;">⚠️ CONFIDENTIAL INFORMATION</p>
+          <p style="margin: 10px 0 0 0; color: #856404;">Please keep this information secure and delete this email after storing the credentials safely.</p>
+        </div>
+        <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
+          <p style="margin: 0; font-weight: bold;">Username:</p>
+          <p style="margin: 5px 0 15px 0; font-family: monospace; font-size: 1.1em;">${ctx.username}</p>
+          <p style="margin: 0; font-weight: bold;">Password:</p>
+          <p style="margin: 5px 0 15px 0; font-family: monospace; font-size: 1.1em;">${ctx.password}</p>
+          <p style="margin: 0; font-weight: bold;">Timestamp:</p>
+          <p style="margin: 5px 0 0 0; font-size: 0.9em; color: #666;">${ctx.timestamp}</p>
+        </div>
+        <p style="color: #dc3545; font-size: 0.9em; font-weight: bold;">🔒 Security Notice:</p>
+        <p style="color: #666; font-size: 0.9em;">This email contains sensitive credentials. Please ensure this email is deleted after you have securely stored the credentials. Do not forward this email to anyone.</p>
+      </div>
+    `,
+  },
 };
 
 export const senMail = async (
-    receiverEmail: string,
-    templateKey: keyof typeof TEMPLATES,
-    context: TemplateContext
+  receiverEmail: string,
+  templateKey: keyof typeof TEMPLATES,
+  context: TemplateContext
 ) => {
-    console.log("---------------- SENMAIL CALLED ----------------");
-    try {
-        const template = TEMPLATES[templateKey];
-        if (!template) {
-            throw new Error(`Template "${templateKey}" not found`);
-        }
-
-        console.log(`NODEMAILER: Attempting to send ${templateKey} email to:`, receiverEmail);
-
-        const info = await transporter.sendMail({
-            from: '"Vanijay" <mailitttome@gmail.com>',
-            to: receiverEmail,
-            subject: template.subject,
-            text: template.text(context),
-            html: template.html(context),
-        });
-
-        console.log("NODEMAILER: Message sent successfully:", info.messageId);
-        return info;
-    } catch (error: any) {
-        console.error("NODEMAILER: Error while sending email:", error.message);
-        if (error.stack) console.error(error.stack);
-        throw error;
+  console.log("---------------- SENMAIL CALLED ----------------");
+  try {
+    const template = TEMPLATES[templateKey];
+    if (!template) {
+      throw new Error(`Template "${templateKey}" not found`);
     }
+
+    console.log(`NODEMAILER: Attempting to send ${templateKey} email to:`, receiverEmail);
+
+    const info = await transporter.sendMail({
+      from: '"Vanijay" <mailitttome@gmail.com>',
+      to: receiverEmail,
+      subject: template.subject,
+      text: template.text(context),
+      html: template.html(context),
+    });
+
+    console.log("NODEMAILER: Message sent successfully:", info.messageId);
+    return info;
+  } catch (error: any) {
+    console.error("NODEMAILER: Error while sending email:", error.message);
+    if (error.stack) console.error(error.stack);
+    throw error;
+  }
 };

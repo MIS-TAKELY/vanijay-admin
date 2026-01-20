@@ -1,15 +1,15 @@
 generator client {
   provider        = "prisma-client-js"
   output          = "../app/generated/prisma"
-  previewFeatures = ["postgresqlExtensions"]
   binaryTargets   = ["native", "windows", "rhel-openssl-3.0.x"]
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 generator clientAdmin {
   provider        = "prisma-client-js"
   output          = "../../admin/lib/generated/prisma-buyer"
-  previewFeatures = ["postgresqlExtensions"]
   binaryTargets   = ["native", "windows", "rhel-openssl-3.0.x"]
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
@@ -368,36 +368,37 @@ model ReturnPolicy {
 }
 
 model Product {
-  id                 String                 @id @default(cuid())
-  sellerId           String
-  name               String
-  slug               String                 @unique
-  description        String?
-  features           String[]
-  status             ProductStatus          @default(INACTIVE)
-  specificationTable Json?
-  createdAt          DateTime               @default(now())
-  updatedAt          DateTime               @updatedAt
-  categoryId         String?
-  brand              String
-  embedding          Unsupported("vector")?
-  keywords           String[]
-  metaDescription    String?
-  metaTitle          String?
-  Conversation       Conversation[]
-  deliveryOptions    DeliveryOption[]
-  images             ProductImage[]
-  notifications      ProductNotification[]  @relation("ProductNotifications")
-  productOffers      ProductOffer[]
-  questions          ProductQuestion[]
-  variants           ProductVariant[]
-  category           Category?              @relation(fields: [categoryId], references: [id])
-  seller             User                   @relation("SellerProducts", fields: [sellerId], references: [id], onDelete: Cascade)
-  recentlyViewed     RecentlyViewed[]
-  returnPolicy       ReturnPolicy[]
-  reviews            Review[]
-  warranty           Warranty[]
-  wishlistItems      WishlistItem[]
+  id                         String                 @id @default(cuid())
+  sellerId                   String
+  name                       String
+  slug                       String                 @unique
+  description                String?
+  features                   String[]
+  status                     ProductStatus          @default(INACTIVE)
+  specificationTable         Json?
+  specificationDisplayFormat String                 @default("bullet")
+  createdAt                  DateTime               @default(now())
+  updatedAt                  DateTime               @updatedAt
+  categoryId                 String?
+  brand                      String
+  embedding                  Unsupported("vector")?
+  keywords                   String[]
+  metaDescription            String?
+  metaTitle                  String?
+  Conversation               Conversation[]
+  deliveryOptions            DeliveryOption[]
+  images                     ProductImage[]
+  notifications              ProductNotification[]  @relation("ProductNotifications")
+  productOffers              ProductOffer[]
+  questions                  ProductQuestion[]
+  variants                   ProductVariant[]
+  category                   Category?              @relation(fields: [categoryId], references: [id])
+  seller                     User                   @relation("SellerProducts", fields: [sellerId], references: [id], onDelete: Cascade)
+  recentlyViewed             RecentlyViewed[]
+  returnPolicy               ReturnPolicy[]
+  reviews                    Review[]
+  warranty                   Warranty[]
+  wishlistItems              WishlistItem[]
 
   @@index([slug, sellerId])
   @@map("products")

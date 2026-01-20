@@ -113,6 +113,7 @@ export interface Product extends BaseEntity {
   returnPolicy?: ReturnPolicy[];
   features?: string[];
   specificationTable?: any;
+  specificationDisplayFormat?: string;
   isFragile?: boolean;
   noInternationalShipping?: boolean;
   restrictedStates?: string[];

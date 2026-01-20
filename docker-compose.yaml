@@ -4,19 +4,35 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    image: ghcr.io/sachinsharma-lordheydes/vanijay-admin:latest
     ports:
-      - "3002:3000"
+      - "3002:3002"
     environment:
       - DATABASE_URL=${DATABASE_URL}
-      - ADMIN_DATABASE_URL=${ADMIN_DATABASE_URL}
+      - ADMIN_DATABASE_URL=postgresql://${ADMIN_DB_USER:-admin}:${ADMIN_DB_PASSWORD:-adminpassword}@admin_db:5432/${ADMIN_DB_NAME:-vanijay_admin}
       # - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
       # - NEXTAUTH_URL=${NEXTAUTH_URL}
       - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
       - BETTER_AUTH_URL=${BETTER_AUTH_URL}
+      - NEXT_PUBLIC_BETTER_AUTH_URL=${BETTER_AUTH_URL}
       - WPP_CONNECT=${WPP_CONNECT}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - UPSTASH_REDIS_REST_URL=${UPSTASH_REDIS_REST_URL}
+      - UPSTASH_REDIS_REST_TOKEN=${UPSTASH_REDIS_REST_TOKEN}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      - FACEBOOK_CLIENT_ID=${FACEBOOK_CLIENT_ID}
+      - FACEBOOK_CLIENT_SECRET=${FACEBOOK_CLIENT_SECRET}
+      - TIKTOK_CLIENT_SECRET=${TIKTOK_CLIENT_SECRET}
+      - TIKTOK_CLIENT_ID=${TIKTOK_CLIENT_KEY}
+      - DEBUG=prisma:*
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     restart: always
     networks:
       - vanijay_network
+      - vanijay-network
     depends_on:
       - admin_db
 
@@ -40,3 +56,6 @@ volumes:
 networks:
   vanijay_network:
     name: vanijay_network
+  vanijay-network:
+    external: true
+    name: vanijay-network
