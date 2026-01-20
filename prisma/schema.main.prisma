@@ -57,7 +57,7 @@ model User {
   wishlists               Wishlist[]
   role                    String                    @default("USER")
   logs                    SystemLog[]
-
+  @@map("user")
   @@index([email])
 }
 
