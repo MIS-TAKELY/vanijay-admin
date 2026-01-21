@@ -6,7 +6,8 @@ import sharp from "sharp";
 async function uploadBufferToCloudinary(
     buffer: Buffer,
     folder: string = "admin",
-    filename?: string
+    filename?: string,
+    mimeType: string = "image/webp"
 ): Promise<any> {
     const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
     const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
@@ -16,8 +17,8 @@ async function uploadBufferToCloudinary(
     }
 
     const formData = new FormData();
-    const blob = new Blob([buffer as any], { type: "image/webp" });
-    formData.append("file", blob, filename || "image.webp");
+    const blob = new Blob([buffer as any], { type: mimeType });
+    formData.append("file", blob, filename || "image");
     formData.append("upload_preset", uploadPreset);
     if (folder) formData.append("folder", folder);
 
@@ -52,41 +53,53 @@ export async function POST(req: NextRequest) {
         }
 
         const buffer = Buffer.from(await file.arrayBuffer());
-        let processedBuffer = buffer;
+        let processedBuffer: Buffer;
+        let contentType: string;
 
-        // Sharp Optimization Logic
-        const image = sharp(buffer);
+        // Check file size (200KB = 200 * 1024 bytes = 204800 bytes)
+        const isSmallFile = buffer.length <= 200 * 1024;
 
-        // Default to converting to WebP for optimization
-        let sharpInstance = image.webp({ quality: 80 });
+        if (isSmallFile) {
+            // Skip compression for small files
+            processedBuffer = buffer;
+            contentType = file.type || "image/webp";
+        } else {
+            // Sharp Optimization Logic
+            const image = sharp(buffer);
 
-        if (type === "banner") {
-            // Banners: 1920x600 (Landscape)
-            sharpInstance = sharpInstance.resize(1920, 600, {
-                fit: "cover",
-                position: "center",
-            });
-        } else if (type === "category") {
-            // Categories: 500x500 (Square)
-            sharpInstance = sharpInstance.resize(500, 500, {
-                fit: "cover",
-                position: "center",
-            });
-        } else if (type === "product") {
-            // Fallback or explicit product upload in admin
-            sharpInstance = sharpInstance.resize(1080, 1080, {
-                fit: "cover",
-                position: "center",
-            });
+            // Default to converting to WebP for optimization
+            let sharpInstance = image.webp({ quality: 80 });
+
+            if (type === "banner") {
+                // Banners: 1920x600 (Landscape)
+                sharpInstance = sharpInstance.resize(1920, 600, {
+                    fit: "cover",
+                    position: "center",
+                });
+            } else if (type === "category") {
+                // Categories: 500x500 (Square)
+                sharpInstance = sharpInstance.resize(500, 500, {
+                    fit: "cover",
+                    position: "center",
+                });
+            } else if (type === "product") {
+                // Fallback or explicit product upload in admin
+                sharpInstance = sharpInstance.resize(1080, 1080, {
+                    fit: "cover",
+                    position: "center",
+                });
+            }
+
+            processedBuffer = await sharpInstance.toBuffer();
+            contentType = "image/webp";
         }
-
-        processedBuffer = await sharpInstance.toBuffer();
 
         // Upload to Cloudinary
         const result = await uploadBufferToCloudinary(
-            processedBuffer as any,
+            processedBuffer,
             "admin",
-            file.name
+            file.name,
+            contentType
         );
 
         return NextResponse.json({
