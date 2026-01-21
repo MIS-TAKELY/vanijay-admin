@@ -45,6 +45,8 @@ model SystemLog {
   createdAt DateTime @default(now())
   
   admin     User    @relation(fields: [adminId], references: [id])
+
+  @@map("system_log")
 }
 
 model Session {
