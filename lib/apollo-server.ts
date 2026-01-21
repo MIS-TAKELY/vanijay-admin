@@ -9,7 +9,7 @@ export function getServerClient() {
 
     return new ApolloClient({
         link: new HttpLink({
-            uri,
+            uri: uri || '/api/graphql', // Final fallback
             fetch,
         }),
         cache: new InMemoryCache(),

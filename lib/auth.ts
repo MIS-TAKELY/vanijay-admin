@@ -57,8 +57,9 @@ export const auth = betterAuth({
             },
         }
     },
-    baseURL: process.env.BETTER_AUTH_URL,
+    baseURL: process.env.BETTER_AUTH_URL || (process.env.NODE_ENV === 'development' ? "http://localhost:3002" : undefined),
     trustedOrigins: [
+        ...(process.env.BETTER_AUTH_URL ? [process.env.BETTER_AUTH_URL] : []),
         ...(process.env.TRUSTED_ORIGINS ? process.env.TRUSTED_ORIGINS.split(',') : []),
     ]
 });
