@@ -33,6 +33,8 @@ model User {
   logs      SystemLog[]
   sessions  Session[]
   accounts  Account[]
+
+  @@map("user")
 }
 
 model SystemLog {
