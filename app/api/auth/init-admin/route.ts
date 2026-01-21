@@ -38,7 +38,8 @@ export async function POST(request: NextRequest) {
         }
 
         // Use better-auth's signup endpoint to create user with properly hashed password
-        const signupResponse = await fetch('http://localhost:3002/api/auth/sign-up/email', {
+        const authBaseUrl = process.env.BETTER_AUTH_URL?.replace(/\/$/, '') || 'http://localhost:3002'; // Fallback for local dev if not set
+        const signupResponse = await fetch(`${authBaseUrl}/api/auth/sign-up/email`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

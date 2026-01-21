@@ -57,10 +57,8 @@ export const auth = betterAuth({
             },
         }
     },
-    baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3002",
+    baseURL: process.env.BETTER_AUTH_URL,
     trustedOrigins: [
-        "http://localhost:3002",
-        "http://localhost:3001",
-        "https://prashasana.vanijay.com"
+        ...(process.env.TRUSTED_ORIGINS ? process.env.TRUSTED_ORIGINS.split(',') : []),
     ]
 });

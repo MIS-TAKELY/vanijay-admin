@@ -26,6 +26,8 @@ services:
       - FACEBOOK_CLIENT_SECRET=${FACEBOOK_CLIENT_SECRET}
       - TIKTOK_CLIENT_SECRET=${TIKTOK_CLIENT_SECRET}
       - TIKTOK_CLIENT_ID=${TIKTOK_CLIENT_KEY}
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+      - TRUSTED_ORIGINS=${TRUSTED_ORIGINS}
       - DEBUG=prisma:*
     extra_hosts:
       - "host.docker.internal:host-gateway"
