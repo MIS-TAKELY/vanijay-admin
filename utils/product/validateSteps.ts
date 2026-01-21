@@ -96,9 +96,9 @@ export const buildProductInput = (
       price: parseFloat(v.price) || 0,
       mrp: parseFloat(v.mrp) || parseFloat(v.price) || 0,
       stock: parseInt(String(v.stock), 10) || 0,
-      attributes: v.attributes, // Pass as object, not stringified
+      attributes: v.attributes ? JSON.stringify(v.attributes) : undefined,
       isDefault: v.isDefault,
-      specificationTable: v.specificationTable,
+      specificationTable: v.specificationTable ? JSON.stringify(v.specificationTable) : undefined,
     }));
   } else {
     // Create single variant for simple product
@@ -112,9 +112,9 @@ export const buildProductInput = (
         price: parseFloat(formData.price) || 0,
         mrp: parseFloat(formData.mrp) || parseFloat(formData.price) || 0,
         stock: parseInt(String(formData.stock), 10) || 0,
-        attributes: {}, // Empty object for simple products
+        attributes: JSON.stringify({}), // Empty object as stringified JSON
         isDefault: true,
-        specificationTable: formData.specificationTable,
+        specificationTable: formData.specificationTable ? JSON.stringify(formData.specificationTable) : undefined,
       },
     ];
   }
@@ -129,7 +129,7 @@ export const buildProductInput = (
       formData.subSubcategory || formData.subcategory || formData.categoryId,
     brand: formData.brand || "Generic",
     status: formData.status,
-    specificationTable: formData.specificationTable,
+    specificationTable: formData.specificationTable ? JSON.stringify(formData.specificationTable) : undefined,
     specificationDisplayFormat: formData.specificationDisplayFormat,
 
     variants: apiVariants,

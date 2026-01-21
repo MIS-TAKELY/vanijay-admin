@@ -19,10 +19,10 @@ export interface ICreateProductVariantInput {
   price: number;
   mrp?: number;
   stock: number;
-  attributes?: Record<string, any>;
+  attributes?: Record<string, any> | string;
   isDefault?: boolean;
   specifications?: Array<{ key: string; value: string }>;
-  specificationTable?: any;
+  specificationTable?: string | any;
 }
 
 export interface ICreateProductInput {

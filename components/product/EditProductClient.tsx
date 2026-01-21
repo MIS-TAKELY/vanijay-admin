@@ -39,48 +39,7 @@ export default function EditProductClient({ product, categories }: any) {
             await updateProduct({
                 variables: {
                     id: product.id,
-                    input: {
-                        name: input.name,
-                        brand: input.brand,
-                        description: input.description,
-                        categoryId: input.categoryId,
-                        status: input.status,
-                        specificationTable: input.specificationTable ? JSON.stringify(input.specificationTable) : undefined,
-                        variants: input.variants?.map((v: any) => ({
-                            id: v.id,
-                            sku: v.sku,
-                            price: v.price,
-                            mrp: v.mrp,
-                            stock: v.stock,
-                            isDefault: v.isDefault,
-                            attributes: v.attributes ? JSON.stringify(v.attributes) : undefined,
-                            specificationTable: v.specificationTable ? JSON.stringify(v.specificationTable) : undefined,
-                        })),
-                        images: input.images?.map((img: any, index: number) => ({
-                            url: img.url,
-                            altText: img.altText || "",
-                            mediaType: img.mediaType,
-                            fileType: img.fileType,
-                            sortOrder: index,
-                        })),
-                        deliveryOptions: input.deliveryOptions?.map((opt: any) => ({
-                            title: opt.title,
-                            description: opt.description,
-                            isDefault: opt.isDefault,
-                        })),
-                        warranty: input.warranty?.map((w: any) => ({
-                            type: w.type,
-                            duration: w.duration,
-                            unit: w.unit,
-                            description: w.description,
-                        })),
-                        returnPolicy: input.returnPolicy?.map((rp: any) => ({
-                            type: rp.type,
-                            duration: rp.duration,
-                            unit: rp.unit,
-                            conditions: rp.conditions,
-                        })),
-                    },
+                    input: input,
                 },
             });
         } catch (error) {

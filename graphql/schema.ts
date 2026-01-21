@@ -69,6 +69,7 @@ export const typeDefs = `
     variants: [ProductVariant]
     images: [ProductImage]
     specificationTable: String # JSON string
+    specificationDisplayFormat: String
     deliveryOptions: [DeliveryOption]
     warranty: [Warranty]
     returnPolicy: [ReturnPolicy]
@@ -295,6 +296,7 @@ export const typeDefs = `
     categoryId: String
     status: String
     specificationTable: String
+    specificationDisplayFormat: String
     variants: [UpdateProductVariantInput]
     images: [UpdateProductImageInput]
     deliveryOptions: [UpdateDeliveryOptionInput]

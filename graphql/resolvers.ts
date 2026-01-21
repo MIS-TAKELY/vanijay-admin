@@ -133,6 +133,8 @@ export const resolvers = {
                 status: p.status,
                 category: p.category?.name || 'Uncategorized',
                 sellerName: p.seller?.sellerProfile?.shopName || p.seller?.name || 'Unknown Seller',
+                specificationTable: JSON.stringify(p.specificationTable),
+                specificationDisplayFormat: p.specificationDisplayFormat,
                 createdAt: p.createdAt.toISOString(),
                 updatedAt: p.updatedAt.toISOString(),
             }));
@@ -177,6 +179,7 @@ export const resolvers = {
                 category: p.category?.name || 'Uncategorized',
                 sellerName: p.seller?.sellerProfile?.shopName || p.seller?.name || 'Unknown Seller',
                 specificationTable: JSON.stringify(p.specificationTable),
+                specificationDisplayFormat: p.specificationDisplayFormat,
                 createdAt: p.createdAt.toISOString(),
                 updatedAt: p.updatedAt.toISOString(),
                 images: p.images.map((img: any) => ({
@@ -809,6 +812,7 @@ export const resolvers = {
                 categoryId,
                 status,
                 specificationTable,
+                specificationDisplayFormat,
                 variants,
                 images,
                 deliveryOptions,
@@ -817,6 +821,11 @@ export const resolvers = {
             } = input;
 
             const updatedProduct = await prismaMain.$transaction(async (tx) => {
+                const safeParse = (str: any) => {
+                    if (typeof str !== 'string' || !str) return undefined;
+                    try { return JSON.parse(str); } catch (e) { return undefined; }
+                };
+
                 // Update basic fields
                 await tx.product.update({
                     where: { id },
@@ -826,7 +835,8 @@ export const resolvers = {
                         ...(description && { description }),
                         ...(categoryId && { categoryId }),
                         ...(status && { status: status as any }),
-                        ...(specificationTable && { specificationTable: JSON.parse(specificationTable) }),
+                        ...(specificationTable && { specificationTable: safeParse(specificationTable) }),
+                        ...(specificationDisplayFormat && { specificationDisplayFormat }),
                     }
                 });
 
@@ -887,8 +897,8 @@ export const resolvers = {
                             mrp: v.mrp,
                             stock: v.stock,
                             isDefault: v.isDefault,
-                            attributes: v.attributes ? JSON.parse(v.attributes) : undefined,
-                            specificationTable: v.specificationTable ? JSON.parse(v.specificationTable) : undefined,
+                            attributes: safeParse(v.attributes),
+                            specificationTable: safeParse(v.specificationTable),
                         };
 
                         if (v.id) {
@@ -956,6 +966,7 @@ export const resolvers = {
                 category: updatedProduct.category?.name || 'Uncategorized',
                 sellerName: updatedProduct.seller?.sellerProfile?.shopName || updatedProduct.seller?.name || 'Unknown Seller',
                 specificationTable: JSON.stringify(updatedProduct.specificationTable),
+                specificationDisplayFormat: updatedProduct.specificationDisplayFormat,
                 createdAt: updatedProduct.createdAt.toISOString(),
                 updatedAt: updatedProduct.updatedAt.toISOString(),
                 images: updatedProduct.images.map((img: any) => ({
