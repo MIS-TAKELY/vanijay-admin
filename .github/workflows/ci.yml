@@ -1,0 +1,10 @@
+name: Linting
+
+on:
+  push:
+    branches-ignore:
+      - 'main'
+
+jobs:
+  lint:
+    uses: ./.github/workflows/reusable-lint.yml
