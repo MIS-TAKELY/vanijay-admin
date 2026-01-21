@@ -154,7 +154,7 @@ export default function CategoryCardsManager({ cards, refetch }: Props) {
             if (imageFiles.length > 0 && imageFiles[0].file) {
                 setIsUploading(true);
                 try {
-                    const result = await uploadToCloudinary(imageFiles[0].file);
+                    const result = await uploadToCloudinary(imageFiles[0].file, "category");
                     imageUrl = result.url;
                 } catch (error) {
                     console.error("Upload failed:", error);
@@ -356,6 +356,7 @@ export default function CategoryCardsManager({ cards, refetch }: Props) {
                                         onChange={setImageFiles}
                                         maxFiles={1}
                                     />
+                                    <p className="text-xs text-muted-foreground mt-1">Recommended: Square (500x500px)</p>
 
                                     <div className="relative">
                                         <div className="absolute inset-0 flex items-center">

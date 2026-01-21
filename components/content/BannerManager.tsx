@@ -136,7 +136,7 @@ export default function BannerManager({ banners, refetch }: Props) {
                 try {
                     const file = imageFiles[0].file;
                     const resourceType = file.type.startsWith("video/") ? "video" : "image";
-                    const result = await uploadToCloudinary(file, resourceType);
+                    const result = await uploadToCloudinary(file, resourceType === "image" ? "banner" : "auto");
                     imageUrl = result.url;
                     mediaType = resourceType === "video" ? "VIDEO" : "IMAGE";
                 } catch (error) {
@@ -333,6 +333,7 @@ export default function BannerManager({ banners, refetch }: Props) {
                                 maxFiles={1}
                                 allowVideo={true}
                             />
+                            <p className="text-xs text-muted-foreground mt-1">Recommended: Landscape (1920x600px)</p>
 
                             <div className="relative my-2">
                                 <div className="absolute inset-0 flex items-center">

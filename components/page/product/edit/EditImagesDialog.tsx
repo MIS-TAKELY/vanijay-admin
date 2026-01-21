@@ -79,7 +79,7 @@ export default function EditImagesDialog({ product, open, onOpenChange, onSucces
                 return Promise.all(files.map(async (fileItem) => {
                     if (fileItem.file) {
                         // New file, needs upload
-                        const result = await uploadToCloudinary(fileItem.file);
+                        const result = await uploadToCloudinary(fileItem.file, fileItem.file.type.startsWith("image/") ? "product" : "auto");
                         return {
                             url: result.url,
                             type: fileItem.file.type.startsWith("video/") ? "VIDEO" : "IMAGE",
@@ -152,7 +152,7 @@ export default function EditImagesDialog({ product, open, onOpenChange, onSucces
                     <div className="space-y-2">
                         <h3 className="font-medium text-sm text-foreground">Primary Images</h3>
                         <p className="text-xs text-muted-foreground mb-2">
-                            These images appear in the main product gallery. The first image is the main display image.
+                            These images appear in the main product gallery. The first image is the main display image. Recommended: Square (1080x1080px).
                         </p>
                         <FileUpload
                             value={primaryFiles}
