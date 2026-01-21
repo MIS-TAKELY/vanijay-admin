@@ -565,39 +565,25 @@ export const resolvers = {
         },
         // Landing Page Content Management Queries
         getLandingPageCategoryCards: async () => {
-            const cards = await prisma.landingPageCategoryCard.findMany({
+            const cards = await prismaMain.landingPageCategoryCard.findMany({
                 where: { isActive: true },
-                // @ts-ignore - category might need to be fetched differently if it's in another DB, but schema says it has a specialized relation? 
-                // Wait, schema.prisma LandingPageCategoryCard has `categoryId` String. It does NOT have a relation to `Category` model because Category is in schema.main.prisma (different DB).
-                // So include: { category: ... } will FAIL if not cross-db relation or handled manually.
-                // The schema in schema.prisma has `// count removed, will be calculated dynamically`
-                // But NO `category` relation field defined in line 98-111 of `schema.prisma`.
-                // So the query `include: { category: ... }` is INVALID for `prisma`.
-                // I need to fetch categories separately from `prismaMain`.
+                include: { category: { select: { name: true, _count: { select: { products: true } } } } },
                 orderBy: { sortOrder: 'asc' }
             });
 
-            // We need to manualy join.
-            const categoryIds = cards.map(c => c.categoryId);
-            const categories = await prismaMain.category.findMany({
-                where: { id: { in: categoryIds } },
-                include: { _count: { select: { products: true } } }
-            });
-            const categoryMap = new Map(categories.map(c => [c.id, c]));
-
-            return cards.map(card => {
-                const cat = categoryMap.get(card.categoryId);
-                return {
-                    ...card,
-                    categoryName: cat?.name || 'Unknown',
-                    count: `${cat?._count?.products || 0}+ items`,
-                    createdAt: card.createdAt.toISOString(),
-                    updatedAt: card.updatedAt.toISOString()
-                }
-            });
+            return cards.map((card: any) => ({
+                ...card,
+                categoryName: card.category?.name || 'Unknown',
+                count: `${card.category?._count?.products || 0}+ items`,
+                createdAt: card.createdAt.toISOString(),
+                updatedAt: card.updatedAt.toISOString()
+            }));
         },
+
+
+
         getLandingPageCategorySwipers: async () => {
-            const swipers = await prisma.landingPageCategorySwiper.findMany({
+            const swipers = await prismaMain.landingPageCategorySwiper.findMany({
                 where: { isActive: true },
                 orderBy: { sortOrder: 'asc' }
             });
@@ -608,7 +594,7 @@ export const resolvers = {
             }));
         },
         getLandingPageProductGrids: async () => {
-            const grids = await prisma.landingPageProductGrid.findMany({
+            const grids = await prismaMain.landingPageProductGrid.findMany({
                 where: { isActive: true },
                 orderBy: { sortOrder: 'asc' }
             });
@@ -619,17 +605,14 @@ export const resolvers = {
             }));
         },
         getLandingPageBanners: async () => {
-            return [];
-            /*
-           const banners = await prismaBuyer.landingPageBanner.findMany({
-               orderBy: { sortOrder: 'asc' }
-           });
-           return banners.map((b) => ({
-               ...b,
-               createdAt: b.createdAt.toISOString(),
-               updatedAt: b.updatedAt.toISOString()
-           }));
-           */
+            const banners = await prismaMain.landingPageBanner.findMany({
+                orderBy: { sortOrder: 'asc' }
+            });
+            return banners.map((b: any) => ({
+                ...b,
+                createdAt: b.createdAt.toISOString(),
+                updatedAt: b.updatedAt.toISOString()
+            }));
         }
     },
     Mutation: {
@@ -1219,53 +1202,40 @@ export const resolvers = {
         },
         // Landing Page Content Management Mutations
         createCategoryCard: async (_: any, { input }: { input: any }) => {
-            const card = await prisma.landingPageCategoryCard.create({
-                data: input
-            });
-
-            const category = await prismaMain.category.findUnique({
-                where: { id: input.categoryId },
-                include: { _count: { select: { products: true } } }
+            const card = await prismaMain.landingPageCategoryCard.create({
+                data: input,
+                include: { category: { select: { name: true, _count: { select: { products: true } } } } }
             });
 
             return {
                 ...card,
-                categoryName: category?.name || 'Unknown',
-                count: `${category?._count?.products || 0}+ items`,
+                categoryName: card.category?.name || 'Unknown',
+                count: `${card.category?._count?.products || 0}+ items`,
                 createdAt: card.createdAt.toISOString(),
                 updatedAt: card.updatedAt.toISOString()
             };
         },
         updateCategoryCard: async (_: any, { id, input }: { id: string, input: any }) => {
-            const card = await prisma.landingPageCategoryCard.update({
+            const card = await prismaMain.landingPageCategoryCard.update({
                 where: { id },
-                data: input
-            });
-
-            // If categoryId changed, we need the new one, else the existing one.
-            // But input might not have categoryId if only other fields updated.
-            // We need to fetch the card again or rely on what we have.
-            // The card object has the current categoryId.
-
-            const category = await prismaMain.category.findUnique({
-                where: { id: card.categoryId },
-                include: { _count: { select: { products: true } } }
+                data: input,
+                include: { category: { select: { name: true, _count: { select: { products: true } } } } }
             });
 
             return {
                 ...card,
-                categoryName: category?.name || 'Unknown',
-                count: `${category?._count?.products || 0}+ items`,
+                categoryName: card.category?.name || 'Unknown',
+                count: `${card.category?._count?.products || 0}+ items`,
                 createdAt: card.createdAt.toISOString(),
                 updatedAt: card.updatedAt.toISOString()
             };
         },
         deleteCategoryCard: async (_: any, { id }: { id: string }) => {
-            await prisma.landingPageCategoryCard.delete({ where: { id } });
+            await prismaMain.landingPageCategoryCard.delete({ where: { id } });
             return true;
         },
         createCategorySwiper: async (_: any, { input }: { input: any }) => {
-            const swiper = await prisma.landingPageCategorySwiper.create({
+            const swiper = await prismaMain.landingPageCategorySwiper.create({
                 data: input
             });
             return {
@@ -1275,7 +1245,7 @@ export const resolvers = {
             };
         },
         updateCategorySwiper: async (_: any, { id, input }: { id: string, input: any }) => {
-            const swiper = await prisma.landingPageCategorySwiper.update({
+            const swiper = await prismaMain.landingPageCategorySwiper.update({
                 where: { id },
                 data: input
             });
@@ -1286,38 +1256,33 @@ export const resolvers = {
             };
         },
         deleteCategorySwiper: async (_: any, { id }: { id: string }) => {
-            await prisma.landingPageCategorySwiper.delete({ where: { id } });
+            await prismaMain.landingPageCategorySwiper.delete({ where: { id } });
             return true;
         },
         createLandingPageBanner: async (_: any, { input }: { input: any }) => {
-            throw new Error("LandingPageBanner is not yet implemented in the database.");
-            /*
-           try {
-               const banner = await prismaBuyer.landingPageBanner.create({
-                   data: input
-               });
-               return {
-                   success: true,
-                   message: "Banner created successfully",
-                   banner: {
-                       ...banner,
-                       createdAt: banner.createdAt.toISOString(),
-                       updatedAt: banner.updatedAt.toISOString()
-                   }
-               };
-           } catch (error: any) {
-               return {
-                   success: false,
-                   message: error.message || "Failed to create banner"
-               };
-           }
-           */
+            try {
+                const banner = await prismaMain.landingPageBanner.create({
+                    data: input
+                });
+                return {
+                    success: true,
+                    message: "Banner created successfully",
+                    banner: {
+                        ...banner,
+                        createdAt: banner.createdAt.toISOString(),
+                        updatedAt: banner.updatedAt.toISOString()
+                    }
+                };
+            } catch (error: any) {
+                return {
+                    success: false,
+                    message: error.message || "Failed to create banner"
+                };
+            }
         },
         updateLandingPageBanner: async (_: any, { id, input }: { id: string, input: any }) => {
-            throw new Error("LandingPageBanner is not yet implemented in the database.");
-            /*
             try {
-                const banner = await prismaBuyer.landingPageBanner.update({
+                const banner = await prismaMain.landingPageBanner.update({
                     where: { id },
                     data: input
                 });
@@ -1336,13 +1301,10 @@ export const resolvers = {
                     message: error.message || "Failed to update banner"
                 };
             }
-            */
         },
         deleteLandingPageBanner: async (_: any, { id }: { id: string }) => {
-            throw new Error("LandingPageBanner is not yet implemented in the database.");
-            /*
             try {
-                await prismaBuyer.landingPageBanner.delete({ where: { id } });
+                await prismaMain.landingPageBanner.delete({ where: { id } });
                 return {
                     success: true,
                     message: "Banner deleted successfully"
@@ -1353,13 +1315,10 @@ export const resolvers = {
                     message: error.message || "Failed to delete banner"
                 };
             }
-            */
         },
         reorderLandingPageBanners: async (_: any, { ids }: { ids: string[] }) => {
-            throw new Error("LandingPageBanner is not yet implemented in the database.");
-            /*
             try {
-                await prismaBuyer.$transaction(async (tx) => {
+                await prismaMain.$transaction(async (tx) => {
                     for (let i = 0; i < ids.length; i++) {
                         await tx.landingPageBanner.update({
                             where: { id: ids[i] },
@@ -1380,10 +1339,9 @@ export const resolvers = {
                     message: error.message || "Failed to reorder banners"
                 };
             }
-            */
         },
         createProductGrid: async (_: any, { input }: { input: any }) => {
-            const grid = await prisma.landingPageProductGrid.create({
+            const grid = await prismaMain.landingPageProductGrid.create({
                 data: input
             });
             return {
@@ -1393,7 +1351,7 @@ export const resolvers = {
             };
         },
         updateProductGrid: async (_: any, { id, input }: { id: string, input: any }) => {
-            const grid = await prisma.landingPageProductGrid.update({
+            const grid = await prismaMain.landingPageProductGrid.update({
                 where: { id },
                 data: input
             });
@@ -1404,7 +1362,7 @@ export const resolvers = {
             };
         },
         deleteProductGrid: async (_: any, { id }: { id: string }) => {
-            await prisma.landingPageProductGrid.delete({ where: { id } });
+            await prismaMain.landingPageProductGrid.delete({ where: { id } });
             return true;
         },
         bulkUpdateCategories: async (_: any, { input }: { input: any[] }) => {
