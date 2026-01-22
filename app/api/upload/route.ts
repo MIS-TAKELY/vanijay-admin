@@ -20,10 +20,11 @@ async function uploadBufferToCloudinary(
     const blob = new Blob([buffer as any], { type: mimeType });
     formData.append("file", blob, filename || "image");
     formData.append("upload_preset", uploadPreset);
+    formData.append("resource_type", "auto");
     if (folder) formData.append("folder", folder);
 
     const response = await fetch(
-        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`,
         {
             method: "POST",
             body: formData,
@@ -56,13 +57,13 @@ export async function POST(req: NextRequest) {
         let processedBuffer: Buffer;
         let contentType: string;
 
-        // Check file size (200KB = 200 * 1024 bytes = 204800 bytes)
+        const isVideo = file.type.startsWith("video/");
         const isSmallFile = buffer.length <= 200 * 1024;
 
-        if (isSmallFile) {
-            // Skip compression for small files
+        if (isVideo || isSmallFile) {
+            // Skip compression for videos and small files
             processedBuffer = buffer;
-            contentType = file.type || "image/webp";
+            contentType = file.type || (isVideo ? "video/mp4" : "image/webp");
         } else {
             // Sharp Optimization Logic
             const image = sharp(buffer);

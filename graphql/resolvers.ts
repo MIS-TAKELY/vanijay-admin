@@ -1013,6 +1013,7 @@ export const resolvers = {
                 // Invalidate Cache
                 try {
                     await redis.del('products:all');
+                    await redis.del('categories:all');
                 } catch (e) {
                     console.error("Cache invalidation failed (createCategory):", e);
                 }
@@ -1112,6 +1113,10 @@ export const resolvers = {
                 // Invalidate Cache
                 try {
                     await redis.del('products:all');
+                    await redis.del('categories:all');
+                    // Also clear specific category caches
+                    await redis.del(`category:${id}`);
+                    await redis.del(`category:slug:${cleanInput.slug}`);
                 } catch (e) {
                     console.error("Cache invalidation failed (updateCategory):", e);
                 }
@@ -1190,6 +1195,7 @@ export const resolvers = {
                 // Invalidate Cache
                 try {
                     await redis.del('products:all');
+                    await redis.del('categories:all');
                 } catch (e) {
                     console.error("Cache invalidation failed (deleteCategory):", e);
                 }
@@ -1207,6 +1213,13 @@ export const resolvers = {
                 include: { category: { select: { name: true, _count: { select: { products: true } } } } }
             });
 
+            // Invalidate Cache
+            try {
+                await redis.del('products:all');
+            } catch (e) {
+                console.error("Cache invalidation failed (createCategoryCard):", e);
+            }
+
             return {
                 ...card,
                 categoryName: card.category?.name || 'Unknown',
@@ -1222,6 +1235,13 @@ export const resolvers = {
                 include: { category: { select: { name: true, _count: { select: { products: true } } } } }
             });
 
+            // Invalidate Cache
+            try {
+                await redis.del('products:all');
+            } catch (e) {
+                console.error("Cache invalidation failed (updateCategoryCard):", e);
+            }
+
             return {
                 ...card,
                 categoryName: card.category?.name || 'Unknown',
@@ -1232,6 +1252,14 @@ export const resolvers = {
         },
         deleteCategoryCard: async (_: any, { id }: { id: string }) => {
             await prismaMain.landingPageCategoryCard.delete({ where: { id } });
+
+            // Invalidate Cache
+            try {
+                await redis.del('products:all');
+            } catch (e) {
+                console.error("Cache invalidation failed (deleteCategoryCard):", e);
+            }
+
             return true;
         },
         createCategorySwiper: async (_: any, { input }: { input: any }) => {
@@ -1264,6 +1292,13 @@ export const resolvers = {
                 const banner = await prismaMain.landingPageBanner.create({
                     data: input
                 });
+                // Invalidate Cache
+                try {
+                    await redis.del('products:all');
+                } catch (e) {
+                    console.error("Cache invalidation failed (updateLandingPageBanner):", e);
+                }
+
                 return {
                     success: true,
                     message: "Banner created successfully",
@@ -1334,6 +1369,13 @@ export const resolvers = {
                     message: "Banners reordered successfully"
                 };
             } catch (error: any) {
+                // Invalidate Cache
+                try {
+                    await redis.del('products:all');
+                } catch (e) {
+                    console.error("Cache invalidation failed (updateProductGrid):", e);
+                }
+
                 return {
                     success: false,
                     message: error.message || "Failed to reorder banners"
@@ -1394,8 +1436,9 @@ export const resolvers = {
                 // Invalidate Cache
                 try {
                     await redis.del('products:all');
+                    await redis.del('categories:all');
                 } catch (e) {
-                    console.error("Cache invalidation failed (bulkUpdateCategories):", e);
+                    console.error("Cache invalidation failed (bulk operations):", e);
                 }
 
                 return updatedCategories;
@@ -1470,6 +1513,7 @@ export const resolvers = {
 
                 try {
                     await redis.del('products:all');
+                    await redis.del('categories:all');
                 } catch (e) {
                     console.error("Cache invalidation failed (bulkDeleteCategories):", e);
                 }
