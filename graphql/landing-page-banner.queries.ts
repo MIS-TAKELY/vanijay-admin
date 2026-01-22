@@ -37,7 +37,7 @@ export const CREATE_LANDING_PAGE_BANNER = gql`
 `;
 
 export const UPDATE_LANDING_PAGE_BANNER = gql`
-  mutation UpdateLandingPageBanner($id: ID!, $input: UpdateBannerInput!) {
+  mutation UpdateLandingPageBanner($id: String!, $input: UpdateBannerInput!) {
     updateLandingPageBanner(id: $id, input: $input) {
       success
       message
@@ -56,7 +56,7 @@ export const UPDATE_LANDING_PAGE_BANNER = gql`
 `;
 
 export const DELETE_LANDING_PAGE_BANNER = gql`
-  mutation DeleteLandingPageBanner($id: ID!) {
+  mutation DeleteLandingPageBanner($id: String!) {
     deleteLandingPageBanner(id: $id) {
       success
       message
@@ -65,7 +65,7 @@ export const DELETE_LANDING_PAGE_BANNER = gql`
 `;
 
 export const REORDER_LANDING_PAGE_BANNERS = gql`
-  mutation ReorderLandingPageBanners($ids: [ID!]!) {
+  mutation ReorderLandingPageBanners($ids: [String!]!) {
     reorderLandingPageBanners(ids: $ids) {
       success
       message
