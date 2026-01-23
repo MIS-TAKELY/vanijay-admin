@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
         let contentType: string;
 
         const isVideo = file.type.startsWith("video/");
-        const isSmallFile = buffer.length <= 200 * 1024;
+        const isSmallFile = buffer.length <= 300 * 1024;
 
         if (isVideo || isSmallFile) {
             // Skip compression for videos and small files
@@ -72,11 +72,11 @@ export async function POST(req: NextRequest) {
             let sharpInstance = image.webp({ quality: 80 });
 
             if (type === "banner") {
-                // Banners: 1920x600 (Landscape)
+                // Banners: 1920x600 (16:5 Aspect Ratio)
                 sharpInstance = sharpInstance.resize(1920, 600, {
                     fit: "cover",
                     position: "center",
-                });
+                }).sharpen();
             } else if (type === "category") {
                 // Categories: 500x500 (Square)
                 sharpInstance = sharpInstance.resize(500, 500, {

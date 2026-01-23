@@ -250,6 +250,7 @@ export default function BannerManager({ banners, categories, refetch }: Props) {
                                     alt={banner.title}
                                     fill
                                     className="object-cover transition-transform group-hover:scale-105"
+                                    unoptimized
                                 />
                             )}
 
@@ -332,7 +333,7 @@ export default function BannerManager({ banners, categories, refetch }: Props) {
                                 </SelectTrigger>
                                 <SelectContent>
                                     {categories.map((category) => (
-                                        <SelectItem key={category.id} value={`/category/${category.slug}`}>
+                                        <SelectItem key={category.id} value={`/search?q=${encodeURIComponent(category.name)}`}>
                                             {category.name}
                                         </SelectItem>
                                     ))}
