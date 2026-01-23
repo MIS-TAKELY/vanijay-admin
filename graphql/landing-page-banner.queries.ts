@@ -37,7 +37,7 @@ export const CREATE_LANDING_PAGE_BANNER = gql`
 `;
 
 export const UPDATE_LANDING_PAGE_BANNER = gql`
-  mutation UpdateLandingPageBanner($id: String!, $input: UpdateBannerInput!) {
+  mutation UpdateLandingPageBanner($id: String!, $input: CreateBannerInput!) {
     updateLandingPageBanner(id: $id, input: $input) {
       success
       message
