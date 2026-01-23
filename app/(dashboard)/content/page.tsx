@@ -83,6 +83,7 @@ export default function ContentManagementPage() {
                             ) : (
                                 <BannerManager
                                     banners={bannersData?.getLandingPageBanners || []}
+                                    categories={categories}
                                     refetch={refetchBanners}
                                 />
                             )}

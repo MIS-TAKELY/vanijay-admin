@@ -15,6 +15,13 @@ import {
 } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
 import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import {
     Card,
     CardContent,
     CardFooter,
@@ -35,7 +42,6 @@ import Image from "next/image";
 type Banner = {
     id: string;
     title: string;
-    description?: string;
     imageUrl: string;
     link?: string;
     sortOrder: number;
@@ -43,19 +49,25 @@ type Banner = {
     mediaType?: "IMAGE" | "VIDEO";
 };
 
+type Category = {
+    id: string;
+    name: string;
+    slug: string;
+};
+
 type Props = {
     banners: Banner[];
+    categories: Category[];
     refetch: () => void;
 };
 
-export default function BannerManager({ banners, refetch }: Props) {
+export default function BannerManager({ banners, categories, refetch }: Props) {
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const [editingBanner, setEditingBanner] = useState<Banner | null>(null);
     const [imageFiles, setImageFiles] = useState<FileWithPreview[]>([]);
     const [isUploading, setIsUploading] = useState(false);
     const [formData, setFormData] = useState({
         title: "",
-        description: "",
         imageUrl: "",
         link: "",
         sortOrder: 0,
@@ -102,7 +114,6 @@ export default function BannerManager({ banners, refetch }: Props) {
             setEditingBanner(banner);
             setFormData({
                 title: banner.title,
-                description: banner.description || "",
                 imageUrl: banner.imageUrl,
                 link: banner.link || "",
                 sortOrder: banner.sortOrder,
@@ -114,7 +125,6 @@ export default function BannerManager({ banners, refetch }: Props) {
             setEditingBanner(null);
             setFormData({
                 title: "",
-                description: "",
                 imageUrl: "",
                 link: "",
                 sortOrder: banners.length,
@@ -150,7 +160,6 @@ export default function BannerManager({ banners, refetch }: Props) {
 
             const input = {
                 title: formData.title,
-                description: formData.description,
                 imageUrl: imageUrl,
                 link: formData.link,
                 sortOrder: formData.sortOrder,
@@ -256,9 +265,6 @@ export default function BannerManager({ banners, refetch }: Props) {
                         </div>
 
                         <CardContent className="flex-1 p-4 flex flex-col justify-between">
-                            <div className="text-sm text-muted-foreground line-clamp-2">
-                                {banner.description || "No description"}
-                            </div>
                             <div className="flex items-center justify-between mt-2">
                                 <span className="text-xs font-mono bg-muted px-2 py-1 rounded">
                                     Order: {banner.sortOrder}
@@ -316,13 +322,25 @@ export default function BannerManager({ banners, refetch }: Props) {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="description">Description</Label>
-                            <Input
-                                id="description"
-                                value={formData.description}
-                                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                placeholder="Up to 50% off on all items"
-                            />
+                            <Label htmlFor="category">Category Redirect *</Label>
+                            <Select
+                                value={formData.link}
+                                onValueChange={(value) => setFormData({ ...formData, link: value })}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select a category" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {categories.map((category) => (
+                                        <SelectItem key={category.id} value={`/category/${category.slug}`}>
+                                            {category.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <p className="text-xs text-muted-foreground mt-1">
+                                Clicking the banner will redirect users to this category.
+                            </p>
                         </div>
 
                         <div className="space-y-2">
@@ -353,13 +371,16 @@ export default function BannerManager({ banners, refetch }: Props) {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="link">Link (optional)</Label>
+                            <Label htmlFor="link">Custom Link (optional)</Label>
                             <Input
                                 id="link"
                                 value={formData.link}
                                 onChange={(e) => setFormData({ ...formData, link: e.target.value })}
                                 placeholder="/shop/..."
                             />
+                            <p className="text-xs text-muted-foreground mt-1">
+                                Overrides the category redirect if specified.
+                            </p>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
