@@ -6,7 +6,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: sachinsharma-lordheydes/vanijay-admin
+  IMAGE_NAME: mis-takely/vanijay-admin
 
 jobs:
   build:
@@ -76,7 +76,7 @@ jobs:
             # Ensure clean pull
             git reset --hard
             git clean -fd
-            git pull https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/SachinSharma-LordHeydes/vanijay-admin.git main
+            git pull https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/MIS-TAKELY/vanijay-admin.git main
 
             echo "Pulling latest Docker images..."
             docker compose pull
@@ -105,7 +105,7 @@ jobs:
               --network vanijay_network \
               --env ADMIN_DATABASE_URL="$ADMIN_DATABASE_URL" \
               --env DATABASE_URL="$DATABASE_URL" \
-              ghcr.io/sachinsharma-lordheydes/vanijay-admin:latest \
+              ghcr.io/mis-takely/vanijay-admin:latest \
               npx prisma migrate deploy --config prisma.config.ts
 
             echo "Running Shared Prisma migrations..."
@@ -113,7 +113,7 @@ jobs:
               --network vanijay_network \
               --env ADMIN_DATABASE_URL="$ADMIN_DATABASE_URL" \
               --env DATABASE_URL="$DATABASE_URL" \
-              ghcr.io/sachinsharma-lordheydes/vanijay-admin:latest \
+              ghcr.io/mis-takely/vanijay-admin:latest \
               npx prisma migrate deploy --config prisma.main.config.ts
 
             echo "Starting application containers..."
