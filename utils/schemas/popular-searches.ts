@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const keywordSchema = z.object({
     name: z.string().min(2).max(150),
     categoryId: z.string().uuid().optional(), // Optional for creation if passed in path or body differently
-    href: z.string().url().or(z.string().startsWith('/')), // Allow internal links
+    href: z.string().min(1), // Allow any string (URL, path, or keyword)
     targetType: z.enum(['_self', '_blank', 'category', 'brand', 'product', 'search']),
     isActive: z.boolean().default(true),
     isIndexed: z.boolean().default(true),
