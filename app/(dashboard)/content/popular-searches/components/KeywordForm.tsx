@@ -73,16 +73,13 @@ const KeywordForm = ({ isOpen, onClose, initialData, categoryId, onSuccess }: Ke
             // Ensure categoryId is set
             data.categoryId = categoryId;
 
-            const url = initialData
-                ? `/api/admin/popular-searches/keywords/${initialData.id}`
-                : '/api/admin/popular-searches/keywords';
-
+            const url = '/api/admin/popular-searches/keywords';
             const method = initialData ? 'PUT' : 'POST';
 
             const res = await fetch(url, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
+                body: JSON.stringify(initialData ? { ...data, id: initialData.id } : data),
             });
 
             const json = await res.json();

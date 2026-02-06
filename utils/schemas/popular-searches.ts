@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const keywordSchema = z.object({
     name: z.string().min(2).max(150),
-    categoryId: z.string().uuid().optional(), // Optional for creation if passed in path or body differently
+    categoryId: z.string().optional(), // Projects uses CUIDs, not strictly UUIDs
     href: z.string().min(1), // Allow any string (URL, path, or keyword)
     targetType: z.enum(['_self', '_blank', 'category', 'brand', 'product', 'search']),
     isActive: z.boolean().default(true),
