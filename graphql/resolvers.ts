@@ -569,17 +569,8 @@ export const resolvers = {
                     include: { parent: true }
                 });
                 return categories.map((c: any) => ({
-                    id: c.id,
-                    name: c.name,
-                    slug: c.slug,
-                    description: c.description,
-                    isActive: c.isActive,
+                    ...c,
                     parentName: c.parent?.name,
-                    parentId: c.parentId,
-                    templateType: c.templateType,
-                    priceRanges: c.priceRanges,
-                    filters: c.filters,
-                    seoTemplates: c.seoTemplates
                 }));
             } catch (error) {
                 console.error("Categories Query Error:", error);
@@ -1724,5 +1715,15 @@ export const resolvers = {
             await prismaMain.seoPage.delete({ where: { id } });
             return true;
         }
+    },
+    Category: {
+        filters: (cat: any) => cat.filters ? (typeof cat.filters === 'string' ? cat.filters : JSON.stringify(cat.filters, null, 2)) : null,
+        seoTemplates: (cat: any) => cat.seoTemplates ? (typeof cat.seoTemplates === 'string' ? cat.seoTemplates : JSON.stringify(cat.seoTemplates, null, 2)) : null,
+    },
+    SeoPage: {
+        structuredData: (page: any) => page.structuredData ? (typeof page.structuredData === 'string' ? page.structuredData : JSON.stringify(page.structuredData, null, 2)) : null,
+        lastGeneratedAt: (page: any) => page.lastGeneratedAt?.toISOString() || null,
+        createdAt: (page: any) => page.createdAt.toISOString(),
+        updatedAt: (page: any) => page.updatedAt.toISOString(),
     }
 };
