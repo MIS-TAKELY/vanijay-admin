@@ -253,6 +253,11 @@ export type LandingPageBanner = $Result.DefaultSelection<Prisma.$LandingPageBann
  * 
  */
 export type ProductNotification = $Result.DefaultSelection<Prisma.$ProductNotificationPayload>
+/**
+ * Model SeoPage
+ * 
+ */
+export type SeoPage = $Result.DefaultSelection<Prisma.$SeoPagePayload>
 
 /**
  * Enums
@@ -1150,6 +1155,16 @@ export class PrismaClient<
     * ```
     */
   get productNotification(): Prisma.ProductNotificationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.seoPage`: Exposes CRUD operations for the **SeoPage** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SeoPages
+    * const seoPages = await prisma.seoPage.findMany()
+    * ```
+    */
+  get seoPage(): Prisma.SeoPageDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1631,7 +1646,8 @@ export namespace Prisma {
     LandingPageCategorySwiper: 'LandingPageCategorySwiper',
     LandingPageProductGrid: 'LandingPageProductGrid',
     LandingPageBanner: 'LandingPageBanner',
-    ProductNotification: 'ProductNotification'
+    ProductNotification: 'ProductNotification',
+    SeoPage: 'SeoPage'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1647,7 +1663,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "systemLog" | "userRole" | "sellerProfile" | "notification" | "conversation" | "message" | "messageAttachment" | "conversationParticipant" | "address" | "categorySpecification" | "category" | "offer" | "productOffer" | "categoryOffer" | "deliveryOption" | "warranty" | "returnPolicy" | "product" | "productVariant" | "productSpecification" | "productImage" | "cartItem" | "order" | "orderItem" | "paymentMethod" | "payment" | "shipment" | "review" | "reviewVote" | "reviewMedia" | "wishlist" | "wishlistItem" | "sellerOrder" | "sellerOrderItem" | "payout" | "productQuestion" | "productAnswer" | "session" | "account" | "verification" | "orderDispute" | "recentlyViewed" | "landingPageCategoryCard" | "landingPageCategorySwiper" | "landingPageProductGrid" | "landingPageBanner" | "productNotification"
+      modelProps: "user" | "systemLog" | "userRole" | "sellerProfile" | "notification" | "conversation" | "message" | "messageAttachment" | "conversationParticipant" | "address" | "categorySpecification" | "category" | "offer" | "productOffer" | "categoryOffer" | "deliveryOption" | "warranty" | "returnPolicy" | "product" | "productVariant" | "productSpecification" | "productImage" | "cartItem" | "order" | "orderItem" | "paymentMethod" | "payment" | "shipment" | "review" | "reviewVote" | "reviewMedia" | "wishlist" | "wishlistItem" | "sellerOrder" | "sellerOrderItem" | "payout" | "productQuestion" | "productAnswer" | "session" | "account" | "verification" | "orderDispute" | "recentlyViewed" | "landingPageCategoryCard" | "landingPageCategorySwiper" | "landingPageProductGrid" | "landingPageBanner" | "productNotification" | "seoPage"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -5203,6 +5219,80 @@ export namespace Prisma {
           }
         }
       }
+      SeoPage: {
+        payload: Prisma.$SeoPagePayload<ExtArgs>
+        fields: Prisma.SeoPageFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SeoPageFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeoPagePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SeoPageFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeoPagePayload>
+          }
+          findFirst: {
+            args: Prisma.SeoPageFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeoPagePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SeoPageFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeoPagePayload>
+          }
+          findMany: {
+            args: Prisma.SeoPageFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeoPagePayload>[]
+          }
+          create: {
+            args: Prisma.SeoPageCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeoPagePayload>
+          }
+          createMany: {
+            args: Prisma.SeoPageCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SeoPageCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeoPagePayload>[]
+          }
+          delete: {
+            args: Prisma.SeoPageDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeoPagePayload>
+          }
+          update: {
+            args: Prisma.SeoPageUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeoPagePayload>
+          }
+          deleteMany: {
+            args: Prisma.SeoPageDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SeoPageUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SeoPageUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeoPagePayload>[]
+          }
+          upsert: {
+            args: Prisma.SeoPageUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeoPagePayload>
+          }
+          aggregate: {
+            args: Prisma.SeoPageAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSeoPage>
+          }
+          groupBy: {
+            args: Prisma.SeoPageGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SeoPageGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SeoPageCountArgs<ExtArgs>
+            result: $Utils.Optional<SeoPageCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -5359,6 +5449,7 @@ export namespace Prisma {
     landingPageProductGrid?: LandingPageProductGridOmit
     landingPageBanner?: LandingPageBannerOmit
     productNotification?: ProductNotificationOmit
+    seoPage?: SeoPageOmit
   }
 
   /* Types for Logging */
@@ -5784,6 +5875,7 @@ export namespace Prisma {
     categorySpecification: number
     landingPageCategoryCards: number
     products: number
+    seoPages: number
   }
 
   export type CategoryCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5792,6 +5884,7 @@ export namespace Prisma {
     categorySpecification?: boolean | CategoryCountOutputTypeCountCategorySpecificationArgs
     landingPageCategoryCards?: boolean | CategoryCountOutputTypeCountLandingPageCategoryCardsArgs
     products?: boolean | CategoryCountOutputTypeCountProductsArgs
+    seoPages?: boolean | CategoryCountOutputTypeCountSeoPagesArgs
   }
 
   // Custom InputTypes
@@ -5838,6 +5931,13 @@ export namespace Prisma {
    */
   export type CategoryCountOutputTypeCountProductsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ProductWhereInput
+  }
+
+  /**
+   * CategoryCountOutputType without action
+   */
+  export type CategoryCountOutputTypeCountSeoPagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SeoPageWhereInput
   }
 
 
@@ -19710,8 +19810,18 @@ export namespace Prisma {
 
   export type AggregateCategory = {
     _count: CategoryCountAggregateOutputType | null
+    _avg: CategoryAvgAggregateOutputType | null
+    _sum: CategorySumAggregateOutputType | null
     _min: CategoryMinAggregateOutputType | null
     _max: CategoryMaxAggregateOutputType | null
+  }
+
+  export type CategoryAvgAggregateOutputType = {
+    priceRanges: number | null
+  }
+
+  export type CategorySumAggregateOutputType = {
+    priceRanges: number[]
   }
 
   export type CategoryMinAggregateOutputType = {
@@ -19725,6 +19835,7 @@ export namespace Prisma {
     updatedAt: Date | null
     metaDescription: string | null
     metaTitle: string | null
+    templateType: string | null
   }
 
   export type CategoryMaxAggregateOutputType = {
@@ -19738,6 +19849,7 @@ export namespace Prisma {
     updatedAt: Date | null
     metaDescription: string | null
     metaTitle: string | null
+    templateType: string | null
   }
 
   export type CategoryCountAggregateOutputType = {
@@ -19752,9 +19864,21 @@ export namespace Prisma {
     keywords: number
     metaDescription: number
     metaTitle: number
+    templateType: number
+    priceRanges: number
+    filters: number
+    seoTemplates: number
     _all: number
   }
 
+
+  export type CategoryAvgAggregateInputType = {
+    priceRanges?: true
+  }
+
+  export type CategorySumAggregateInputType = {
+    priceRanges?: true
+  }
 
   export type CategoryMinAggregateInputType = {
     id?: true
@@ -19767,6 +19891,7 @@ export namespace Prisma {
     updatedAt?: true
     metaDescription?: true
     metaTitle?: true
+    templateType?: true
   }
 
   export type CategoryMaxAggregateInputType = {
@@ -19780,6 +19905,7 @@ export namespace Prisma {
     updatedAt?: true
     metaDescription?: true
     metaTitle?: true
+    templateType?: true
   }
 
   export type CategoryCountAggregateInputType = {
@@ -19794,6 +19920,10 @@ export namespace Prisma {
     keywords?: true
     metaDescription?: true
     metaTitle?: true
+    templateType?: true
+    priceRanges?: true
+    filters?: true
+    seoTemplates?: true
     _all?: true
   }
 
@@ -19835,6 +19965,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: CategoryAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CategorySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: CategoryMinAggregateInputType
@@ -19865,6 +20007,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: CategoryCountAggregateInputType | true
+    _avg?: CategoryAvgAggregateInputType
+    _sum?: CategorySumAggregateInputType
     _min?: CategoryMinAggregateInputType
     _max?: CategoryMaxAggregateInputType
   }
@@ -19881,7 +20025,13 @@ export namespace Prisma {
     keywords: string[]
     metaDescription: string | null
     metaTitle: string | null
+    templateType: string | null
+    priceRanges: number[]
+    filters: JsonValue | null
+    seoTemplates: JsonValue | null
     _count: CategoryCountAggregateOutputType | null
+    _avg: CategoryAvgAggregateOutputType | null
+    _sum: CategorySumAggregateOutputType | null
     _min: CategoryMinAggregateOutputType | null
     _max: CategoryMaxAggregateOutputType | null
   }
@@ -19912,12 +20062,17 @@ export namespace Prisma {
     keywords?: boolean
     metaDescription?: boolean
     metaTitle?: boolean
+    templateType?: boolean
+    priceRanges?: boolean
+    filters?: boolean
+    seoTemplates?: boolean
     parent?: boolean | Category$parentArgs<ExtArgs>
     children?: boolean | Category$childrenArgs<ExtArgs>
     categoryOffers?: boolean | Category$categoryOffersArgs<ExtArgs>
     categorySpecification?: boolean | Category$categorySpecificationArgs<ExtArgs>
     landingPageCategoryCards?: boolean | Category$landingPageCategoryCardsArgs<ExtArgs>
     products?: boolean | Category$productsArgs<ExtArgs>
+    seoPages?: boolean | Category$seoPagesArgs<ExtArgs>
     _count?: boolean | CategoryCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["category"]>
 
@@ -19933,6 +20088,10 @@ export namespace Prisma {
     keywords?: boolean
     metaDescription?: boolean
     metaTitle?: boolean
+    templateType?: boolean
+    priceRanges?: boolean
+    filters?: boolean
+    seoTemplates?: boolean
     parent?: boolean | Category$parentArgs<ExtArgs>
   }, ExtArgs["result"]["category"]>
 
@@ -19948,6 +20107,10 @@ export namespace Prisma {
     keywords?: boolean
     metaDescription?: boolean
     metaTitle?: boolean
+    templateType?: boolean
+    priceRanges?: boolean
+    filters?: boolean
+    seoTemplates?: boolean
     parent?: boolean | Category$parentArgs<ExtArgs>
   }, ExtArgs["result"]["category"]>
 
@@ -19963,9 +20126,13 @@ export namespace Prisma {
     keywords?: boolean
     metaDescription?: boolean
     metaTitle?: boolean
+    templateType?: boolean
+    priceRanges?: boolean
+    filters?: boolean
+    seoTemplates?: boolean
   }
 
-  export type CategoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "description" | "parentId" | "isActive" | "createdAt" | "updatedAt" | "keywords" | "metaDescription" | "metaTitle", ExtArgs["result"]["category"]>
+  export type CategoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "description" | "parentId" | "isActive" | "createdAt" | "updatedAt" | "keywords" | "metaDescription" | "metaTitle" | "templateType" | "priceRanges" | "filters" | "seoTemplates", ExtArgs["result"]["category"]>
   export type CategoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     parent?: boolean | Category$parentArgs<ExtArgs>
     children?: boolean | Category$childrenArgs<ExtArgs>
@@ -19973,6 +20140,7 @@ export namespace Prisma {
     categorySpecification?: boolean | Category$categorySpecificationArgs<ExtArgs>
     landingPageCategoryCards?: boolean | Category$landingPageCategoryCardsArgs<ExtArgs>
     products?: boolean | Category$productsArgs<ExtArgs>
+    seoPages?: boolean | Category$seoPagesArgs<ExtArgs>
     _count?: boolean | CategoryCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CategoryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -19991,6 +20159,7 @@ export namespace Prisma {
       categorySpecification: Prisma.$CategorySpecificationPayload<ExtArgs>[]
       landingPageCategoryCards: Prisma.$LandingPageCategoryCardPayload<ExtArgs>[]
       products: Prisma.$ProductPayload<ExtArgs>[]
+      seoPages: Prisma.$SeoPagePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -20004,6 +20173,10 @@ export namespace Prisma {
       keywords: string[]
       metaDescription: string | null
       metaTitle: string | null
+      templateType: string | null
+      priceRanges: number[]
+      filters: Prisma.JsonValue | null
+      seoTemplates: Prisma.JsonValue | null
     }, ExtArgs["result"]["category"]>
     composites: {}
   }
@@ -20404,6 +20577,7 @@ export namespace Prisma {
     categorySpecification<T extends Category$categorySpecificationArgs<ExtArgs> = {}>(args?: Subset<T, Category$categorySpecificationArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CategorySpecificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     landingPageCategoryCards<T extends Category$landingPageCategoryCardsArgs<ExtArgs> = {}>(args?: Subset<T, Category$landingPageCategoryCardsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LandingPageCategoryCardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     products<T extends Category$productsArgs<ExtArgs> = {}>(args?: Subset<T, Category$productsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    seoPages<T extends Category$seoPagesArgs<ExtArgs> = {}>(args?: Subset<T, Category$seoPagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SeoPagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -20444,6 +20618,10 @@ export namespace Prisma {
     readonly keywords: FieldRef<"Category", 'String[]'>
     readonly metaDescription: FieldRef<"Category", 'String'>
     readonly metaTitle: FieldRef<"Category", 'String'>
+    readonly templateType: FieldRef<"Category", 'String'>
+    readonly priceRanges: FieldRef<"Category", 'Int[]'>
+    readonly filters: FieldRef<"Category", 'Json'>
+    readonly seoTemplates: FieldRef<"Category", 'Json'>
   }
     
 
@@ -20976,6 +21154,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ProductScalarFieldEnum | ProductScalarFieldEnum[]
+  }
+
+  /**
+   * Category.seoPages
+   */
+  export type Category$seoPagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SeoPage
+     */
+    select?: SeoPageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SeoPage
+     */
+    omit?: SeoPageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeoPageInclude<ExtArgs> | null
+    where?: SeoPageWhereInput
+    orderBy?: SeoPageOrderByWithRelationInput | SeoPageOrderByWithRelationInput[]
+    cursor?: SeoPageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SeoPageScalarFieldEnum | SeoPageScalarFieldEnum[]
   }
 
   /**
@@ -27737,6 +27939,7 @@ export namespace Prisma {
     brand: string | null
     metaDescription: string | null
     metaTitle: string | null
+    affiliateLink: string | null
   }
 
   export type ProductMaxAggregateOutputType = {
@@ -27753,6 +27956,7 @@ export namespace Prisma {
     brand: string | null
     metaDescription: string | null
     metaTitle: string | null
+    affiliateLink: string | null
   }
 
   export type ProductCountAggregateOutputType = {
@@ -27772,6 +27976,9 @@ export namespace Prisma {
     keywords: number
     metaDescription: number
     metaTitle: number
+    pros: number
+    cons: number
+    affiliateLink: number
     _all: number
   }
 
@@ -27790,6 +27997,7 @@ export namespace Prisma {
     brand?: true
     metaDescription?: true
     metaTitle?: true
+    affiliateLink?: true
   }
 
   export type ProductMaxAggregateInputType = {
@@ -27806,6 +28014,7 @@ export namespace Prisma {
     brand?: true
     metaDescription?: true
     metaTitle?: true
+    affiliateLink?: true
   }
 
   export type ProductCountAggregateInputType = {
@@ -27825,6 +28034,9 @@ export namespace Prisma {
     keywords?: true
     metaDescription?: true
     metaTitle?: true
+    pros?: true
+    cons?: true
+    affiliateLink?: true
     _all?: true
   }
 
@@ -27917,6 +28129,9 @@ export namespace Prisma {
     keywords: string[]
     metaDescription: string | null
     metaTitle: string | null
+    pros: string[]
+    cons: string[]
+    affiliateLink: string | null
     _count: ProductCountAggregateOutputType | null
     _min: ProductMinAggregateOutputType | null
     _max: ProductMaxAggregateOutputType | null
@@ -27953,6 +28168,9 @@ export namespace Prisma {
     keywords?: boolean
     metaDescription?: boolean
     metaTitle?: boolean
+    pros?: boolean
+    cons?: boolean
+    affiliateLink?: boolean
     Conversation?: boolean | Product$ConversationArgs<ExtArgs>
     deliveryOptions?: boolean | Product$deliveryOptionsArgs<ExtArgs>
     images?: boolean | Product$imagesArgs<ExtArgs>
@@ -27987,6 +28205,9 @@ export namespace Prisma {
     keywords?: boolean
     metaDescription?: boolean
     metaTitle?: boolean
+    pros?: boolean
+    cons?: boolean
+    affiliateLink?: boolean
     category?: boolean | Product$categoryArgs<ExtArgs>
     seller?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["product"]>
@@ -28008,6 +28229,9 @@ export namespace Prisma {
     keywords?: boolean
     metaDescription?: boolean
     metaTitle?: boolean
+    pros?: boolean
+    cons?: boolean
+    affiliateLink?: boolean
     category?: boolean | Product$categoryArgs<ExtArgs>
     seller?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["product"]>
@@ -28029,9 +28253,12 @@ export namespace Prisma {
     keywords?: boolean
     metaDescription?: boolean
     metaTitle?: boolean
+    pros?: boolean
+    cons?: boolean
+    affiliateLink?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sellerId" | "name" | "slug" | "description" | "features" | "status" | "specificationTable" | "specificationDisplayFormat" | "createdAt" | "updatedAt" | "categoryId" | "brand" | "keywords" | "metaDescription" | "metaTitle", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sellerId" | "name" | "slug" | "description" | "features" | "status" | "specificationTable" | "specificationDisplayFormat" | "createdAt" | "updatedAt" | "categoryId" | "brand" | "keywords" | "metaDescription" | "metaTitle" | "pros" | "cons" | "affiliateLink", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Conversation?: boolean | Product$ConversationArgs<ExtArgs>
     deliveryOptions?: boolean | Product$deliveryOptionsArgs<ExtArgs>
@@ -28093,6 +28320,9 @@ export namespace Prisma {
       keywords: string[]
       metaDescription: string | null
       metaTitle: string | null
+      pros: string[]
+      cons: string[]
+      affiliateLink: string | null
     }, ExtArgs["result"]["product"]>
     composites: {}
   }
@@ -28546,6 +28776,9 @@ export namespace Prisma {
     readonly keywords: FieldRef<"Product", 'String[]'>
     readonly metaDescription: FieldRef<"Product", 'String'>
     readonly metaTitle: FieldRef<"Product", 'String'>
+    readonly pros: FieldRef<"Product", 'String[]'>
+    readonly cons: FieldRef<"Product", 'String[]'>
+    readonly affiliateLink: FieldRef<"Product", 'String'>
   }
     
 
@@ -62318,6 +62551,1185 @@ export namespace Prisma {
 
 
   /**
+   * Model SeoPage
+   */
+
+  export type AggregateSeoPage = {
+    _count: SeoPageCountAggregateOutputType | null
+    _avg: SeoPageAvgAggregateOutputType | null
+    _sum: SeoPageSumAggregateOutputType | null
+    _min: SeoPageMinAggregateOutputType | null
+    _max: SeoPageMaxAggregateOutputType | null
+  }
+
+  export type SeoPageAvgAggregateOutputType = {
+    priceThreshold: number | null
+  }
+
+  export type SeoPageSumAggregateOutputType = {
+    priceThreshold: number | null
+  }
+
+  export type SeoPageMinAggregateOutputType = {
+    id: string | null
+    categoryId: string | null
+    priceThreshold: number | null
+    urlPath: string | null
+    metaTitle: string | null
+    metaDescription: string | null
+    lastGeneratedAt: Date | null
+    isIndexed: boolean | null
+    isStale: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SeoPageMaxAggregateOutputType = {
+    id: string | null
+    categoryId: string | null
+    priceThreshold: number | null
+    urlPath: string | null
+    metaTitle: string | null
+    metaDescription: string | null
+    lastGeneratedAt: Date | null
+    isIndexed: boolean | null
+    isStale: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SeoPageCountAggregateOutputType = {
+    id: number
+    categoryId: number
+    priceThreshold: number
+    urlPath: number
+    metaTitle: number
+    metaDescription: number
+    structuredData: number
+    lastGeneratedAt: number
+    isIndexed: number
+    isStale: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SeoPageAvgAggregateInputType = {
+    priceThreshold?: true
+  }
+
+  export type SeoPageSumAggregateInputType = {
+    priceThreshold?: true
+  }
+
+  export type SeoPageMinAggregateInputType = {
+    id?: true
+    categoryId?: true
+    priceThreshold?: true
+    urlPath?: true
+    metaTitle?: true
+    metaDescription?: true
+    lastGeneratedAt?: true
+    isIndexed?: true
+    isStale?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SeoPageMaxAggregateInputType = {
+    id?: true
+    categoryId?: true
+    priceThreshold?: true
+    urlPath?: true
+    metaTitle?: true
+    metaDescription?: true
+    lastGeneratedAt?: true
+    isIndexed?: true
+    isStale?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SeoPageCountAggregateInputType = {
+    id?: true
+    categoryId?: true
+    priceThreshold?: true
+    urlPath?: true
+    metaTitle?: true
+    metaDescription?: true
+    structuredData?: true
+    lastGeneratedAt?: true
+    isIndexed?: true
+    isStale?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SeoPageAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SeoPage to aggregate.
+     */
+    where?: SeoPageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SeoPages to fetch.
+     */
+    orderBy?: SeoPageOrderByWithRelationInput | SeoPageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SeoPageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SeoPages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SeoPages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SeoPages
+    **/
+    _count?: true | SeoPageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SeoPageAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SeoPageSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SeoPageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SeoPageMaxAggregateInputType
+  }
+
+  export type GetSeoPageAggregateType<T extends SeoPageAggregateArgs> = {
+        [P in keyof T & keyof AggregateSeoPage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSeoPage[P]>
+      : GetScalarType<T[P], AggregateSeoPage[P]>
+  }
+
+
+
+
+  export type SeoPageGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SeoPageWhereInput
+    orderBy?: SeoPageOrderByWithAggregationInput | SeoPageOrderByWithAggregationInput[]
+    by: SeoPageScalarFieldEnum[] | SeoPageScalarFieldEnum
+    having?: SeoPageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SeoPageCountAggregateInputType | true
+    _avg?: SeoPageAvgAggregateInputType
+    _sum?: SeoPageSumAggregateInputType
+    _min?: SeoPageMinAggregateInputType
+    _max?: SeoPageMaxAggregateInputType
+  }
+
+  export type SeoPageGroupByOutputType = {
+    id: string
+    categoryId: string
+    priceThreshold: number
+    urlPath: string
+    metaTitle: string | null
+    metaDescription: string | null
+    structuredData: JsonValue | null
+    lastGeneratedAt: Date
+    isIndexed: boolean
+    isStale: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: SeoPageCountAggregateOutputType | null
+    _avg: SeoPageAvgAggregateOutputType | null
+    _sum: SeoPageSumAggregateOutputType | null
+    _min: SeoPageMinAggregateOutputType | null
+    _max: SeoPageMaxAggregateOutputType | null
+  }
+
+  type GetSeoPageGroupByPayload<T extends SeoPageGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SeoPageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SeoPageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SeoPageGroupByOutputType[P]>
+            : GetScalarType<T[P], SeoPageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SeoPageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    categoryId?: boolean
+    priceThreshold?: boolean
+    urlPath?: boolean
+    metaTitle?: boolean
+    metaDescription?: boolean
+    structuredData?: boolean
+    lastGeneratedAt?: boolean
+    isIndexed?: boolean
+    isStale?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    category?: boolean | CategoryDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["seoPage"]>
+
+  export type SeoPageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    categoryId?: boolean
+    priceThreshold?: boolean
+    urlPath?: boolean
+    metaTitle?: boolean
+    metaDescription?: boolean
+    structuredData?: boolean
+    lastGeneratedAt?: boolean
+    isIndexed?: boolean
+    isStale?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    category?: boolean | CategoryDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["seoPage"]>
+
+  export type SeoPageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    categoryId?: boolean
+    priceThreshold?: boolean
+    urlPath?: boolean
+    metaTitle?: boolean
+    metaDescription?: boolean
+    structuredData?: boolean
+    lastGeneratedAt?: boolean
+    isIndexed?: boolean
+    isStale?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    category?: boolean | CategoryDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["seoPage"]>
+
+  export type SeoPageSelectScalar = {
+    id?: boolean
+    categoryId?: boolean
+    priceThreshold?: boolean
+    urlPath?: boolean
+    metaTitle?: boolean
+    metaDescription?: boolean
+    structuredData?: boolean
+    lastGeneratedAt?: boolean
+    isIndexed?: boolean
+    isStale?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type SeoPageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "categoryId" | "priceThreshold" | "urlPath" | "metaTitle" | "metaDescription" | "structuredData" | "lastGeneratedAt" | "isIndexed" | "isStale" | "createdAt" | "updatedAt", ExtArgs["result"]["seoPage"]>
+  export type SeoPageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    category?: boolean | CategoryDefaultArgs<ExtArgs>
+  }
+  export type SeoPageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    category?: boolean | CategoryDefaultArgs<ExtArgs>
+  }
+  export type SeoPageIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    category?: boolean | CategoryDefaultArgs<ExtArgs>
+  }
+
+  export type $SeoPagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SeoPage"
+    objects: {
+      category: Prisma.$CategoryPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      categoryId: string
+      priceThreshold: number
+      urlPath: string
+      metaTitle: string | null
+      metaDescription: string | null
+      structuredData: Prisma.JsonValue | null
+      lastGeneratedAt: Date
+      isIndexed: boolean
+      isStale: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["seoPage"]>
+    composites: {}
+  }
+
+  type SeoPageGetPayload<S extends boolean | null | undefined | SeoPageDefaultArgs> = $Result.GetResult<Prisma.$SeoPagePayload, S>
+
+  type SeoPageCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SeoPageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SeoPageCountAggregateInputType | true
+    }
+
+  export interface SeoPageDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SeoPage'], meta: { name: 'SeoPage' } }
+    /**
+     * Find zero or one SeoPage that matches the filter.
+     * @param {SeoPageFindUniqueArgs} args - Arguments to find a SeoPage
+     * @example
+     * // Get one SeoPage
+     * const seoPage = await prisma.seoPage.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SeoPageFindUniqueArgs>(args: SelectSubset<T, SeoPageFindUniqueArgs<ExtArgs>>): Prisma__SeoPageClient<$Result.GetResult<Prisma.$SeoPagePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SeoPage that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SeoPageFindUniqueOrThrowArgs} args - Arguments to find a SeoPage
+     * @example
+     * // Get one SeoPage
+     * const seoPage = await prisma.seoPage.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SeoPageFindUniqueOrThrowArgs>(args: SelectSubset<T, SeoPageFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SeoPageClient<$Result.GetResult<Prisma.$SeoPagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SeoPage that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SeoPageFindFirstArgs} args - Arguments to find a SeoPage
+     * @example
+     * // Get one SeoPage
+     * const seoPage = await prisma.seoPage.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SeoPageFindFirstArgs>(args?: SelectSubset<T, SeoPageFindFirstArgs<ExtArgs>>): Prisma__SeoPageClient<$Result.GetResult<Prisma.$SeoPagePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SeoPage that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SeoPageFindFirstOrThrowArgs} args - Arguments to find a SeoPage
+     * @example
+     * // Get one SeoPage
+     * const seoPage = await prisma.seoPage.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SeoPageFindFirstOrThrowArgs>(args?: SelectSubset<T, SeoPageFindFirstOrThrowArgs<ExtArgs>>): Prisma__SeoPageClient<$Result.GetResult<Prisma.$SeoPagePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SeoPages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SeoPageFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SeoPages
+     * const seoPages = await prisma.seoPage.findMany()
+     * 
+     * // Get first 10 SeoPages
+     * const seoPages = await prisma.seoPage.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const seoPageWithIdOnly = await prisma.seoPage.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SeoPageFindManyArgs>(args?: SelectSubset<T, SeoPageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SeoPagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SeoPage.
+     * @param {SeoPageCreateArgs} args - Arguments to create a SeoPage.
+     * @example
+     * // Create one SeoPage
+     * const SeoPage = await prisma.seoPage.create({
+     *   data: {
+     *     // ... data to create a SeoPage
+     *   }
+     * })
+     * 
+     */
+    create<T extends SeoPageCreateArgs>(args: SelectSubset<T, SeoPageCreateArgs<ExtArgs>>): Prisma__SeoPageClient<$Result.GetResult<Prisma.$SeoPagePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SeoPages.
+     * @param {SeoPageCreateManyArgs} args - Arguments to create many SeoPages.
+     * @example
+     * // Create many SeoPages
+     * const seoPage = await prisma.seoPage.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SeoPageCreateManyArgs>(args?: SelectSubset<T, SeoPageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SeoPages and returns the data saved in the database.
+     * @param {SeoPageCreateManyAndReturnArgs} args - Arguments to create many SeoPages.
+     * @example
+     * // Create many SeoPages
+     * const seoPage = await prisma.seoPage.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SeoPages and only return the `id`
+     * const seoPageWithIdOnly = await prisma.seoPage.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SeoPageCreateManyAndReturnArgs>(args?: SelectSubset<T, SeoPageCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SeoPagePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SeoPage.
+     * @param {SeoPageDeleteArgs} args - Arguments to delete one SeoPage.
+     * @example
+     * // Delete one SeoPage
+     * const SeoPage = await prisma.seoPage.delete({
+     *   where: {
+     *     // ... filter to delete one SeoPage
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SeoPageDeleteArgs>(args: SelectSubset<T, SeoPageDeleteArgs<ExtArgs>>): Prisma__SeoPageClient<$Result.GetResult<Prisma.$SeoPagePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SeoPage.
+     * @param {SeoPageUpdateArgs} args - Arguments to update one SeoPage.
+     * @example
+     * // Update one SeoPage
+     * const seoPage = await prisma.seoPage.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SeoPageUpdateArgs>(args: SelectSubset<T, SeoPageUpdateArgs<ExtArgs>>): Prisma__SeoPageClient<$Result.GetResult<Prisma.$SeoPagePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SeoPages.
+     * @param {SeoPageDeleteManyArgs} args - Arguments to filter SeoPages to delete.
+     * @example
+     * // Delete a few SeoPages
+     * const { count } = await prisma.seoPage.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SeoPageDeleteManyArgs>(args?: SelectSubset<T, SeoPageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SeoPages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SeoPageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SeoPages
+     * const seoPage = await prisma.seoPage.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SeoPageUpdateManyArgs>(args: SelectSubset<T, SeoPageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SeoPages and returns the data updated in the database.
+     * @param {SeoPageUpdateManyAndReturnArgs} args - Arguments to update many SeoPages.
+     * @example
+     * // Update many SeoPages
+     * const seoPage = await prisma.seoPage.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SeoPages and only return the `id`
+     * const seoPageWithIdOnly = await prisma.seoPage.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SeoPageUpdateManyAndReturnArgs>(args: SelectSubset<T, SeoPageUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SeoPagePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SeoPage.
+     * @param {SeoPageUpsertArgs} args - Arguments to update or create a SeoPage.
+     * @example
+     * // Update or create a SeoPage
+     * const seoPage = await prisma.seoPage.upsert({
+     *   create: {
+     *     // ... data to create a SeoPage
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SeoPage we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SeoPageUpsertArgs>(args: SelectSubset<T, SeoPageUpsertArgs<ExtArgs>>): Prisma__SeoPageClient<$Result.GetResult<Prisma.$SeoPagePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SeoPages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SeoPageCountArgs} args - Arguments to filter SeoPages to count.
+     * @example
+     * // Count the number of SeoPages
+     * const count = await prisma.seoPage.count({
+     *   where: {
+     *     // ... the filter for the SeoPages we want to count
+     *   }
+     * })
+    **/
+    count<T extends SeoPageCountArgs>(
+      args?: Subset<T, SeoPageCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SeoPageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SeoPage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SeoPageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SeoPageAggregateArgs>(args: Subset<T, SeoPageAggregateArgs>): Prisma.PrismaPromise<GetSeoPageAggregateType<T>>
+
+    /**
+     * Group by SeoPage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SeoPageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SeoPageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SeoPageGroupByArgs['orderBy'] }
+        : { orderBy?: SeoPageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SeoPageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSeoPageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SeoPage model
+   */
+  readonly fields: SeoPageFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SeoPage.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SeoPageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    category<T extends CategoryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CategoryDefaultArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SeoPage model
+   */
+  interface SeoPageFieldRefs {
+    readonly id: FieldRef<"SeoPage", 'String'>
+    readonly categoryId: FieldRef<"SeoPage", 'String'>
+    readonly priceThreshold: FieldRef<"SeoPage", 'Int'>
+    readonly urlPath: FieldRef<"SeoPage", 'String'>
+    readonly metaTitle: FieldRef<"SeoPage", 'String'>
+    readonly metaDescription: FieldRef<"SeoPage", 'String'>
+    readonly structuredData: FieldRef<"SeoPage", 'Json'>
+    readonly lastGeneratedAt: FieldRef<"SeoPage", 'DateTime'>
+    readonly isIndexed: FieldRef<"SeoPage", 'Boolean'>
+    readonly isStale: FieldRef<"SeoPage", 'Boolean'>
+    readonly createdAt: FieldRef<"SeoPage", 'DateTime'>
+    readonly updatedAt: FieldRef<"SeoPage", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SeoPage findUnique
+   */
+  export type SeoPageFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SeoPage
+     */
+    select?: SeoPageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SeoPage
+     */
+    omit?: SeoPageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeoPageInclude<ExtArgs> | null
+    /**
+     * Filter, which SeoPage to fetch.
+     */
+    where: SeoPageWhereUniqueInput
+  }
+
+  /**
+   * SeoPage findUniqueOrThrow
+   */
+  export type SeoPageFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SeoPage
+     */
+    select?: SeoPageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SeoPage
+     */
+    omit?: SeoPageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeoPageInclude<ExtArgs> | null
+    /**
+     * Filter, which SeoPage to fetch.
+     */
+    where: SeoPageWhereUniqueInput
+  }
+
+  /**
+   * SeoPage findFirst
+   */
+  export type SeoPageFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SeoPage
+     */
+    select?: SeoPageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SeoPage
+     */
+    omit?: SeoPageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeoPageInclude<ExtArgs> | null
+    /**
+     * Filter, which SeoPage to fetch.
+     */
+    where?: SeoPageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SeoPages to fetch.
+     */
+    orderBy?: SeoPageOrderByWithRelationInput | SeoPageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SeoPages.
+     */
+    cursor?: SeoPageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SeoPages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SeoPages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SeoPages.
+     */
+    distinct?: SeoPageScalarFieldEnum | SeoPageScalarFieldEnum[]
+  }
+
+  /**
+   * SeoPage findFirstOrThrow
+   */
+  export type SeoPageFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SeoPage
+     */
+    select?: SeoPageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SeoPage
+     */
+    omit?: SeoPageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeoPageInclude<ExtArgs> | null
+    /**
+     * Filter, which SeoPage to fetch.
+     */
+    where?: SeoPageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SeoPages to fetch.
+     */
+    orderBy?: SeoPageOrderByWithRelationInput | SeoPageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SeoPages.
+     */
+    cursor?: SeoPageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SeoPages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SeoPages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SeoPages.
+     */
+    distinct?: SeoPageScalarFieldEnum | SeoPageScalarFieldEnum[]
+  }
+
+  /**
+   * SeoPage findMany
+   */
+  export type SeoPageFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SeoPage
+     */
+    select?: SeoPageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SeoPage
+     */
+    omit?: SeoPageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeoPageInclude<ExtArgs> | null
+    /**
+     * Filter, which SeoPages to fetch.
+     */
+    where?: SeoPageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SeoPages to fetch.
+     */
+    orderBy?: SeoPageOrderByWithRelationInput | SeoPageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SeoPages.
+     */
+    cursor?: SeoPageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SeoPages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SeoPages.
+     */
+    skip?: number
+    distinct?: SeoPageScalarFieldEnum | SeoPageScalarFieldEnum[]
+  }
+
+  /**
+   * SeoPage create
+   */
+  export type SeoPageCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SeoPage
+     */
+    select?: SeoPageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SeoPage
+     */
+    omit?: SeoPageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeoPageInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SeoPage.
+     */
+    data: XOR<SeoPageCreateInput, SeoPageUncheckedCreateInput>
+  }
+
+  /**
+   * SeoPage createMany
+   */
+  export type SeoPageCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SeoPages.
+     */
+    data: SeoPageCreateManyInput | SeoPageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SeoPage createManyAndReturn
+   */
+  export type SeoPageCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SeoPage
+     */
+    select?: SeoPageSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SeoPage
+     */
+    omit?: SeoPageOmit<ExtArgs> | null
+    /**
+     * The data used to create many SeoPages.
+     */
+    data: SeoPageCreateManyInput | SeoPageCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeoPageIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SeoPage update
+   */
+  export type SeoPageUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SeoPage
+     */
+    select?: SeoPageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SeoPage
+     */
+    omit?: SeoPageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeoPageInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SeoPage.
+     */
+    data: XOR<SeoPageUpdateInput, SeoPageUncheckedUpdateInput>
+    /**
+     * Choose, which SeoPage to update.
+     */
+    where: SeoPageWhereUniqueInput
+  }
+
+  /**
+   * SeoPage updateMany
+   */
+  export type SeoPageUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SeoPages.
+     */
+    data: XOR<SeoPageUpdateManyMutationInput, SeoPageUncheckedUpdateManyInput>
+    /**
+     * Filter which SeoPages to update
+     */
+    where?: SeoPageWhereInput
+    /**
+     * Limit how many SeoPages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SeoPage updateManyAndReturn
+   */
+  export type SeoPageUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SeoPage
+     */
+    select?: SeoPageSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SeoPage
+     */
+    omit?: SeoPageOmit<ExtArgs> | null
+    /**
+     * The data used to update SeoPages.
+     */
+    data: XOR<SeoPageUpdateManyMutationInput, SeoPageUncheckedUpdateManyInput>
+    /**
+     * Filter which SeoPages to update
+     */
+    where?: SeoPageWhereInput
+    /**
+     * Limit how many SeoPages to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeoPageIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SeoPage upsert
+   */
+  export type SeoPageUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SeoPage
+     */
+    select?: SeoPageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SeoPage
+     */
+    omit?: SeoPageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeoPageInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SeoPage to update in case it exists.
+     */
+    where: SeoPageWhereUniqueInput
+    /**
+     * In case the SeoPage found by the `where` argument doesn't exist, create a new SeoPage with this data.
+     */
+    create: XOR<SeoPageCreateInput, SeoPageUncheckedCreateInput>
+    /**
+     * In case the SeoPage was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SeoPageUpdateInput, SeoPageUncheckedUpdateInput>
+  }
+
+  /**
+   * SeoPage delete
+   */
+  export type SeoPageDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SeoPage
+     */
+    select?: SeoPageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SeoPage
+     */
+    omit?: SeoPageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeoPageInclude<ExtArgs> | null
+    /**
+     * Filter which SeoPage to delete.
+     */
+    where: SeoPageWhereUniqueInput
+  }
+
+  /**
+   * SeoPage deleteMany
+   */
+  export type SeoPageDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SeoPages to delete
+     */
+    where?: SeoPageWhereInput
+    /**
+     * Limit how many SeoPages to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SeoPage without action
+   */
+  export type SeoPageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SeoPage
+     */
+    select?: SeoPageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SeoPage
+     */
+    omit?: SeoPageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeoPageInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -62529,7 +63941,11 @@ export namespace Prisma {
     updatedAt: 'updatedAt',
     keywords: 'keywords',
     metaDescription: 'metaDescription',
-    metaTitle: 'metaTitle'
+    metaTitle: 'metaTitle',
+    templateType: 'templateType',
+    priceRanges: 'priceRanges',
+    filters: 'filters',
+    seoTemplates: 'seoTemplates'
   };
 
   export type CategoryScalarFieldEnum = (typeof CategoryScalarFieldEnum)[keyof typeof CategoryScalarFieldEnum]
@@ -62631,7 +64047,10 @@ export namespace Prisma {
     brand: 'brand',
     keywords: 'keywords',
     metaDescription: 'metaDescription',
-    metaTitle: 'metaTitle'
+    metaTitle: 'metaTitle',
+    pros: 'pros',
+    cons: 'cons',
+    affiliateLink: 'affiliateLink'
   };
 
   export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum]
@@ -63062,6 +64481,24 @@ export namespace Prisma {
   };
 
   export type ProductNotificationScalarFieldEnum = (typeof ProductNotificationScalarFieldEnum)[keyof typeof ProductNotificationScalarFieldEnum]
+
+
+  export const SeoPageScalarFieldEnum: {
+    id: 'id',
+    categoryId: 'categoryId',
+    priceThreshold: 'priceThreshold',
+    urlPath: 'urlPath',
+    metaTitle: 'metaTitle',
+    metaDescription: 'metaDescription',
+    structuredData: 'structuredData',
+    lastGeneratedAt: 'lastGeneratedAt',
+    isIndexed: 'isIndexed',
+    isStale: 'isStale',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type SeoPageScalarFieldEnum = (typeof SeoPageScalarFieldEnum)[keyof typeof SeoPageScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -64532,12 +65969,17 @@ export namespace Prisma {
     keywords?: StringNullableListFilter<"Category">
     metaDescription?: StringNullableFilter<"Category"> | string | null
     metaTitle?: StringNullableFilter<"Category"> | string | null
+    templateType?: StringNullableFilter<"Category"> | string | null
+    priceRanges?: IntNullableListFilter<"Category">
+    filters?: JsonNullableFilter<"Category">
+    seoTemplates?: JsonNullableFilter<"Category">
     parent?: XOR<CategoryNullableScalarRelationFilter, CategoryWhereInput> | null
     children?: CategoryListRelationFilter
     categoryOffers?: CategoryOfferListRelationFilter
     categorySpecification?: CategorySpecificationListRelationFilter
     landingPageCategoryCards?: LandingPageCategoryCardListRelationFilter
     products?: ProductListRelationFilter
+    seoPages?: SeoPageListRelationFilter
   }
 
   export type CategoryOrderByWithRelationInput = {
@@ -64552,12 +65994,17 @@ export namespace Prisma {
     keywords?: SortOrder
     metaDescription?: SortOrderInput | SortOrder
     metaTitle?: SortOrderInput | SortOrder
+    templateType?: SortOrderInput | SortOrder
+    priceRanges?: SortOrder
+    filters?: SortOrderInput | SortOrder
+    seoTemplates?: SortOrderInput | SortOrder
     parent?: CategoryOrderByWithRelationInput
     children?: CategoryOrderByRelationAggregateInput
     categoryOffers?: CategoryOfferOrderByRelationAggregateInput
     categorySpecification?: CategorySpecificationOrderByRelationAggregateInput
     landingPageCategoryCards?: LandingPageCategoryCardOrderByRelationAggregateInput
     products?: ProductOrderByRelationAggregateInput
+    seoPages?: SeoPageOrderByRelationAggregateInput
   }
 
   export type CategoryWhereUniqueInput = Prisma.AtLeast<{
@@ -64575,12 +66022,17 @@ export namespace Prisma {
     keywords?: StringNullableListFilter<"Category">
     metaDescription?: StringNullableFilter<"Category"> | string | null
     metaTitle?: StringNullableFilter<"Category"> | string | null
+    templateType?: StringNullableFilter<"Category"> | string | null
+    priceRanges?: IntNullableListFilter<"Category">
+    filters?: JsonNullableFilter<"Category">
+    seoTemplates?: JsonNullableFilter<"Category">
     parent?: XOR<CategoryNullableScalarRelationFilter, CategoryWhereInput> | null
     children?: CategoryListRelationFilter
     categoryOffers?: CategoryOfferListRelationFilter
     categorySpecification?: CategorySpecificationListRelationFilter
     landingPageCategoryCards?: LandingPageCategoryCardListRelationFilter
     products?: ProductListRelationFilter
+    seoPages?: SeoPageListRelationFilter
   }, "id" | "name" | "slug">
 
   export type CategoryOrderByWithAggregationInput = {
@@ -64595,9 +66047,15 @@ export namespace Prisma {
     keywords?: SortOrder
     metaDescription?: SortOrderInput | SortOrder
     metaTitle?: SortOrderInput | SortOrder
+    templateType?: SortOrderInput | SortOrder
+    priceRanges?: SortOrder
+    filters?: SortOrderInput | SortOrder
+    seoTemplates?: SortOrderInput | SortOrder
     _count?: CategoryCountOrderByAggregateInput
+    _avg?: CategoryAvgOrderByAggregateInput
     _max?: CategoryMaxOrderByAggregateInput
     _min?: CategoryMinOrderByAggregateInput
+    _sum?: CategorySumOrderByAggregateInput
   }
 
   export type CategoryScalarWhereWithAggregatesInput = {
@@ -64615,6 +66073,10 @@ export namespace Prisma {
     keywords?: StringNullableListFilter<"Category">
     metaDescription?: StringNullableWithAggregatesFilter<"Category"> | string | null
     metaTitle?: StringNullableWithAggregatesFilter<"Category"> | string | null
+    templateType?: StringNullableWithAggregatesFilter<"Category"> | string | null
+    priceRanges?: IntNullableListFilter<"Category">
+    filters?: JsonNullableWithAggregatesFilter<"Category">
+    seoTemplates?: JsonNullableWithAggregatesFilter<"Category">
   }
 
   export type OfferWhereInput = {
@@ -65057,6 +66519,9 @@ export namespace Prisma {
     keywords?: StringNullableListFilter<"Product">
     metaDescription?: StringNullableFilter<"Product"> | string | null
     metaTitle?: StringNullableFilter<"Product"> | string | null
+    pros?: StringNullableListFilter<"Product">
+    cons?: StringNullableListFilter<"Product">
+    affiliateLink?: StringNullableFilter<"Product"> | string | null
     Conversation?: ConversationListRelationFilter
     deliveryOptions?: DeliveryOptionListRelationFilter
     images?: ProductImageListRelationFilter
@@ -65090,6 +66555,9 @@ export namespace Prisma {
     keywords?: SortOrder
     metaDescription?: SortOrderInput | SortOrder
     metaTitle?: SortOrderInput | SortOrder
+    pros?: SortOrder
+    cons?: SortOrder
+    affiliateLink?: SortOrderInput | SortOrder
     Conversation?: ConversationOrderByRelationAggregateInput
     deliveryOptions?: DeliveryOptionOrderByRelationAggregateInput
     images?: ProductImageOrderByRelationAggregateInput
@@ -65126,6 +66594,9 @@ export namespace Prisma {
     keywords?: StringNullableListFilter<"Product">
     metaDescription?: StringNullableFilter<"Product"> | string | null
     metaTitle?: StringNullableFilter<"Product"> | string | null
+    pros?: StringNullableListFilter<"Product">
+    cons?: StringNullableListFilter<"Product">
+    affiliateLink?: StringNullableFilter<"Product"> | string | null
     Conversation?: ConversationListRelationFilter
     deliveryOptions?: DeliveryOptionListRelationFilter
     images?: ProductImageListRelationFilter
@@ -65159,6 +66630,9 @@ export namespace Prisma {
     keywords?: SortOrder
     metaDescription?: SortOrderInput | SortOrder
     metaTitle?: SortOrderInput | SortOrder
+    pros?: SortOrder
+    cons?: SortOrder
+    affiliateLink?: SortOrderInput | SortOrder
     _count?: ProductCountOrderByAggregateInput
     _max?: ProductMaxOrderByAggregateInput
     _min?: ProductMinOrderByAggregateInput
@@ -65184,6 +66658,9 @@ export namespace Prisma {
     keywords?: StringNullableListFilter<"Product">
     metaDescription?: StringNullableWithAggregatesFilter<"Product"> | string | null
     metaTitle?: StringNullableWithAggregatesFilter<"Product"> | string | null
+    pros?: StringNullableListFilter<"Product">
+    cons?: StringNullableListFilter<"Product">
+    affiliateLink?: StringNullableWithAggregatesFilter<"Product"> | string | null
   }
 
   export type ProductVariantWhereInput = {
@@ -67439,6 +68916,98 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"ProductNotification"> | Date | string
   }
 
+  export type SeoPageWhereInput = {
+    AND?: SeoPageWhereInput | SeoPageWhereInput[]
+    OR?: SeoPageWhereInput[]
+    NOT?: SeoPageWhereInput | SeoPageWhereInput[]
+    id?: StringFilter<"SeoPage"> | string
+    categoryId?: StringFilter<"SeoPage"> | string
+    priceThreshold?: IntFilter<"SeoPage"> | number
+    urlPath?: StringFilter<"SeoPage"> | string
+    metaTitle?: StringNullableFilter<"SeoPage"> | string | null
+    metaDescription?: StringNullableFilter<"SeoPage"> | string | null
+    structuredData?: JsonNullableFilter<"SeoPage">
+    lastGeneratedAt?: DateTimeFilter<"SeoPage"> | Date | string
+    isIndexed?: BoolFilter<"SeoPage"> | boolean
+    isStale?: BoolFilter<"SeoPage"> | boolean
+    createdAt?: DateTimeFilter<"SeoPage"> | Date | string
+    updatedAt?: DateTimeFilter<"SeoPage"> | Date | string
+    category?: XOR<CategoryScalarRelationFilter, CategoryWhereInput>
+  }
+
+  export type SeoPageOrderByWithRelationInput = {
+    id?: SortOrder
+    categoryId?: SortOrder
+    priceThreshold?: SortOrder
+    urlPath?: SortOrder
+    metaTitle?: SortOrderInput | SortOrder
+    metaDescription?: SortOrderInput | SortOrder
+    structuredData?: SortOrderInput | SortOrder
+    lastGeneratedAt?: SortOrder
+    isIndexed?: SortOrder
+    isStale?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    category?: CategoryOrderByWithRelationInput
+  }
+
+  export type SeoPageWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    urlPath?: string
+    AND?: SeoPageWhereInput | SeoPageWhereInput[]
+    OR?: SeoPageWhereInput[]
+    NOT?: SeoPageWhereInput | SeoPageWhereInput[]
+    categoryId?: StringFilter<"SeoPage"> | string
+    priceThreshold?: IntFilter<"SeoPage"> | number
+    metaTitle?: StringNullableFilter<"SeoPage"> | string | null
+    metaDescription?: StringNullableFilter<"SeoPage"> | string | null
+    structuredData?: JsonNullableFilter<"SeoPage">
+    lastGeneratedAt?: DateTimeFilter<"SeoPage"> | Date | string
+    isIndexed?: BoolFilter<"SeoPage"> | boolean
+    isStale?: BoolFilter<"SeoPage"> | boolean
+    createdAt?: DateTimeFilter<"SeoPage"> | Date | string
+    updatedAt?: DateTimeFilter<"SeoPage"> | Date | string
+    category?: XOR<CategoryScalarRelationFilter, CategoryWhereInput>
+  }, "id" | "urlPath">
+
+  export type SeoPageOrderByWithAggregationInput = {
+    id?: SortOrder
+    categoryId?: SortOrder
+    priceThreshold?: SortOrder
+    urlPath?: SortOrder
+    metaTitle?: SortOrderInput | SortOrder
+    metaDescription?: SortOrderInput | SortOrder
+    structuredData?: SortOrderInput | SortOrder
+    lastGeneratedAt?: SortOrder
+    isIndexed?: SortOrder
+    isStale?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SeoPageCountOrderByAggregateInput
+    _avg?: SeoPageAvgOrderByAggregateInput
+    _max?: SeoPageMaxOrderByAggregateInput
+    _min?: SeoPageMinOrderByAggregateInput
+    _sum?: SeoPageSumOrderByAggregateInput
+  }
+
+  export type SeoPageScalarWhereWithAggregatesInput = {
+    AND?: SeoPageScalarWhereWithAggregatesInput | SeoPageScalarWhereWithAggregatesInput[]
+    OR?: SeoPageScalarWhereWithAggregatesInput[]
+    NOT?: SeoPageScalarWhereWithAggregatesInput | SeoPageScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SeoPage"> | string
+    categoryId?: StringWithAggregatesFilter<"SeoPage"> | string
+    priceThreshold?: IntWithAggregatesFilter<"SeoPage"> | number
+    urlPath?: StringWithAggregatesFilter<"SeoPage"> | string
+    metaTitle?: StringNullableWithAggregatesFilter<"SeoPage"> | string | null
+    metaDescription?: StringNullableWithAggregatesFilter<"SeoPage"> | string | null
+    structuredData?: JsonNullableWithAggregatesFilter<"SeoPage">
+    lastGeneratedAt?: DateTimeWithAggregatesFilter<"SeoPage"> | Date | string
+    isIndexed?: BoolWithAggregatesFilter<"SeoPage"> | boolean
+    isStale?: BoolWithAggregatesFilter<"SeoPage"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"SeoPage"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"SeoPage"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     name?: string
@@ -68629,12 +70198,17 @@ export namespace Prisma {
     keywords?: CategoryCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    templateType?: string | null
+    priceRanges?: CategoryCreatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     parent?: CategoryCreateNestedOneWithoutChildrenInput
     children?: CategoryCreateNestedManyWithoutParentInput
     categoryOffers?: CategoryOfferCreateNestedManyWithoutCategoryInput
     categorySpecification?: CategorySpecificationCreateNestedManyWithoutCategoryInput
     landingPageCategoryCards?: LandingPageCategoryCardCreateNestedManyWithoutCategoryInput
     products?: ProductCreateNestedManyWithoutCategoryInput
+    seoPages?: SeoPageCreateNestedManyWithoutCategoryInput
   }
 
   export type CategoryUncheckedCreateInput = {
@@ -68649,11 +70223,16 @@ export namespace Prisma {
     keywords?: CategoryCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    templateType?: string | null
+    priceRanges?: CategoryCreatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     children?: CategoryUncheckedCreateNestedManyWithoutParentInput
     categoryOffers?: CategoryOfferUncheckedCreateNestedManyWithoutCategoryInput
     categorySpecification?: CategorySpecificationUncheckedCreateNestedManyWithoutCategoryInput
     landingPageCategoryCards?: LandingPageCategoryCardUncheckedCreateNestedManyWithoutCategoryInput
     products?: ProductUncheckedCreateNestedManyWithoutCategoryInput
+    seoPages?: SeoPageUncheckedCreateNestedManyWithoutCategoryInput
   }
 
   export type CategoryUpdateInput = {
@@ -68667,12 +70246,17 @@ export namespace Prisma {
     keywords?: CategoryUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    templateType?: NullableStringFieldUpdateOperationsInput | string | null
+    priceRanges?: CategoryUpdatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     parent?: CategoryUpdateOneWithoutChildrenNestedInput
     children?: CategoryUpdateManyWithoutParentNestedInput
     categoryOffers?: CategoryOfferUpdateManyWithoutCategoryNestedInput
     categorySpecification?: CategorySpecificationUpdateManyWithoutCategoryNestedInput
     landingPageCategoryCards?: LandingPageCategoryCardUpdateManyWithoutCategoryNestedInput
     products?: ProductUpdateManyWithoutCategoryNestedInput
+    seoPages?: SeoPageUpdateManyWithoutCategoryNestedInput
   }
 
   export type CategoryUncheckedUpdateInput = {
@@ -68687,11 +70271,16 @@ export namespace Prisma {
     keywords?: CategoryUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    templateType?: NullableStringFieldUpdateOperationsInput | string | null
+    priceRanges?: CategoryUpdatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     children?: CategoryUncheckedUpdateManyWithoutParentNestedInput
     categoryOffers?: CategoryOfferUncheckedUpdateManyWithoutCategoryNestedInput
     categorySpecification?: CategorySpecificationUncheckedUpdateManyWithoutCategoryNestedInput
     landingPageCategoryCards?: LandingPageCategoryCardUncheckedUpdateManyWithoutCategoryNestedInput
     products?: ProductUncheckedUpdateManyWithoutCategoryNestedInput
+    seoPages?: SeoPageUncheckedUpdateManyWithoutCategoryNestedInput
   }
 
   export type CategoryCreateManyInput = {
@@ -68706,6 +70295,10 @@ export namespace Prisma {
     keywords?: CategoryCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    templateType?: string | null
+    priceRanges?: CategoryCreatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type CategoryUpdateManyMutationInput = {
@@ -68719,6 +70312,10 @@ export namespace Prisma {
     keywords?: CategoryUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    templateType?: NullableStringFieldUpdateOperationsInput | string | null
+    priceRanges?: CategoryUpdatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type CategoryUncheckedUpdateManyInput = {
@@ -68733,6 +70330,10 @@ export namespace Prisma {
     keywords?: CategoryUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    templateType?: NullableStringFieldUpdateOperationsInput | string | null
+    priceRanges?: CategoryUpdatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type OfferCreateInput = {
@@ -69189,6 +70790,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationCreateNestedManyWithoutProductInput
     deliveryOptions?: DeliveryOptionCreateNestedManyWithoutProductInput
     images?: ProductImageCreateNestedManyWithoutProductInput
@@ -69222,6 +70826,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationUncheckedCreateNestedManyWithoutProductInput
     deliveryOptions?: DeliveryOptionUncheckedCreateNestedManyWithoutProductInput
     images?: ProductImageUncheckedCreateNestedManyWithoutProductInput
@@ -69251,6 +70858,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUpdateManyWithoutProductNestedInput
     deliveryOptions?: DeliveryOptionUpdateManyWithoutProductNestedInput
     images?: ProductImageUpdateManyWithoutProductNestedInput
@@ -69284,6 +70894,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUncheckedUpdateManyWithoutProductNestedInput
     deliveryOptions?: DeliveryOptionUncheckedUpdateManyWithoutProductNestedInput
     images?: ProductImageUncheckedUpdateManyWithoutProductNestedInput
@@ -69315,6 +70928,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
   }
 
   export type ProductUpdateManyMutationInput = {
@@ -69332,6 +70948,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ProductUncheckedUpdateManyInput = {
@@ -69351,6 +70970,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ProductVariantCreateInput = {
@@ -71757,6 +73379,110 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type SeoPageCreateInput = {
+    id?: string
+    priceThreshold: number
+    urlPath: string
+    metaTitle?: string | null
+    metaDescription?: string | null
+    structuredData?: NullableJsonNullValueInput | InputJsonValue
+    lastGeneratedAt?: Date | string
+    isIndexed?: boolean
+    isStale?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    category: CategoryCreateNestedOneWithoutSeoPagesInput
+  }
+
+  export type SeoPageUncheckedCreateInput = {
+    id?: string
+    categoryId: string
+    priceThreshold: number
+    urlPath: string
+    metaTitle?: string | null
+    metaDescription?: string | null
+    structuredData?: NullableJsonNullValueInput | InputJsonValue
+    lastGeneratedAt?: Date | string
+    isIndexed?: boolean
+    isStale?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SeoPageUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    priceThreshold?: IntFieldUpdateOperationsInput | number
+    urlPath?: StringFieldUpdateOperationsInput | string
+    metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    structuredData?: NullableJsonNullValueInput | InputJsonValue
+    lastGeneratedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isIndexed?: BoolFieldUpdateOperationsInput | boolean
+    isStale?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    category?: CategoryUpdateOneRequiredWithoutSeoPagesNestedInput
+  }
+
+  export type SeoPageUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    categoryId?: StringFieldUpdateOperationsInput | string
+    priceThreshold?: IntFieldUpdateOperationsInput | number
+    urlPath?: StringFieldUpdateOperationsInput | string
+    metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    structuredData?: NullableJsonNullValueInput | InputJsonValue
+    lastGeneratedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isIndexed?: BoolFieldUpdateOperationsInput | boolean
+    isStale?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SeoPageCreateManyInput = {
+    id?: string
+    categoryId: string
+    priceThreshold: number
+    urlPath: string
+    metaTitle?: string | null
+    metaDescription?: string | null
+    structuredData?: NullableJsonNullValueInput | InputJsonValue
+    lastGeneratedAt?: Date | string
+    isIndexed?: boolean
+    isStale?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SeoPageUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    priceThreshold?: IntFieldUpdateOperationsInput | number
+    urlPath?: StringFieldUpdateOperationsInput | string
+    metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    structuredData?: NullableJsonNullValueInput | InputJsonValue
+    lastGeneratedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isIndexed?: BoolFieldUpdateOperationsInput | boolean
+    isStale?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SeoPageUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    categoryId?: StringFieldUpdateOperationsInput | string
+    priceThreshold?: IntFieldUpdateOperationsInput | number
+    urlPath?: StringFieldUpdateOperationsInput | string
+    metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    structuredData?: NullableJsonNullValueInput | InputJsonValue
+    lastGeneratedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isIndexed?: BoolFieldUpdateOperationsInput | boolean
+    isStale?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -72878,6 +74604,14 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type IntNullableListFilter<$PrismaModel = never> = {
+    equals?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    has?: number | IntFieldRefInput<$PrismaModel> | null
+    hasEvery?: number[] | ListIntFieldRefInput<$PrismaModel>
+    hasSome?: number[] | ListIntFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
   export type CategoryNullableScalarRelationFilter = {
     is?: CategoryWhereInput | null
     isNot?: CategoryWhereInput | null
@@ -72907,6 +74641,12 @@ export namespace Prisma {
     none?: LandingPageCategoryCardWhereInput
   }
 
+  export type SeoPageListRelationFilter = {
+    every?: SeoPageWhereInput
+    some?: SeoPageWhereInput
+    none?: SeoPageWhereInput
+  }
+
   export type CategoryOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -72923,6 +74663,10 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type SeoPageOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type CategoryCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -72935,6 +74679,14 @@ export namespace Prisma {
     keywords?: SortOrder
     metaDescription?: SortOrder
     metaTitle?: SortOrder
+    templateType?: SortOrder
+    priceRanges?: SortOrder
+    filters?: SortOrder
+    seoTemplates?: SortOrder
+  }
+
+  export type CategoryAvgOrderByAggregateInput = {
+    priceRanges?: SortOrder
   }
 
   export type CategoryMaxOrderByAggregateInput = {
@@ -72948,6 +74700,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     metaDescription?: SortOrder
     metaTitle?: SortOrder
+    templateType?: SortOrder
   }
 
   export type CategoryMinOrderByAggregateInput = {
@@ -72961,6 +74714,11 @@ export namespace Prisma {
     updatedAt?: SortOrder
     metaDescription?: SortOrder
     metaTitle?: SortOrder
+    templateType?: SortOrder
+  }
+
+  export type CategorySumOrderByAggregateInput = {
+    priceRanges?: SortOrder
   }
 
   export type EnumDiscountTypeFilter<$PrismaModel = never> = {
@@ -73360,6 +75118,9 @@ export namespace Prisma {
     keywords?: SortOrder
     metaDescription?: SortOrder
     metaTitle?: SortOrder
+    pros?: SortOrder
+    cons?: SortOrder
+    affiliateLink?: SortOrder
   }
 
   export type ProductMaxOrderByAggregateInput = {
@@ -73376,6 +75137,7 @@ export namespace Prisma {
     brand?: SortOrder
     metaDescription?: SortOrder
     metaTitle?: SortOrder
+    affiliateLink?: SortOrder
   }
 
   export type ProductMinOrderByAggregateInput = {
@@ -73392,6 +75154,7 @@ export namespace Prisma {
     brand?: SortOrder
     metaDescription?: SortOrder
     metaTitle?: SortOrder
+    affiliateLink?: SortOrder
   }
 
   export type EnumProductStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -74955,6 +76718,57 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type SeoPageCountOrderByAggregateInput = {
+    id?: SortOrder
+    categoryId?: SortOrder
+    priceThreshold?: SortOrder
+    urlPath?: SortOrder
+    metaTitle?: SortOrder
+    metaDescription?: SortOrder
+    structuredData?: SortOrder
+    lastGeneratedAt?: SortOrder
+    isIndexed?: SortOrder
+    isStale?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SeoPageAvgOrderByAggregateInput = {
+    priceThreshold?: SortOrder
+  }
+
+  export type SeoPageMaxOrderByAggregateInput = {
+    id?: SortOrder
+    categoryId?: SortOrder
+    priceThreshold?: SortOrder
+    urlPath?: SortOrder
+    metaTitle?: SortOrder
+    metaDescription?: SortOrder
+    lastGeneratedAt?: SortOrder
+    isIndexed?: SortOrder
+    isStale?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SeoPageMinOrderByAggregateInput = {
+    id?: SortOrder
+    categoryId?: SortOrder
+    priceThreshold?: SortOrder
+    urlPath?: SortOrder
+    metaTitle?: SortOrder
+    metaDescription?: SortOrder
+    lastGeneratedAt?: SortOrder
+    isIndexed?: SortOrder
+    isStale?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SeoPageSumOrderByAggregateInput = {
+    priceThreshold?: SortOrder
+  }
+
   export type AccountCreateNestedManyWithoutUserInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -76448,6 +78262,10 @@ export namespace Prisma {
     set: string[]
   }
 
+  export type CategoryCreatepriceRangesInput = {
+    set: number[]
+  }
+
   export type CategoryCreateNestedOneWithoutChildrenInput = {
     create?: XOR<CategoryCreateWithoutChildrenInput, CategoryUncheckedCreateWithoutChildrenInput>
     connectOrCreate?: CategoryCreateOrConnectWithoutChildrenInput
@@ -76489,6 +78307,13 @@ export namespace Prisma {
     connect?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
   }
 
+  export type SeoPageCreateNestedManyWithoutCategoryInput = {
+    create?: XOR<SeoPageCreateWithoutCategoryInput, SeoPageUncheckedCreateWithoutCategoryInput> | SeoPageCreateWithoutCategoryInput[] | SeoPageUncheckedCreateWithoutCategoryInput[]
+    connectOrCreate?: SeoPageCreateOrConnectWithoutCategoryInput | SeoPageCreateOrConnectWithoutCategoryInput[]
+    createMany?: SeoPageCreateManyCategoryInputEnvelope
+    connect?: SeoPageWhereUniqueInput | SeoPageWhereUniqueInput[]
+  }
+
   export type CategoryUncheckedCreateNestedManyWithoutParentInput = {
     create?: XOR<CategoryCreateWithoutParentInput, CategoryUncheckedCreateWithoutParentInput> | CategoryCreateWithoutParentInput[] | CategoryUncheckedCreateWithoutParentInput[]
     connectOrCreate?: CategoryCreateOrConnectWithoutParentInput | CategoryCreateOrConnectWithoutParentInput[]
@@ -76524,9 +78349,21 @@ export namespace Prisma {
     connect?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
   }
 
+  export type SeoPageUncheckedCreateNestedManyWithoutCategoryInput = {
+    create?: XOR<SeoPageCreateWithoutCategoryInput, SeoPageUncheckedCreateWithoutCategoryInput> | SeoPageCreateWithoutCategoryInput[] | SeoPageUncheckedCreateWithoutCategoryInput[]
+    connectOrCreate?: SeoPageCreateOrConnectWithoutCategoryInput | SeoPageCreateOrConnectWithoutCategoryInput[]
+    createMany?: SeoPageCreateManyCategoryInputEnvelope
+    connect?: SeoPageWhereUniqueInput | SeoPageWhereUniqueInput[]
+  }
+
   export type CategoryUpdatekeywordsInput = {
     set?: string[]
     push?: string | string[]
+  }
+
+  export type CategoryUpdatepriceRangesInput = {
+    set?: number[]
+    push?: number | number[]
   }
 
   export type CategoryUpdateOneWithoutChildrenNestedInput = {
@@ -76609,6 +78446,20 @@ export namespace Prisma {
     deleteMany?: ProductScalarWhereInput | ProductScalarWhereInput[]
   }
 
+  export type SeoPageUpdateManyWithoutCategoryNestedInput = {
+    create?: XOR<SeoPageCreateWithoutCategoryInput, SeoPageUncheckedCreateWithoutCategoryInput> | SeoPageCreateWithoutCategoryInput[] | SeoPageUncheckedCreateWithoutCategoryInput[]
+    connectOrCreate?: SeoPageCreateOrConnectWithoutCategoryInput | SeoPageCreateOrConnectWithoutCategoryInput[]
+    upsert?: SeoPageUpsertWithWhereUniqueWithoutCategoryInput | SeoPageUpsertWithWhereUniqueWithoutCategoryInput[]
+    createMany?: SeoPageCreateManyCategoryInputEnvelope
+    set?: SeoPageWhereUniqueInput | SeoPageWhereUniqueInput[]
+    disconnect?: SeoPageWhereUniqueInput | SeoPageWhereUniqueInput[]
+    delete?: SeoPageWhereUniqueInput | SeoPageWhereUniqueInput[]
+    connect?: SeoPageWhereUniqueInput | SeoPageWhereUniqueInput[]
+    update?: SeoPageUpdateWithWhereUniqueWithoutCategoryInput | SeoPageUpdateWithWhereUniqueWithoutCategoryInput[]
+    updateMany?: SeoPageUpdateManyWithWhereWithoutCategoryInput | SeoPageUpdateManyWithWhereWithoutCategoryInput[]
+    deleteMany?: SeoPageScalarWhereInput | SeoPageScalarWhereInput[]
+  }
+
   export type CategoryUncheckedUpdateManyWithoutParentNestedInput = {
     create?: XOR<CategoryCreateWithoutParentInput, CategoryUncheckedCreateWithoutParentInput> | CategoryCreateWithoutParentInput[] | CategoryUncheckedCreateWithoutParentInput[]
     connectOrCreate?: CategoryCreateOrConnectWithoutParentInput | CategoryCreateOrConnectWithoutParentInput[]
@@ -76677,6 +78528,20 @@ export namespace Prisma {
     update?: ProductUpdateWithWhereUniqueWithoutCategoryInput | ProductUpdateWithWhereUniqueWithoutCategoryInput[]
     updateMany?: ProductUpdateManyWithWhereWithoutCategoryInput | ProductUpdateManyWithWhereWithoutCategoryInput[]
     deleteMany?: ProductScalarWhereInput | ProductScalarWhereInput[]
+  }
+
+  export type SeoPageUncheckedUpdateManyWithoutCategoryNestedInput = {
+    create?: XOR<SeoPageCreateWithoutCategoryInput, SeoPageUncheckedCreateWithoutCategoryInput> | SeoPageCreateWithoutCategoryInput[] | SeoPageUncheckedCreateWithoutCategoryInput[]
+    connectOrCreate?: SeoPageCreateOrConnectWithoutCategoryInput | SeoPageCreateOrConnectWithoutCategoryInput[]
+    upsert?: SeoPageUpsertWithWhereUniqueWithoutCategoryInput | SeoPageUpsertWithWhereUniqueWithoutCategoryInput[]
+    createMany?: SeoPageCreateManyCategoryInputEnvelope
+    set?: SeoPageWhereUniqueInput | SeoPageWhereUniqueInput[]
+    disconnect?: SeoPageWhereUniqueInput | SeoPageWhereUniqueInput[]
+    delete?: SeoPageWhereUniqueInput | SeoPageWhereUniqueInput[]
+    connect?: SeoPageWhereUniqueInput | SeoPageWhereUniqueInput[]
+    update?: SeoPageUpdateWithWhereUniqueWithoutCategoryInput | SeoPageUpdateWithWhereUniqueWithoutCategoryInput[]
+    updateMany?: SeoPageUpdateManyWithWhereWithoutCategoryInput | SeoPageUpdateManyWithWhereWithoutCategoryInput[]
+    deleteMany?: SeoPageScalarWhereInput | SeoPageScalarWhereInput[]
   }
 
   export type CategoryOfferCreateNestedManyWithoutOfferInput = {
@@ -76931,6 +78796,14 @@ export namespace Prisma {
     set: string[]
   }
 
+  export type ProductCreateprosInput = {
+    set: string[]
+  }
+
+  export type ProductCreateconsInput = {
+    set: string[]
+  }
+
   export type ConversationCreateNestedManyWithoutProductInput = {
     create?: XOR<ConversationCreateWithoutProductInput, ConversationUncheckedCreateWithoutProductInput> | ConversationCreateWithoutProductInput[] | ConversationUncheckedCreateWithoutProductInput[]
     connectOrCreate?: ConversationCreateOrConnectWithoutProductInput | ConversationCreateOrConnectWithoutProductInput[]
@@ -77121,6 +78994,16 @@ export namespace Prisma {
   }
 
   export type ProductUpdatekeywordsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type ProductUpdateprosInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type ProductUpdateconsInput = {
     set?: string[]
     push?: string | string[]
   }
@@ -78785,6 +80668,20 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutProductNotificationsInput, UserUpdateWithoutProductNotificationsInput>, UserUncheckedUpdateWithoutProductNotificationsInput>
   }
 
+  export type CategoryCreateNestedOneWithoutSeoPagesInput = {
+    create?: XOR<CategoryCreateWithoutSeoPagesInput, CategoryUncheckedCreateWithoutSeoPagesInput>
+    connectOrCreate?: CategoryCreateOrConnectWithoutSeoPagesInput
+    connect?: CategoryWhereUniqueInput
+  }
+
+  export type CategoryUpdateOneRequiredWithoutSeoPagesNestedInput = {
+    create?: XOR<CategoryCreateWithoutSeoPagesInput, CategoryUncheckedCreateWithoutSeoPagesInput>
+    connectOrCreate?: CategoryCreateOrConnectWithoutSeoPagesInput
+    upsert?: CategoryUpsertWithoutSeoPagesInput
+    connect?: CategoryWhereUniqueInput
+    update?: XOR<XOR<CategoryUpdateToOneWithWhereWithoutSeoPagesInput, CategoryUpdateWithoutSeoPagesInput>, CategoryUncheckedUpdateWithoutSeoPagesInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -79953,6 +81850,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationCreateNestedManyWithoutProductInput
     deliveryOptions?: DeliveryOptionCreateNestedManyWithoutProductInput
     images?: ProductImageCreateNestedManyWithoutProductInput
@@ -79984,6 +81884,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationUncheckedCreateNestedManyWithoutProductInput
     deliveryOptions?: DeliveryOptionUncheckedCreateNestedManyWithoutProductInput
     images?: ProductImageUncheckedCreateNestedManyWithoutProductInput
@@ -80801,6 +82704,9 @@ export namespace Prisma {
     keywords?: StringNullableListFilter<"Product">
     metaDescription?: StringNullableFilter<"Product"> | string | null
     metaTitle?: StringNullableFilter<"Product"> | string | null
+    pros?: StringNullableListFilter<"Product">
+    cons?: StringNullableListFilter<"Product">
+    affiliateLink?: StringNullableFilter<"Product"> | string | null
   }
 
   export type RecentlyViewedUpsertWithWhereUniqueWithoutUserInput = {
@@ -82077,6 +83983,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     deliveryOptions?: DeliveryOptionCreateNestedManyWithoutProductInput
     images?: ProductImageCreateNestedManyWithoutProductInput
     notifications?: ProductNotificationCreateNestedManyWithoutProductInput
@@ -82109,6 +84018,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     deliveryOptions?: DeliveryOptionUncheckedCreateNestedManyWithoutProductInput
     images?: ProductImageUncheckedCreateNestedManyWithoutProductInput
     notifications?: ProductNotificationUncheckedCreateNestedManyWithoutProductInput
@@ -82413,6 +84325,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryOptions?: DeliveryOptionUpdateManyWithoutProductNestedInput
     images?: ProductImageUpdateManyWithoutProductNestedInput
     notifications?: ProductNotificationUpdateManyWithoutProductNestedInput
@@ -82445,6 +84360,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     deliveryOptions?: DeliveryOptionUncheckedUpdateManyWithoutProductNestedInput
     images?: ProductImageUncheckedUpdateManyWithoutProductNestedInput
     notifications?: ProductNotificationUncheckedUpdateManyWithoutProductNestedInput
@@ -83716,11 +85634,16 @@ export namespace Prisma {
     keywords?: CategoryCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    templateType?: string | null
+    priceRanges?: CategoryCreatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     parent?: CategoryCreateNestedOneWithoutChildrenInput
     children?: CategoryCreateNestedManyWithoutParentInput
     categoryOffers?: CategoryOfferCreateNestedManyWithoutCategoryInput
     landingPageCategoryCards?: LandingPageCategoryCardCreateNestedManyWithoutCategoryInput
     products?: ProductCreateNestedManyWithoutCategoryInput
+    seoPages?: SeoPageCreateNestedManyWithoutCategoryInput
   }
 
   export type CategoryUncheckedCreateWithoutCategorySpecificationInput = {
@@ -83735,10 +85658,15 @@ export namespace Prisma {
     keywords?: CategoryCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    templateType?: string | null
+    priceRanges?: CategoryCreatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     children?: CategoryUncheckedCreateNestedManyWithoutParentInput
     categoryOffers?: CategoryOfferUncheckedCreateNestedManyWithoutCategoryInput
     landingPageCategoryCards?: LandingPageCategoryCardUncheckedCreateNestedManyWithoutCategoryInput
     products?: ProductUncheckedCreateNestedManyWithoutCategoryInput
+    seoPages?: SeoPageUncheckedCreateNestedManyWithoutCategoryInput
   }
 
   export type CategoryCreateOrConnectWithoutCategorySpecificationInput = {
@@ -83768,11 +85696,16 @@ export namespace Prisma {
     keywords?: CategoryUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    templateType?: NullableStringFieldUpdateOperationsInput | string | null
+    priceRanges?: CategoryUpdatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     parent?: CategoryUpdateOneWithoutChildrenNestedInput
     children?: CategoryUpdateManyWithoutParentNestedInput
     categoryOffers?: CategoryOfferUpdateManyWithoutCategoryNestedInput
     landingPageCategoryCards?: LandingPageCategoryCardUpdateManyWithoutCategoryNestedInput
     products?: ProductUpdateManyWithoutCategoryNestedInput
+    seoPages?: SeoPageUpdateManyWithoutCategoryNestedInput
   }
 
   export type CategoryUncheckedUpdateWithoutCategorySpecificationInput = {
@@ -83787,10 +85720,15 @@ export namespace Prisma {
     keywords?: CategoryUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    templateType?: NullableStringFieldUpdateOperationsInput | string | null
+    priceRanges?: CategoryUpdatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     children?: CategoryUncheckedUpdateManyWithoutParentNestedInput
     categoryOffers?: CategoryOfferUncheckedUpdateManyWithoutCategoryNestedInput
     landingPageCategoryCards?: LandingPageCategoryCardUncheckedUpdateManyWithoutCategoryNestedInput
     products?: ProductUncheckedUpdateManyWithoutCategoryNestedInput
+    seoPages?: SeoPageUncheckedUpdateManyWithoutCategoryNestedInput
   }
 
   export type CategoryCreateWithoutChildrenInput = {
@@ -83804,11 +85742,16 @@ export namespace Prisma {
     keywords?: CategoryCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    templateType?: string | null
+    priceRanges?: CategoryCreatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     parent?: CategoryCreateNestedOneWithoutChildrenInput
     categoryOffers?: CategoryOfferCreateNestedManyWithoutCategoryInput
     categorySpecification?: CategorySpecificationCreateNestedManyWithoutCategoryInput
     landingPageCategoryCards?: LandingPageCategoryCardCreateNestedManyWithoutCategoryInput
     products?: ProductCreateNestedManyWithoutCategoryInput
+    seoPages?: SeoPageCreateNestedManyWithoutCategoryInput
   }
 
   export type CategoryUncheckedCreateWithoutChildrenInput = {
@@ -83823,10 +85766,15 @@ export namespace Prisma {
     keywords?: CategoryCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    templateType?: string | null
+    priceRanges?: CategoryCreatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     categoryOffers?: CategoryOfferUncheckedCreateNestedManyWithoutCategoryInput
     categorySpecification?: CategorySpecificationUncheckedCreateNestedManyWithoutCategoryInput
     landingPageCategoryCards?: LandingPageCategoryCardUncheckedCreateNestedManyWithoutCategoryInput
     products?: ProductUncheckedCreateNestedManyWithoutCategoryInput
+    seoPages?: SeoPageUncheckedCreateNestedManyWithoutCategoryInput
   }
 
   export type CategoryCreateOrConnectWithoutChildrenInput = {
@@ -83845,11 +85793,16 @@ export namespace Prisma {
     keywords?: CategoryCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    templateType?: string | null
+    priceRanges?: CategoryCreatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     children?: CategoryCreateNestedManyWithoutParentInput
     categoryOffers?: CategoryOfferCreateNestedManyWithoutCategoryInput
     categorySpecification?: CategorySpecificationCreateNestedManyWithoutCategoryInput
     landingPageCategoryCards?: LandingPageCategoryCardCreateNestedManyWithoutCategoryInput
     products?: ProductCreateNestedManyWithoutCategoryInput
+    seoPages?: SeoPageCreateNestedManyWithoutCategoryInput
   }
 
   export type CategoryUncheckedCreateWithoutParentInput = {
@@ -83863,11 +85816,16 @@ export namespace Prisma {
     keywords?: CategoryCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    templateType?: string | null
+    priceRanges?: CategoryCreatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     children?: CategoryUncheckedCreateNestedManyWithoutParentInput
     categoryOffers?: CategoryOfferUncheckedCreateNestedManyWithoutCategoryInput
     categorySpecification?: CategorySpecificationUncheckedCreateNestedManyWithoutCategoryInput
     landingPageCategoryCards?: LandingPageCategoryCardUncheckedCreateNestedManyWithoutCategoryInput
     products?: ProductUncheckedCreateNestedManyWithoutCategoryInput
+    seoPages?: SeoPageUncheckedCreateNestedManyWithoutCategoryInput
   }
 
   export type CategoryCreateOrConnectWithoutParentInput = {
@@ -83981,6 +85939,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationCreateNestedManyWithoutProductInput
     deliveryOptions?: DeliveryOptionCreateNestedManyWithoutProductInput
     images?: ProductImageCreateNestedManyWithoutProductInput
@@ -84012,6 +85973,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationUncheckedCreateNestedManyWithoutProductInput
     deliveryOptions?: DeliveryOptionUncheckedCreateNestedManyWithoutProductInput
     images?: ProductImageUncheckedCreateNestedManyWithoutProductInput
@@ -84033,6 +85997,44 @@ export namespace Prisma {
 
   export type ProductCreateManyCategoryInputEnvelope = {
     data: ProductCreateManyCategoryInput | ProductCreateManyCategoryInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SeoPageCreateWithoutCategoryInput = {
+    id?: string
+    priceThreshold: number
+    urlPath: string
+    metaTitle?: string | null
+    metaDescription?: string | null
+    structuredData?: NullableJsonNullValueInput | InputJsonValue
+    lastGeneratedAt?: Date | string
+    isIndexed?: boolean
+    isStale?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SeoPageUncheckedCreateWithoutCategoryInput = {
+    id?: string
+    priceThreshold: number
+    urlPath: string
+    metaTitle?: string | null
+    metaDescription?: string | null
+    structuredData?: NullableJsonNullValueInput | InputJsonValue
+    lastGeneratedAt?: Date | string
+    isIndexed?: boolean
+    isStale?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SeoPageCreateOrConnectWithoutCategoryInput = {
+    where: SeoPageWhereUniqueInput
+    create: XOR<SeoPageCreateWithoutCategoryInput, SeoPageUncheckedCreateWithoutCategoryInput>
+  }
+
+  export type SeoPageCreateManyCategoryInputEnvelope = {
+    data: SeoPageCreateManyCategoryInput | SeoPageCreateManyCategoryInput[]
     skipDuplicates?: boolean
   }
 
@@ -84058,11 +86060,16 @@ export namespace Prisma {
     keywords?: CategoryUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    templateType?: NullableStringFieldUpdateOperationsInput | string | null
+    priceRanges?: CategoryUpdatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     parent?: CategoryUpdateOneWithoutChildrenNestedInput
     categoryOffers?: CategoryOfferUpdateManyWithoutCategoryNestedInput
     categorySpecification?: CategorySpecificationUpdateManyWithoutCategoryNestedInput
     landingPageCategoryCards?: LandingPageCategoryCardUpdateManyWithoutCategoryNestedInput
     products?: ProductUpdateManyWithoutCategoryNestedInput
+    seoPages?: SeoPageUpdateManyWithoutCategoryNestedInput
   }
 
   export type CategoryUncheckedUpdateWithoutChildrenInput = {
@@ -84077,10 +86084,15 @@ export namespace Prisma {
     keywords?: CategoryUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    templateType?: NullableStringFieldUpdateOperationsInput | string | null
+    priceRanges?: CategoryUpdatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     categoryOffers?: CategoryOfferUncheckedUpdateManyWithoutCategoryNestedInput
     categorySpecification?: CategorySpecificationUncheckedUpdateManyWithoutCategoryNestedInput
     landingPageCategoryCards?: LandingPageCategoryCardUncheckedUpdateManyWithoutCategoryNestedInput
     products?: ProductUncheckedUpdateManyWithoutCategoryNestedInput
+    seoPages?: SeoPageUncheckedUpdateManyWithoutCategoryNestedInput
   }
 
   export type CategoryUpsertWithWhereUniqueWithoutParentInput = {
@@ -84114,6 +86126,10 @@ export namespace Prisma {
     keywords?: StringNullableListFilter<"Category">
     metaDescription?: StringNullableFilter<"Category"> | string | null
     metaTitle?: StringNullableFilter<"Category"> | string | null
+    templateType?: StringNullableFilter<"Category"> | string | null
+    priceRanges?: IntNullableListFilter<"Category">
+    filters?: JsonNullableFilter<"Category">
+    seoTemplates?: JsonNullableFilter<"Category">
   }
 
   export type CategoryOfferUpsertWithWhereUniqueWithoutCategoryInput = {
@@ -84218,6 +86234,40 @@ export namespace Prisma {
   export type ProductUpdateManyWithWhereWithoutCategoryInput = {
     where: ProductScalarWhereInput
     data: XOR<ProductUpdateManyMutationInput, ProductUncheckedUpdateManyWithoutCategoryInput>
+  }
+
+  export type SeoPageUpsertWithWhereUniqueWithoutCategoryInput = {
+    where: SeoPageWhereUniqueInput
+    update: XOR<SeoPageUpdateWithoutCategoryInput, SeoPageUncheckedUpdateWithoutCategoryInput>
+    create: XOR<SeoPageCreateWithoutCategoryInput, SeoPageUncheckedCreateWithoutCategoryInput>
+  }
+
+  export type SeoPageUpdateWithWhereUniqueWithoutCategoryInput = {
+    where: SeoPageWhereUniqueInput
+    data: XOR<SeoPageUpdateWithoutCategoryInput, SeoPageUncheckedUpdateWithoutCategoryInput>
+  }
+
+  export type SeoPageUpdateManyWithWhereWithoutCategoryInput = {
+    where: SeoPageScalarWhereInput
+    data: XOR<SeoPageUpdateManyMutationInput, SeoPageUncheckedUpdateManyWithoutCategoryInput>
+  }
+
+  export type SeoPageScalarWhereInput = {
+    AND?: SeoPageScalarWhereInput | SeoPageScalarWhereInput[]
+    OR?: SeoPageScalarWhereInput[]
+    NOT?: SeoPageScalarWhereInput | SeoPageScalarWhereInput[]
+    id?: StringFilter<"SeoPage"> | string
+    categoryId?: StringFilter<"SeoPage"> | string
+    priceThreshold?: IntFilter<"SeoPage"> | number
+    urlPath?: StringFilter<"SeoPage"> | string
+    metaTitle?: StringNullableFilter<"SeoPage"> | string | null
+    metaDescription?: StringNullableFilter<"SeoPage"> | string | null
+    structuredData?: JsonNullableFilter<"SeoPage">
+    lastGeneratedAt?: DateTimeFilter<"SeoPage"> | Date | string
+    isIndexed?: BoolFilter<"SeoPage"> | boolean
+    isStale?: BoolFilter<"SeoPage"> | boolean
+    createdAt?: DateTimeFilter<"SeoPage"> | Date | string
+    updatedAt?: DateTimeFilter<"SeoPage"> | Date | string
   }
 
   export type CategoryOfferCreateWithoutOfferInput = {
@@ -84431,6 +86481,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationCreateNestedManyWithoutProductInput
     deliveryOptions?: DeliveryOptionCreateNestedManyWithoutProductInput
     images?: ProductImageCreateNestedManyWithoutProductInput
@@ -84463,6 +86516,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationUncheckedCreateNestedManyWithoutProductInput
     deliveryOptions?: DeliveryOptionUncheckedCreateNestedManyWithoutProductInput
     images?: ProductImageUncheckedCreateNestedManyWithoutProductInput
@@ -84550,6 +86606,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUpdateManyWithoutProductNestedInput
     deliveryOptions?: DeliveryOptionUpdateManyWithoutProductNestedInput
     images?: ProductImageUpdateManyWithoutProductNestedInput
@@ -84582,6 +86641,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUncheckedUpdateManyWithoutProductNestedInput
     deliveryOptions?: DeliveryOptionUncheckedUpdateManyWithoutProductNestedInput
     images?: ProductImageUncheckedUpdateManyWithoutProductNestedInput
@@ -84606,11 +86668,16 @@ export namespace Prisma {
     keywords?: CategoryCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    templateType?: string | null
+    priceRanges?: CategoryCreatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     parent?: CategoryCreateNestedOneWithoutChildrenInput
     children?: CategoryCreateNestedManyWithoutParentInput
     categorySpecification?: CategorySpecificationCreateNestedManyWithoutCategoryInput
     landingPageCategoryCards?: LandingPageCategoryCardCreateNestedManyWithoutCategoryInput
     products?: ProductCreateNestedManyWithoutCategoryInput
+    seoPages?: SeoPageCreateNestedManyWithoutCategoryInput
   }
 
   export type CategoryUncheckedCreateWithoutCategoryOffersInput = {
@@ -84625,10 +86692,15 @@ export namespace Prisma {
     keywords?: CategoryCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    templateType?: string | null
+    priceRanges?: CategoryCreatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     children?: CategoryUncheckedCreateNestedManyWithoutParentInput
     categorySpecification?: CategorySpecificationUncheckedCreateNestedManyWithoutCategoryInput
     landingPageCategoryCards?: LandingPageCategoryCardUncheckedCreateNestedManyWithoutCategoryInput
     products?: ProductUncheckedCreateNestedManyWithoutCategoryInput
+    seoPages?: SeoPageUncheckedCreateNestedManyWithoutCategoryInput
   }
 
   export type CategoryCreateOrConnectWithoutCategoryOffersInput = {
@@ -84695,11 +86767,16 @@ export namespace Prisma {
     keywords?: CategoryUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    templateType?: NullableStringFieldUpdateOperationsInput | string | null
+    priceRanges?: CategoryUpdatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     parent?: CategoryUpdateOneWithoutChildrenNestedInput
     children?: CategoryUpdateManyWithoutParentNestedInput
     categorySpecification?: CategorySpecificationUpdateManyWithoutCategoryNestedInput
     landingPageCategoryCards?: LandingPageCategoryCardUpdateManyWithoutCategoryNestedInput
     products?: ProductUpdateManyWithoutCategoryNestedInput
+    seoPages?: SeoPageUpdateManyWithoutCategoryNestedInput
   }
 
   export type CategoryUncheckedUpdateWithoutCategoryOffersInput = {
@@ -84714,10 +86791,15 @@ export namespace Prisma {
     keywords?: CategoryUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    templateType?: NullableStringFieldUpdateOperationsInput | string | null
+    priceRanges?: CategoryUpdatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     children?: CategoryUncheckedUpdateManyWithoutParentNestedInput
     categorySpecification?: CategorySpecificationUncheckedUpdateManyWithoutCategoryNestedInput
     landingPageCategoryCards?: LandingPageCategoryCardUncheckedUpdateManyWithoutCategoryNestedInput
     products?: ProductUncheckedUpdateManyWithoutCategoryNestedInput
+    seoPages?: SeoPageUncheckedUpdateManyWithoutCategoryNestedInput
   }
 
   export type OfferUpsertWithoutCategoryOffersInput = {
@@ -84778,6 +86860,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationCreateNestedManyWithoutProductInput
     images?: ProductImageCreateNestedManyWithoutProductInput
     notifications?: ProductNotificationCreateNestedManyWithoutProductInput
@@ -84810,6 +86895,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationUncheckedCreateNestedManyWithoutProductInput
     images?: ProductImageUncheckedCreateNestedManyWithoutProductInput
     notifications?: ProductNotificationUncheckedCreateNestedManyWithoutProductInput
@@ -84854,6 +86942,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUpdateManyWithoutProductNestedInput
     images?: ProductImageUpdateManyWithoutProductNestedInput
     notifications?: ProductNotificationUpdateManyWithoutProductNestedInput
@@ -84886,6 +86977,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUncheckedUpdateManyWithoutProductNestedInput
     images?: ProductImageUncheckedUpdateManyWithoutProductNestedInput
     notifications?: ProductNotificationUncheckedUpdateManyWithoutProductNestedInput
@@ -84914,6 +87008,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationCreateNestedManyWithoutProductInput
     deliveryOptions?: DeliveryOptionCreateNestedManyWithoutProductInput
     images?: ProductImageCreateNestedManyWithoutProductInput
@@ -84946,6 +87043,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationUncheckedCreateNestedManyWithoutProductInput
     deliveryOptions?: DeliveryOptionUncheckedCreateNestedManyWithoutProductInput
     images?: ProductImageUncheckedCreateNestedManyWithoutProductInput
@@ -84990,6 +87090,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUpdateManyWithoutProductNestedInput
     deliveryOptions?: DeliveryOptionUpdateManyWithoutProductNestedInput
     images?: ProductImageUpdateManyWithoutProductNestedInput
@@ -85022,6 +87125,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUncheckedUpdateManyWithoutProductNestedInput
     deliveryOptions?: DeliveryOptionUncheckedUpdateManyWithoutProductNestedInput
     images?: ProductImageUncheckedUpdateManyWithoutProductNestedInput
@@ -85050,6 +87156,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationCreateNestedManyWithoutProductInput
     deliveryOptions?: DeliveryOptionCreateNestedManyWithoutProductInput
     images?: ProductImageCreateNestedManyWithoutProductInput
@@ -85082,6 +87191,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationUncheckedCreateNestedManyWithoutProductInput
     deliveryOptions?: DeliveryOptionUncheckedCreateNestedManyWithoutProductInput
     images?: ProductImageUncheckedCreateNestedManyWithoutProductInput
@@ -85126,6 +87238,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUpdateManyWithoutProductNestedInput
     deliveryOptions?: DeliveryOptionUpdateManyWithoutProductNestedInput
     images?: ProductImageUpdateManyWithoutProductNestedInput
@@ -85158,6 +87273,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUncheckedUpdateManyWithoutProductNestedInput
     deliveryOptions?: DeliveryOptionUncheckedUpdateManyWithoutProductNestedInput
     images?: ProductImageUncheckedUpdateManyWithoutProductNestedInput
@@ -85410,11 +87528,16 @@ export namespace Prisma {
     keywords?: CategoryCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    templateType?: string | null
+    priceRanges?: CategoryCreatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     parent?: CategoryCreateNestedOneWithoutChildrenInput
     children?: CategoryCreateNestedManyWithoutParentInput
     categoryOffers?: CategoryOfferCreateNestedManyWithoutCategoryInput
     categorySpecification?: CategorySpecificationCreateNestedManyWithoutCategoryInput
     landingPageCategoryCards?: LandingPageCategoryCardCreateNestedManyWithoutCategoryInput
+    seoPages?: SeoPageCreateNestedManyWithoutCategoryInput
   }
 
   export type CategoryUncheckedCreateWithoutProductsInput = {
@@ -85429,10 +87552,15 @@ export namespace Prisma {
     keywords?: CategoryCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    templateType?: string | null
+    priceRanges?: CategoryCreatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     children?: CategoryUncheckedCreateNestedManyWithoutParentInput
     categoryOffers?: CategoryOfferUncheckedCreateNestedManyWithoutCategoryInput
     categorySpecification?: CategorySpecificationUncheckedCreateNestedManyWithoutCategoryInput
     landingPageCategoryCards?: LandingPageCategoryCardUncheckedCreateNestedManyWithoutCategoryInput
+    seoPages?: SeoPageUncheckedCreateNestedManyWithoutCategoryInput
   }
 
   export type CategoryCreateOrConnectWithoutProductsInput = {
@@ -85872,11 +88000,16 @@ export namespace Prisma {
     keywords?: CategoryUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    templateType?: NullableStringFieldUpdateOperationsInput | string | null
+    priceRanges?: CategoryUpdatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     parent?: CategoryUpdateOneWithoutChildrenNestedInput
     children?: CategoryUpdateManyWithoutParentNestedInput
     categoryOffers?: CategoryOfferUpdateManyWithoutCategoryNestedInput
     categorySpecification?: CategorySpecificationUpdateManyWithoutCategoryNestedInput
     landingPageCategoryCards?: LandingPageCategoryCardUpdateManyWithoutCategoryNestedInput
+    seoPages?: SeoPageUpdateManyWithoutCategoryNestedInput
   }
 
   export type CategoryUncheckedUpdateWithoutProductsInput = {
@@ -85891,10 +88024,15 @@ export namespace Prisma {
     keywords?: CategoryUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    templateType?: NullableStringFieldUpdateOperationsInput | string | null
+    priceRanges?: CategoryUpdatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     children?: CategoryUncheckedUpdateManyWithoutParentNestedInput
     categoryOffers?: CategoryOfferUncheckedUpdateManyWithoutCategoryNestedInput
     categorySpecification?: CategorySpecificationUncheckedUpdateManyWithoutCategoryNestedInput
     landingPageCategoryCards?: LandingPageCategoryCardUncheckedUpdateManyWithoutCategoryNestedInput
+    seoPages?: SeoPageUncheckedUpdateManyWithoutCategoryNestedInput
   }
 
   export type UserUpsertWithoutProductsInput = {
@@ -86222,6 +88360,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationCreateNestedManyWithoutProductInput
     deliveryOptions?: DeliveryOptionCreateNestedManyWithoutProductInput
     images?: ProductImageCreateNestedManyWithoutProductInput
@@ -86254,6 +88395,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationUncheckedCreateNestedManyWithoutProductInput
     deliveryOptions?: DeliveryOptionUncheckedCreateNestedManyWithoutProductInput
     images?: ProductImageUncheckedCreateNestedManyWithoutProductInput
@@ -86404,6 +88548,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUpdateManyWithoutProductNestedInput
     deliveryOptions?: DeliveryOptionUpdateManyWithoutProductNestedInput
     images?: ProductImageUpdateManyWithoutProductNestedInput
@@ -86436,6 +88583,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUncheckedUpdateManyWithoutProductNestedInput
     deliveryOptions?: DeliveryOptionUncheckedUpdateManyWithoutProductNestedInput
     images?: ProductImageUncheckedUpdateManyWithoutProductNestedInput
@@ -86583,6 +88733,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationCreateNestedManyWithoutProductInput
     deliveryOptions?: DeliveryOptionCreateNestedManyWithoutProductInput
     notifications?: ProductNotificationCreateNestedManyWithoutProductInput
@@ -86615,6 +88768,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationUncheckedCreateNestedManyWithoutProductInput
     deliveryOptions?: DeliveryOptionUncheckedCreateNestedManyWithoutProductInput
     notifications?: ProductNotificationUncheckedCreateNestedManyWithoutProductInput
@@ -86659,6 +88815,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUpdateManyWithoutProductNestedInput
     deliveryOptions?: DeliveryOptionUpdateManyWithoutProductNestedInput
     notifications?: ProductNotificationUpdateManyWithoutProductNestedInput
@@ -86691,6 +88850,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUncheckedUpdateManyWithoutProductNestedInput
     deliveryOptions?: DeliveryOptionUncheckedUpdateManyWithoutProductNestedInput
     notifications?: ProductNotificationUncheckedUpdateManyWithoutProductNestedInput
@@ -88394,6 +90556,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationCreateNestedManyWithoutProductInput
     deliveryOptions?: DeliveryOptionCreateNestedManyWithoutProductInput
     images?: ProductImageCreateNestedManyWithoutProductInput
@@ -88426,6 +90591,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationUncheckedCreateNestedManyWithoutProductInput
     deliveryOptions?: DeliveryOptionUncheckedCreateNestedManyWithoutProductInput
     images?: ProductImageUncheckedCreateNestedManyWithoutProductInput
@@ -88617,6 +90785,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUpdateManyWithoutProductNestedInput
     deliveryOptions?: DeliveryOptionUpdateManyWithoutProductNestedInput
     images?: ProductImageUpdateManyWithoutProductNestedInput
@@ -88649,6 +90820,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUncheckedUpdateManyWithoutProductNestedInput
     deliveryOptions?: DeliveryOptionUncheckedUpdateManyWithoutProductNestedInput
     images?: ProductImageUncheckedUpdateManyWithoutProductNestedInput
@@ -89410,6 +91584,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationCreateNestedManyWithoutProductInput
     deliveryOptions?: DeliveryOptionCreateNestedManyWithoutProductInput
     images?: ProductImageCreateNestedManyWithoutProductInput
@@ -89442,6 +91619,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationUncheckedCreateNestedManyWithoutProductInput
     deliveryOptions?: DeliveryOptionUncheckedCreateNestedManyWithoutProductInput
     images?: ProductImageUncheckedCreateNestedManyWithoutProductInput
@@ -89507,6 +91687,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUpdateManyWithoutProductNestedInput
     deliveryOptions?: DeliveryOptionUpdateManyWithoutProductNestedInput
     images?: ProductImageUpdateManyWithoutProductNestedInput
@@ -89539,6 +91722,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUncheckedUpdateManyWithoutProductNestedInput
     deliveryOptions?: DeliveryOptionUncheckedUpdateManyWithoutProductNestedInput
     images?: ProductImageUncheckedUpdateManyWithoutProductNestedInput
@@ -90408,6 +92594,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationCreateNestedManyWithoutProductInput
     deliveryOptions?: DeliveryOptionCreateNestedManyWithoutProductInput
     images?: ProductImageCreateNestedManyWithoutProductInput
@@ -90440,6 +92629,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationUncheckedCreateNestedManyWithoutProductInput
     deliveryOptions?: DeliveryOptionUncheckedCreateNestedManyWithoutProductInput
     images?: ProductImageUncheckedCreateNestedManyWithoutProductInput
@@ -90603,6 +92795,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUpdateManyWithoutProductNestedInput
     deliveryOptions?: DeliveryOptionUpdateManyWithoutProductNestedInput
     images?: ProductImageUpdateManyWithoutProductNestedInput
@@ -90635,6 +92830,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUncheckedUpdateManyWithoutProductNestedInput
     deliveryOptions?: DeliveryOptionUncheckedUpdateManyWithoutProductNestedInput
     images?: ProductImageUncheckedUpdateManyWithoutProductNestedInput
@@ -91852,6 +94050,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationCreateNestedManyWithoutProductInput
     deliveryOptions?: DeliveryOptionCreateNestedManyWithoutProductInput
     images?: ProductImageCreateNestedManyWithoutProductInput
@@ -91884,6 +94085,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationUncheckedCreateNestedManyWithoutProductInput
     deliveryOptions?: DeliveryOptionUncheckedCreateNestedManyWithoutProductInput
     images?: ProductImageUncheckedCreateNestedManyWithoutProductInput
@@ -92031,6 +94235,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUpdateManyWithoutProductNestedInput
     deliveryOptions?: DeliveryOptionUpdateManyWithoutProductNestedInput
     images?: ProductImageUpdateManyWithoutProductNestedInput
@@ -92063,6 +94270,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUncheckedUpdateManyWithoutProductNestedInput
     deliveryOptions?: DeliveryOptionUncheckedUpdateManyWithoutProductNestedInput
     images?: ProductImageUncheckedUpdateManyWithoutProductNestedInput
@@ -92196,11 +94406,16 @@ export namespace Prisma {
     keywords?: CategoryCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    templateType?: string | null
+    priceRanges?: CategoryCreatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     parent?: CategoryCreateNestedOneWithoutChildrenInput
     children?: CategoryCreateNestedManyWithoutParentInput
     categoryOffers?: CategoryOfferCreateNestedManyWithoutCategoryInput
     categorySpecification?: CategorySpecificationCreateNestedManyWithoutCategoryInput
     products?: ProductCreateNestedManyWithoutCategoryInput
+    seoPages?: SeoPageCreateNestedManyWithoutCategoryInput
   }
 
   export type CategoryUncheckedCreateWithoutLandingPageCategoryCardsInput = {
@@ -92215,10 +94430,15 @@ export namespace Prisma {
     keywords?: CategoryCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    templateType?: string | null
+    priceRanges?: CategoryCreatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     children?: CategoryUncheckedCreateNestedManyWithoutParentInput
     categoryOffers?: CategoryOfferUncheckedCreateNestedManyWithoutCategoryInput
     categorySpecification?: CategorySpecificationUncheckedCreateNestedManyWithoutCategoryInput
     products?: ProductUncheckedCreateNestedManyWithoutCategoryInput
+    seoPages?: SeoPageUncheckedCreateNestedManyWithoutCategoryInput
   }
 
   export type CategoryCreateOrConnectWithoutLandingPageCategoryCardsInput = {
@@ -92248,11 +94468,16 @@ export namespace Prisma {
     keywords?: CategoryUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    templateType?: NullableStringFieldUpdateOperationsInput | string | null
+    priceRanges?: CategoryUpdatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     parent?: CategoryUpdateOneWithoutChildrenNestedInput
     children?: CategoryUpdateManyWithoutParentNestedInput
     categoryOffers?: CategoryOfferUpdateManyWithoutCategoryNestedInput
     categorySpecification?: CategorySpecificationUpdateManyWithoutCategoryNestedInput
     products?: ProductUpdateManyWithoutCategoryNestedInput
+    seoPages?: SeoPageUpdateManyWithoutCategoryNestedInput
   }
 
   export type CategoryUncheckedUpdateWithoutLandingPageCategoryCardsInput = {
@@ -92267,10 +94492,15 @@ export namespace Prisma {
     keywords?: CategoryUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    templateType?: NullableStringFieldUpdateOperationsInput | string | null
+    priceRanges?: CategoryUpdatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     children?: CategoryUncheckedUpdateManyWithoutParentNestedInput
     categoryOffers?: CategoryOfferUncheckedUpdateManyWithoutCategoryNestedInput
     categorySpecification?: CategorySpecificationUncheckedUpdateManyWithoutCategoryNestedInput
     products?: ProductUncheckedUpdateManyWithoutCategoryNestedInput
+    seoPages?: SeoPageUncheckedUpdateManyWithoutCategoryNestedInput
   }
 
   export type ProductCreateWithoutNotificationsInput = {
@@ -92288,6 +94518,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationCreateNestedManyWithoutProductInput
     deliveryOptions?: DeliveryOptionCreateNestedManyWithoutProductInput
     images?: ProductImageCreateNestedManyWithoutProductInput
@@ -92320,6 +94553,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
     Conversation?: ConversationUncheckedCreateNestedManyWithoutProductInput
     deliveryOptions?: DeliveryOptionUncheckedCreateNestedManyWithoutProductInput
     images?: ProductImageUncheckedCreateNestedManyWithoutProductInput
@@ -92467,6 +94703,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUpdateManyWithoutProductNestedInput
     deliveryOptions?: DeliveryOptionUpdateManyWithoutProductNestedInput
     images?: ProductImageUpdateManyWithoutProductNestedInput
@@ -92499,6 +94738,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUncheckedUpdateManyWithoutProductNestedInput
     deliveryOptions?: DeliveryOptionUncheckedUpdateManyWithoutProductNestedInput
     images?: ProductImageUncheckedUpdateManyWithoutProductNestedInput
@@ -92619,6 +94861,114 @@ export namespace Prisma {
     roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
     wishlists?: WishlistUncheckedUpdateManyWithoutUserNestedInput
     logs?: SystemLogUncheckedUpdateManyWithoutAdminNestedInput
+  }
+
+  export type CategoryCreateWithoutSeoPagesInput = {
+    id?: string
+    name: string
+    slug: string
+    description?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    keywords?: CategoryCreatekeywordsInput | string[]
+    metaDescription?: string | null
+    metaTitle?: string | null
+    templateType?: string | null
+    priceRanges?: CategoryCreatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
+    parent?: CategoryCreateNestedOneWithoutChildrenInput
+    children?: CategoryCreateNestedManyWithoutParentInput
+    categoryOffers?: CategoryOfferCreateNestedManyWithoutCategoryInput
+    categorySpecification?: CategorySpecificationCreateNestedManyWithoutCategoryInput
+    landingPageCategoryCards?: LandingPageCategoryCardCreateNestedManyWithoutCategoryInput
+    products?: ProductCreateNestedManyWithoutCategoryInput
+  }
+
+  export type CategoryUncheckedCreateWithoutSeoPagesInput = {
+    id?: string
+    name: string
+    slug: string
+    description?: string | null
+    parentId?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    keywords?: CategoryCreatekeywordsInput | string[]
+    metaDescription?: string | null
+    metaTitle?: string | null
+    templateType?: string | null
+    priceRanges?: CategoryCreatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
+    children?: CategoryUncheckedCreateNestedManyWithoutParentInput
+    categoryOffers?: CategoryOfferUncheckedCreateNestedManyWithoutCategoryInput
+    categorySpecification?: CategorySpecificationUncheckedCreateNestedManyWithoutCategoryInput
+    landingPageCategoryCards?: LandingPageCategoryCardUncheckedCreateNestedManyWithoutCategoryInput
+    products?: ProductUncheckedCreateNestedManyWithoutCategoryInput
+  }
+
+  export type CategoryCreateOrConnectWithoutSeoPagesInput = {
+    where: CategoryWhereUniqueInput
+    create: XOR<CategoryCreateWithoutSeoPagesInput, CategoryUncheckedCreateWithoutSeoPagesInput>
+  }
+
+  export type CategoryUpsertWithoutSeoPagesInput = {
+    update: XOR<CategoryUpdateWithoutSeoPagesInput, CategoryUncheckedUpdateWithoutSeoPagesInput>
+    create: XOR<CategoryCreateWithoutSeoPagesInput, CategoryUncheckedCreateWithoutSeoPagesInput>
+    where?: CategoryWhereInput
+  }
+
+  export type CategoryUpdateToOneWithWhereWithoutSeoPagesInput = {
+    where?: CategoryWhereInput
+    data: XOR<CategoryUpdateWithoutSeoPagesInput, CategoryUncheckedUpdateWithoutSeoPagesInput>
+  }
+
+  export type CategoryUpdateWithoutSeoPagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    keywords?: CategoryUpdatekeywordsInput | string[]
+    metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    templateType?: NullableStringFieldUpdateOperationsInput | string | null
+    priceRanges?: CategoryUpdatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
+    parent?: CategoryUpdateOneWithoutChildrenNestedInput
+    children?: CategoryUpdateManyWithoutParentNestedInput
+    categoryOffers?: CategoryOfferUpdateManyWithoutCategoryNestedInput
+    categorySpecification?: CategorySpecificationUpdateManyWithoutCategoryNestedInput
+    landingPageCategoryCards?: LandingPageCategoryCardUpdateManyWithoutCategoryNestedInput
+    products?: ProductUpdateManyWithoutCategoryNestedInput
+  }
+
+  export type CategoryUncheckedUpdateWithoutSeoPagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    keywords?: CategoryUpdatekeywordsInput | string[]
+    metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    templateType?: NullableStringFieldUpdateOperationsInput | string | null
+    priceRanges?: CategoryUpdatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
+    children?: CategoryUncheckedUpdateManyWithoutParentNestedInput
+    categoryOffers?: CategoryOfferUncheckedUpdateManyWithoutCategoryNestedInput
+    categorySpecification?: CategorySpecificationUncheckedUpdateManyWithoutCategoryNestedInput
+    landingPageCategoryCards?: LandingPageCategoryCardUncheckedUpdateManyWithoutCategoryNestedInput
+    products?: ProductUncheckedUpdateManyWithoutCategoryNestedInput
   }
 
   export type AccountCreateManyUserInput = {
@@ -92807,6 +95157,9 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
   }
 
   export type RecentlyViewedCreateManyUserInput = {
@@ -93432,6 +95785,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUpdateManyWithoutProductNestedInput
     deliveryOptions?: DeliveryOptionUpdateManyWithoutProductNestedInput
     images?: ProductImageUpdateManyWithoutProductNestedInput
@@ -93463,6 +95819,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUncheckedUpdateManyWithoutProductNestedInput
     deliveryOptions?: DeliveryOptionUncheckedUpdateManyWithoutProductNestedInput
     images?: ProductImageUncheckedUpdateManyWithoutProductNestedInput
@@ -93493,6 +95852,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type RecentlyViewedUpdateWithoutUserInput = {
@@ -93966,6 +96328,10 @@ export namespace Prisma {
     keywords?: CategoryCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    templateType?: string | null
+    priceRanges?: CategoryCreatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type CategoryOfferCreateManyCategoryInput = {
@@ -94012,6 +96378,23 @@ export namespace Prisma {
     keywords?: ProductCreatekeywordsInput | string[]
     metaDescription?: string | null
     metaTitle?: string | null
+    pros?: ProductCreateprosInput | string[]
+    cons?: ProductCreateconsInput | string[]
+    affiliateLink?: string | null
+  }
+
+  export type SeoPageCreateManyCategoryInput = {
+    id?: string
+    priceThreshold: number
+    urlPath: string
+    metaTitle?: string | null
+    metaDescription?: string | null
+    structuredData?: NullableJsonNullValueInput | InputJsonValue
+    lastGeneratedAt?: Date | string
+    isIndexed?: boolean
+    isStale?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CategoryUpdateWithoutParentInput = {
@@ -94025,11 +96408,16 @@ export namespace Prisma {
     keywords?: CategoryUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    templateType?: NullableStringFieldUpdateOperationsInput | string | null
+    priceRanges?: CategoryUpdatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     children?: CategoryUpdateManyWithoutParentNestedInput
     categoryOffers?: CategoryOfferUpdateManyWithoutCategoryNestedInput
     categorySpecification?: CategorySpecificationUpdateManyWithoutCategoryNestedInput
     landingPageCategoryCards?: LandingPageCategoryCardUpdateManyWithoutCategoryNestedInput
     products?: ProductUpdateManyWithoutCategoryNestedInput
+    seoPages?: SeoPageUpdateManyWithoutCategoryNestedInput
   }
 
   export type CategoryUncheckedUpdateWithoutParentInput = {
@@ -94043,11 +96431,16 @@ export namespace Prisma {
     keywords?: CategoryUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    templateType?: NullableStringFieldUpdateOperationsInput | string | null
+    priceRanges?: CategoryUpdatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
     children?: CategoryUncheckedUpdateManyWithoutParentNestedInput
     categoryOffers?: CategoryOfferUncheckedUpdateManyWithoutCategoryNestedInput
     categorySpecification?: CategorySpecificationUncheckedUpdateManyWithoutCategoryNestedInput
     landingPageCategoryCards?: LandingPageCategoryCardUncheckedUpdateManyWithoutCategoryNestedInput
     products?: ProductUncheckedUpdateManyWithoutCategoryNestedInput
+    seoPages?: SeoPageUncheckedUpdateManyWithoutCategoryNestedInput
   }
 
   export type CategoryUncheckedUpdateManyWithoutParentInput = {
@@ -94061,6 +96454,10 @@ export namespace Prisma {
     keywords?: CategoryUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    templateType?: NullableStringFieldUpdateOperationsInput | string | null
+    priceRanges?: CategoryUpdatepriceRangesInput | number[]
+    filters?: NullableJsonNullValueInput | InputJsonValue
+    seoTemplates?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type CategoryOfferUpdateWithoutCategoryInput = {
@@ -94162,6 +96559,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUpdateManyWithoutProductNestedInput
     deliveryOptions?: DeliveryOptionUpdateManyWithoutProductNestedInput
     images?: ProductImageUpdateManyWithoutProductNestedInput
@@ -94193,6 +96593,9 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
     Conversation?: ConversationUncheckedUpdateManyWithoutProductNestedInput
     deliveryOptions?: DeliveryOptionUncheckedUpdateManyWithoutProductNestedInput
     images?: ProductImageUncheckedUpdateManyWithoutProductNestedInput
@@ -94223,6 +96626,51 @@ export namespace Prisma {
     keywords?: ProductUpdatekeywordsInput | string[]
     metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
     metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    pros?: ProductUpdateprosInput | string[]
+    cons?: ProductUpdateconsInput | string[]
+    affiliateLink?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SeoPageUpdateWithoutCategoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    priceThreshold?: IntFieldUpdateOperationsInput | number
+    urlPath?: StringFieldUpdateOperationsInput | string
+    metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    structuredData?: NullableJsonNullValueInput | InputJsonValue
+    lastGeneratedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isIndexed?: BoolFieldUpdateOperationsInput | boolean
+    isStale?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SeoPageUncheckedUpdateWithoutCategoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    priceThreshold?: IntFieldUpdateOperationsInput | number
+    urlPath?: StringFieldUpdateOperationsInput | string
+    metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    structuredData?: NullableJsonNullValueInput | InputJsonValue
+    lastGeneratedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isIndexed?: BoolFieldUpdateOperationsInput | boolean
+    isStale?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SeoPageUncheckedUpdateManyWithoutCategoryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    priceThreshold?: IntFieldUpdateOperationsInput | number
+    urlPath?: StringFieldUpdateOperationsInput | string
+    metaTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    metaDescription?: NullableStringFieldUpdateOperationsInput | string | null
+    structuredData?: NullableJsonNullValueInput | InputJsonValue
+    lastGeneratedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isIndexed?: BoolFieldUpdateOperationsInput | boolean
+    isStale?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CategoryOfferCreateManyOfferInput = {

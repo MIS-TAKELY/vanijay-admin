@@ -199,5 +199,10 @@ export const buildProductInput = (
           },
         ]
         : undefined,
+
+    // SEO & Marketing
+    pros: formData.pros ? formData.pros.split(",").map(p => p.trim()).filter(p => p !== "") : undefined,
+    cons: formData.cons ? formData.cons.split(",").map(c => c.trim()).filter(c => c !== "") : undefined,
+    affiliateLink: formData.affiliateLink || undefined,
   };
 };

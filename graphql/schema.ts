@@ -64,8 +64,10 @@ export const typeDefs = `
     status: String
     category: String
     sellerName: String
-    createdAt: String
     updatedAt: String
+    pros: [String]
+    cons: [String]
+    affiliateLink: String
     variants: [ProductVariant]
     images: [ProductImage]
     specificationTable: String # JSON string
@@ -140,6 +142,26 @@ export const typeDefs = `
       isActive: Boolean
       parentName: String
       parentId: String
+      templateType: String
+      priceRanges: [Int]
+      filters: String # JSON string
+      seoTemplates: String # JSON string
+  }
+
+  type SeoPage {
+    id: String!
+    categoryId: String!
+    category: Category
+    priceThreshold: Int!
+    urlPath: String!
+    metaTitle: String
+    metaDescription: String
+    structuredData: String # JSON string
+    lastGeneratedAt: String
+    isIndexed: Boolean!
+    isStale: Boolean!
+    createdAt: String!
+    updatedAt: String!
   }
 
   type Offer {
@@ -152,10 +174,23 @@ export const typeDefs = `
       endDate: String
   }
 
-  type DashboardStats {
     totalUsers: Int
     totalOrders: Int
     totalSales: Float
+  }
+
+  type SeoAnalytics {
+    totalPageCount: Int!
+    stalePageCount: Int!
+    indexedPageCount: Int!
+    categoryStats: [SeoCategoryStats!]!
+  }
+
+  type SeoCategoryStats {
+    categoryId: String!
+    categoryName: String!
+    pageCount: Int!
+    staleCount: Int!
   }
 
   type BuyerDetails {
@@ -302,6 +337,9 @@ export const typeDefs = `
     deliveryOptions: [UpdateDeliveryOptionInput]
     warranty: [UpdateWarrantyInput]
     returnPolicy: [UpdateReturnPolicyInput]
+    pros: [String]
+    cons: [String]
+    affiliateLink: String
   }
 
   input UpdateProductVariantInput {
@@ -349,6 +387,10 @@ export const typeDefs = `
     description: String
     parentId: String
     isActive: Boolean
+    templateType: String
+    priceRanges: [Int]
+    filters: String # JSON string
+    seoTemplates: String # JSON string
   }
 
   input CategoryTreeInput {
@@ -357,6 +399,10 @@ export const typeDefs = `
     parentId: String
     description: String
     isActive: Boolean
+    templateType: String
+    priceRanges: [Int]
+    filters: String # JSON string
+    seoTemplates: String # JSON string
     children: [CategoryTreeInput]
   }
 
@@ -366,6 +412,10 @@ export const typeDefs = `
     description: String
     parentId: String
     isActive: Boolean
+    templateType: String
+    priceRanges: [Int]
+    filters: String # JSON string
+    seoTemplates: String # JSON string
   }
 
   type Query {
@@ -387,6 +437,8 @@ export const typeDefs = `
     getLandingPageCategorySwipers: [LandingPageCategorySwiper!]!
     getLandingPageProductGrids: [LandingPageProductGrid!]!
     getLandingPageBanners: [LandingPageBanner!]!
+    seoPages: [SeoPage]
+    seoAnalytics: SeoAnalytics
   }
 
   type BulkDeleteResult {
@@ -424,6 +476,10 @@ export const typeDefs = `
     reorderLandingPageBanners(ids: [String!]!): LandingPageBannerPayload!
     bulkUpdateCategories(input: [BulkUpdateCategoryInput!]!): [Category]
     bulkDeleteCategories(ids: [String!]!, force: Boolean): Boolean!
+    bulkCreateProducts(input: [BulkCreateProductInput!]!): [Product]
+    generateSeoPages(categoryIds: [String!]): [SeoPage]
+    regenerateSeoPage(id: String!): SeoPage
+    deleteSeoPage(id: String!): Boolean!
   }
 
   input BulkUpdateCategoryInput {
@@ -433,6 +489,10 @@ export const typeDefs = `
     description: String
     parentId: String
     isActive: Boolean
+    templateType: String
+    priceRanges: [Int]
+    filters: String # JSON string
+    seoTemplates: String # JSON string
   }
 
   # Landing Page Content Management Types
@@ -523,5 +583,22 @@ export const typeDefs = `
     sortOrder: Int!
     isActive: Boolean!
     mediaType: String
+  }
+
+  input BulkCreateProductInput {
+    name: String!
+    description: String
+    brand: String
+    categoryName: String
+    categoryId: String
+    price: Int!
+    mrp: Int
+    stock: Int!
+    sku: String!
+    pros: [String]
+    cons: [String]
+    affiliateLink: String
+    status: String
+    sellerId: String
   }
 `;

@@ -13,6 +13,7 @@ const navItems = [
     // { href: '/sellers', label: 'Sellers', icon: Store },
     { href: '/products', label: 'Products', icon: ShoppingBag },
     { href: '/category', label: 'Category', icon: Globe },
+    { href: '/seo-pages', label: 'SEO Pages', icon: Globe },
     { href: '/content', label: 'Content', icon: Container },
     { href: '/content/popular-searches', label: 'Popular Searches', icon: Globe },
     { href: '/legal/terms-conditions', label: 'Legal', icon: Shield },

@@ -22,6 +22,9 @@ const UPDATE_PRODUCT = gql`
       brand
       description
       status
+      pros
+      cons
+      affiliateLink
     }
   }
 `;
@@ -39,6 +42,9 @@ export default function EditBasicInfoDialog({ product, open, onOpenChange, onSuc
         brand: "",
         description: "",
         status: ProductStatus.DRAFT,
+        pros: "",
+        cons: "",
+        affiliateLink: "",
     });
 
     const [updateProduct, { loading: isUpdating }] = useMutation(UPDATE_PRODUCT, {
@@ -60,6 +66,9 @@ export default function EditBasicInfoDialog({ product, open, onOpenChange, onSuc
                 brand: formData.brand,
                 description: formData.description,
                 status: formData.status,
+                pros: formData.pros,
+                cons: formData.cons,
+                affiliateLink: formData.affiliateLink,
             });
         }
     }, [open, product]);
@@ -79,6 +88,9 @@ export default function EditBasicInfoDialog({ product, open, onOpenChange, onSuc
             fullFormData.brand = formDataState.brand;
             fullFormData.description = formDataState.description;
             fullFormData.status = formDataState.status;
+            fullFormData.pros = formDataState.pros;
+            fullFormData.cons = formDataState.cons;
+            fullFormData.affiliateLink = formDataState.affiliateLink;
 
             // 3. Build API Input
             const input = buildProductInput(fullFormData);
@@ -155,7 +167,40 @@ export default function EditBasicInfoDialog({ product, open, onOpenChange, onSuc
                             value={formDataState.description}
                             onChange={(e) => setFormDataState(prev => ({ ...prev, description: e.target.value }))}
                             placeholder="Enter product description"
-                            className="min-h-[150px]"
+                            className="min-h-[100px]"
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="pros">Pros (comma separated)</Label>
+                            <Textarea
+                                id="pros"
+                                value={formDataState.pros}
+                                onChange={(e) => setFormDataState(prev => ({ ...prev, pros: e.target.value }))}
+                                placeholder="High performance, Great battery life..."
+                                className="min-h-[80px]"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="cons">Cons (comma separated)</Label>
+                            <Textarea
+                                id="cons"
+                                value={formDataState.cons}
+                                onChange={(e) => setFormDataState(prev => ({ ...prev, cons: e.target.value }))}
+                                placeholder="Expensive, Heavy..."
+                                className="min-h-[80px]"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="affiliateLink">Affiliate Link</Label>
+                        <Input
+                            id="affiliateLink"
+                            value={formDataState.affiliateLink}
+                            onChange={(e) => setFormDataState(prev => ({ ...prev, affiliateLink: e.target.value }))}
+                            placeholder="https://amazon.com/..."
                         />
                     </div>
                 </div>

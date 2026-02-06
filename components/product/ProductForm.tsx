@@ -134,6 +134,10 @@ export function ProductForm({
       offerValue: "",
       offerStart: "",
       offerEnd: "",
+
+      pros: "",
+      cons: "",
+      affiliateLink: "",
     }
   );
 

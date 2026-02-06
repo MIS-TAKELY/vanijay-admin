@@ -173,7 +173,12 @@ export const transformProductToFormData = (product: Product): FormData => {
     warranty: warranty?.description || "",
 
     // Specification Table
-    specificationTable: product.specificationTable
+    specificationTable: product.specificationTable,
+
+    // SEO & Marketing
+    pros: product.pros?.join(", ") || "",
+    cons: product.cons?.join(", ") || "",
+    affiliateLink: product.affiliateLink || ""
   };
 };
 

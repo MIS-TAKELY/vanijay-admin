@@ -5,6 +5,45 @@ import { redis } from '../lib/redis';
 export const resolvers = {
     Query: {
         hello: () => 'Hello from Admin Graphql',
+        seoPages: async () => {
+            return await prismaMain.seoPage.findMany({
+                include: { category: true },
+                orderBy: { updatedAt: 'desc' }
+            });
+        },
+        seoAnalytics: async () => {
+            const allPages = await prismaMain.seoPage.findMany({
+                include: { category: true }
+            });
+
+            const statsMap: Record<string, any> = {};
+            let staleCount = 0;
+            let indexedCount = 0;
+
+            allPages.forEach(p => {
+                if (p.isStale) staleCount++;
+                if (p.isIndexed) indexedCount++;
+
+                const catId = p.categoryId;
+                if (!statsMap[catId]) {
+                    statsMap[catId] = {
+                        categoryId: catId,
+                        categoryName: p.category?.name || "Unknown",
+                        pageCount: 0,
+                        staleCount: 0
+                    };
+                }
+                statsMap[catId].pageCount++;
+                if (p.isStale) statsMap[catId].staleCount++;
+            });
+
+            return {
+                totalPageCount: allPages.length,
+                stalePageCount: staleCount,
+                indexedPageCount: indexedCount,
+                categoryStats: Object.values(statsMap)
+            };
+        },
         user: async (_: any, { id }: { id: string }) => {
             const user = await prismaMain.user.findUnique({
                 where: { id },
@@ -137,6 +176,9 @@ export const resolvers = {
                 specificationDisplayFormat: p.specificationDisplayFormat,
                 createdAt: p.createdAt.toISOString(),
                 updatedAt: p.updatedAt.toISOString(),
+                pros: p.pros,
+                cons: p.cons,
+                affiliateLink: p.affiliateLink,
             }));
 
             return {
@@ -182,6 +224,9 @@ export const resolvers = {
                 specificationDisplayFormat: p.specificationDisplayFormat,
                 createdAt: p.createdAt.toISOString(),
                 updatedAt: p.updatedAt.toISOString(),
+                pros: p.pros,
+                cons: p.cons,
+                affiliateLink: p.affiliateLink,
                 images: p.images.map((img: any) => ({
                     id: img.id,
                     url: img.url,
@@ -530,7 +575,11 @@ export const resolvers = {
                     description: c.description,
                     isActive: c.isActive,
                     parentName: c.parent?.name,
-                    parentId: c.parentId
+                    parentId: c.parentId,
+                    templateType: c.templateType,
+                    priceRanges: c.priceRanges,
+                    filters: c.filters,
+                    seoTemplates: c.seoTemplates
                 }));
             } catch (error) {
                 console.error("Categories Query Error:", error);
@@ -820,6 +869,9 @@ export const resolvers = {
                         ...(status && { status: status as any }),
                         ...(specificationTable && { specificationTable: safeParse(specificationTable) }),
                         ...(specificationDisplayFormat && { specificationDisplayFormat }),
+                        pros: input.pros || undefined,
+                        cons: input.cons || undefined,
+                        affiliateLink: input.affiliateLink || undefined,
                     }
                 });
 
@@ -1010,7 +1062,6 @@ export const resolvers = {
                     include: { parent: true }
                 });
 
-                // Invalidate Cache
                 try {
                     await redis.del('products:all');
                     await redis.del('categories:all');
@@ -1020,7 +1071,11 @@ export const resolvers = {
 
                 return {
                     ...category,
-                    parentName: category.parent?.name
+                    parentName: category.parent?.name,
+                    templateType: (category as any).templateType,
+                    priceRanges: (category as any).priceRanges,
+                    filters: (category as any).filters,
+                    seoTemplates: (category as any).seoTemplates
                 };
             } catch (error: any) {
                 console.error("Create category error:", error);
@@ -1110,7 +1165,6 @@ export const resolvers = {
                     include: { parent: true }
                 });
 
-                // Invalidate Cache
                 try {
                     await redis.del('products:all');
                     await redis.del('categories:all');
@@ -1123,7 +1177,11 @@ export const resolvers = {
 
                 return {
                     ...category,
-                    parentName: category.parent?.name
+                    parentName: category.parent?.name,
+                    templateType: (category as any).templateType,
+                    priceRanges: (category as any).priceRanges,
+                    filters: (category as any).filters,
+                    seoTemplates: (category as any).seoTemplates
                 };
             } catch (error: any) {
                 console.error("Update category error:", error);
@@ -1425,7 +1483,11 @@ export const resolvers = {
 
                         updatedCategories.push({
                             ...updated,
-                            parentName: updated.parent?.name
+                            parentName: updated.parent?.name,
+                            templateType: updated.templateType,
+                            priceRanges: updated.priceRanges,
+                            filters: updated.filters,
+                            seoTemplates: updated.seoTemplates
                         });
                     }
                 }, {
@@ -1450,6 +1512,82 @@ export const resolvers = {
                     throw new Error(`Bulk update failed: A category with this ${field} already exists (likely name or slug duplicate).`);
                 }
                 throw new Error(error.message || "Failed to bulk update categories");
+            }
+        },
+        bulkCreateProducts: async (_: any, { input }: { input: any[] }) => {
+            try {
+                // Find a default seller if needed
+                const defaultSeller = await prismaMain.user.findFirst({
+                    where: { roles: { some: { role: 'SELLER' } } },
+                    select: { id: true }
+                });
+
+                const createdProducts = await prismaMain.$transaction(async (tx) => {
+                    const results = [];
+                    for (const item of input) {
+                        let categoryId = item.categoryId;
+
+                        // If categoryId is missing but categoryName is provided, try to find it
+                        if (!categoryId && item.categoryName) {
+                            const cat = await tx.category.findFirst({
+                                where: { name: { equals: item.categoryName, mode: 'insensitive' } }
+                            });
+                            if (cat) categoryId = cat.id;
+                        }
+
+                        const sellerId = item.sellerId || defaultSeller?.id;
+                        if (!sellerId) {
+                            throw new Error("No seller found to assign products to. Please provide a sellerId or ensure at least one seller exists.");
+                        }
+
+                        // Create the product
+                        const product = await tx.product.create({
+                            data: {
+                                name: item.name,
+                                slug: item.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '') + '-' + Math.random().toString(36).substring(2, 7),
+                                description: item.description,
+                                brand: item.brand || "Generic",
+                                categoryId: categoryId,
+                                sellerId: sellerId,
+                                status: (item.status || "DRAFT") as any,
+                                pros: item.pros || [],
+                                cons: item.cons || [],
+                                affiliateLink: item.affiliateLink,
+                                variants: {
+                                    create: {
+                                        sku: item.sku,
+                                        price: item.price,
+                                        mrp: item.mrp || item.price,
+                                        stock: item.stock,
+                                        isDefault: true,
+                                        attributes: {},
+                                    }
+                                }
+                            },
+                            include: {
+                                variants: true,
+                                category: true
+                            }
+                        });
+                        results.push(product);
+                    }
+                    return results;
+                }, {
+                    maxWait: 5000,
+                    timeout: 30000
+                });
+
+                // Invalidate Cache
+                try {
+                    await redis.del('products:all');
+                } catch (e) {
+                    console.error("Cache invalidation failed (bulkCreateProducts):", e);
+                }
+
+                return createdProducts;
+            } catch (error: any) {
+                console.error("Bulk create products error:", error);
+                throw new Error(error.message || "Failed to bulk create products");
             }
         },
         bulkDeleteCategories: async (_: any, { ids, force }: { ids: string[], force?: boolean }) => {
@@ -1523,6 +1661,68 @@ export const resolvers = {
                 console.error("Bulk delete categories error:", error);
                 throw new Error(error.message || "Failed to bulk delete categories");
             }
+        },
+        generateSeoPages: async (_: any, { categoryIds }: { categoryIds?: string[] }) => {
+            try {
+                const where = categoryIds ? { id: { in: categoryIds } } : { isActive: true };
+                const categories = await prismaMain.category.findMany({
+                    where,
+                    include: { seoPages: true }
+                });
+
+                const results = [];
+                for (const cat of categories) {
+                    if (!cat.priceRanges || cat.priceRanges.length === 0) continue;
+
+                    for (const price of cat.priceRanges) {
+                        const urlPath = `/best-${cat.slug}-under-${price}`;
+
+                        // Check if exists
+                        let seoPage = await prismaMain.seoPage.findUnique({
+                            where: { urlPath }
+                        });
+
+                        if (!seoPage) {
+                            seoPage = await prismaMain.seoPage.create({
+                                data: {
+                                    categoryId: cat.id,
+                                    priceThreshold: price,
+                                    urlPath,
+                                    metaTitle: `Best ${cat.name} Under ${price} in Nepal | Updated Feb 2026`,
+                                    metaDescription: `Compare and buy the best ${cat.name} priced under Rs. ${price}. Detailed specs, pros, cons, and latest prices.`,
+                                    isStale: false
+                                },
+                                include: { category: true }
+                            });
+                        }
+                        results.push(seoPage);
+                    }
+                }
+                return results;
+            } catch (error: any) {
+                console.error("Generate SEO pages error:", error);
+                throw new Error(error.message || "Failed to generate SEO pages");
+            }
+        },
+        regenerateSeoPage: async (_: any, { id }: { id: string }) => {
+            const seoPage = await prismaMain.seoPage.findUnique({
+                where: { id },
+                include: { category: true }
+            });
+            if (!seoPage) throw new Error("SEO Page not found");
+
+            return await prismaMain.seoPage.update({
+                where: { id },
+                data: {
+                    lastGeneratedAt: new Date(),
+                    isStale: false
+                },
+                include: { category: true }
+            });
+        },
+        deleteSeoPage: async (_: any, { id }: { id: string }) => {
+            await prismaMain.seoPage.delete({ where: { id } });
+            return true;
         }
     }
 };

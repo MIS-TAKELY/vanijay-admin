@@ -70,6 +70,9 @@ export interface ICreateProductInput {
     unit?: string;
     conditions?: string;
   }>;
+  pros?: string[];
+  cons?: string[];
+  affiliateLink?: string;
 }
 
 // API Response Types

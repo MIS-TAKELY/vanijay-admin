@@ -23,8 +23,9 @@ import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
-import { clsx } from 'clsx';
+import { toast } from "sonner";
+import { clsx } from "clsx";
+import BulkProductImport from "@/components/product/BulkProductImport";
 
 const GET_PRODUCTS = gql`
   query GetProducts($take: Int, $skip: Int) {
@@ -105,17 +106,20 @@ export default function ProductsPage() {
                     </p>
                 </div>
 
-                <div className="relative w-full md:w-80 group">
-                    <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
-                    <Input
-                        placeholder="Scan for SKU or Product Name..."
-                        className="pl-10 h-10 rounded-xl bg-card border-border/50 shadow-inner focus-visible:ring-primary/20 transition-all font-medium"
-                        value={search}
-                        onChange={(e) => {
-                            setSearch(e.target.value);
-                            setCurrentPage(1); // Reset to first page on search
-                        }}
-                    />
+                <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+                    <BulkProductImport onSuccess={() => refetch()} />
+                    <div className="relative w-full md:w-80 group">
+                        <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
+                        <Input
+                            placeholder="Scan for SKU or Product Name..."
+                            className="pl-10 h-10 rounded-xl bg-card border-border/50 shadow-inner focus-visible:ring-primary/20 transition-all font-medium"
+                            value={search}
+                            onChange={(e) => {
+                                setSearch(e.target.value);
+                                setCurrentPage(1); // Reset to first page on search
+                            }}
+                        />
+                    </div>
                 </div>
             </div>
 
@@ -285,7 +289,7 @@ export default function ProductsPage() {
                     )}
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
 

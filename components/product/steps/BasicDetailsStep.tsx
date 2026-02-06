@@ -263,6 +263,42 @@ export const BasicDetailsStep = React.memo(
             error={errors.description}
           />
         </FormField>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField label="Pros (comma separated)" error={errors.pros}>
+            <ValidatedTextarea
+              placeholder="High performance, Great battery life..."
+              className="min-h-[80px]"
+              value={formData.pros || ""}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                updateFormData("pros", e.target.value)
+              }
+              error={errors.pros}
+            />
+          </FormField>
+          <FormField label="Cons (comma separated)" error={errors.cons}>
+            <ValidatedTextarea
+              placeholder="Expensive, Heavy..."
+              className="min-h-[80px]"
+              value={formData.cons || ""}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                updateFormData("cons", e.target.value)
+              }
+              error={errors.cons}
+            />
+          </FormField>
+        </div>
+
+        <FormField label="Affiliate Link" error={errors.affiliateLink}>
+          <ValidatedInput
+            placeholder="https://amazon.com/..."
+            value={formData.affiliateLink || ""}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              updateFormData("affiliateLink", e.target.value)
+            }
+            error={errors.affiliateLink}
+          />
+        </FormField>
       </div>
     );
   }

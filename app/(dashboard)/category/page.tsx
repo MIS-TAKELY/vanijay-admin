@@ -270,7 +270,11 @@ function EditCategoryDialog({ open, setOpen, category, allCategories, onRefresh 
         slug: category.slug,
         description: category.description || '',
         parentId: category.parentId || 'none',
-        isActive: category.isActive
+        isActive: category.isActive,
+        templateType: category.templateType || 'generic',
+        priceRanges: category.priceRanges ? category.priceRanges.join(', ') : '',
+        filters: category.filters ? JSON.stringify(category.filters, null, 2) : '',
+        seoTemplates: category.seoTemplates ? JSON.stringify(category.seoTemplates, null, 2) : ''
     });
 
     const [updateCategory, { loading }] = useMutation(UPDATE_CATEGORY, {
@@ -291,106 +295,180 @@ function EditCategoryDialog({ open, setOpen, category, allCategories, onRefresh 
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const input = {
-            name: formData.name,
-            slug: formData.slug,
-            description: formData.description,
-            parentId: formData.parentId === 'none' ? null : formData.parentId,
-            isActive: formData.isActive
-        };
-        const parentCategory = allCategories.find(c => c.id === formData.parentId);
-        await updateCategory({
-            variables: { id: category.id, input },
-            optimisticResponse: {
-                updateCategory: {
-                    __typename: "Category",
-                    id: category.id,
-                    name: formData.name,
-                    slug: formData.slug,
-                    isActive: formData.isActive,
-                    parentId: formData.parentId === 'none' ? null : formData.parentId,
-                    parentName: parentCategory ? parentCategory.name : null,
-                    description: formData.description
+        try {
+            const input = {
+                name: formData.name,
+                slug: formData.slug,
+                description: formData.description,
+                parentId: formData.parentId === 'none' ? null : formData.parentId,
+                isActive: formData.isActive,
+                templateType: formData.templateType,
+                priceRanges: formData.priceRanges.split(',').map((s: string) => parseInt(s.trim())).filter((n: number) => !isNaN(n)),
+                filters: formData.filters ? JSON.parse(formData.filters) : null,
+                seoTemplates: formData.seoTemplates ? JSON.parse(formData.seoTemplates) : null
+            };
+            const parentCategory = allCategories.find(c => c.id === formData.parentId);
+            await updateCategory({
+                variables: { id: category.id, input },
+                optimisticResponse: {
+                    updateCategory: {
+                        __typename: "Category",
+                        id: category.id,
+                        name: formData.name,
+                        slug: formData.slug,
+                        isActive: formData.isActive,
+                        parentId: formData.parentId === 'none' ? null : formData.parentId,
+                        parentName: parentCategory ? parentCategory.name : null,
+                        description: formData.description,
+                        templateType: formData.templateType,
+                        priceRanges: formData.priceRanges.split(',').map((s: string) => parseInt(s.trim())).filter((n: number) => !isNaN(n)),
+                        filters: formData.filters ? JSON.parse(formData.filters) : null,
+                        seoTemplates: formData.seoTemplates ? JSON.parse(formData.seoTemplates) : null
+                    }
                 }
-            }
-        });
+            });
+        } catch (err: any) {
+            toast.error("Invalid JSON format in SEO Templates or Filter Config");
+        }
     };
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent className="max-w-md">
+            <DialogContent className="max-w-2xl">
                 <DialogHeader>
                     <DialogTitle>Edit Category: {category.name}</DialogTitle>
                 </DialogHeader>
-                <form onSubmit={handleSubmit} className="space-y-6 py-4">
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="edit-name">Name</Label>
-                            <Input
-                                id="edit-name"
-                                value={formData.name}
-                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="edit-slug">Slug</Label>
-                            <Input
-                                id="edit-slug"
-                                value={formData.slug}
-                                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                            />
-                        </div>
-                    </div>
+                <form onSubmit={handleSubmit} className="space-y-4 py-4">
+                    <Tabs defaultValue="basic" className="w-full">
+                        <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value="basic">Basic Info</TabsTrigger>
+                            <TabsTrigger value="seo">SEO & Templates</TabsTrigger>
+                        </TabsList>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="edit-parent">Parent Category</Label>
-                        <Select
-                            value={formData.parentId}
-                            onValueChange={(val) => setFormData({ ...formData, parentId: val })}
-                        >
-                            <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Select parent" />
-                            </SelectTrigger>
-                            <SelectContent className="max-h-[300px]">
-                                <SelectItem value="none">None (Root Category)</SelectItem>
-                                {flatCategories.map((cat) => (
-                                    <SelectItem key={cat.id} value={cat.id}>
-                                        <div className="flex items-center">
-                                            {Array.from({ length: cat.depth }).map((_, i) => (
-                                                <span key={i} className="inline-block w-4 border-l border-muted-foreground/30 h-4 ml-1 mr-1" />
-                                            ))}
-                                            {cat.name}
-                                        </div>
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
+                        <TabsContent value="basic" className="space-y-4 pt-4">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="edit-name">Name</Label>
+                                    <Input
+                                        id="edit-name"
+                                        value={formData.name}
+                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="edit-slug">Slug</Label>
+                                    <Input
+                                        id="edit-slug"
+                                        value={formData.slug}
+                                        onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                                    />
+                                </div>
+                            </div>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="edit-description">Description</Label>
-                        <Textarea
-                            id="edit-description"
-                            className="min-h-[100px] resize-none"
-                            value={formData.description}
-                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                            placeholder="Describe what's in this category..."
-                        />
-                    </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="edit-parent">Parent Category</Label>
+                                <Select
+                                    value={formData.parentId}
+                                    onValueChange={(val) => setFormData({ ...formData, parentId: val })}
+                                >
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="Select parent" />
+                                    </SelectTrigger>
+                                    <SelectContent className="max-h-[300px]">
+                                        <SelectItem value="none">None (Root Category)</SelectItem>
+                                        {flatCategories.map((cat) => (
+                                            <SelectItem key={cat.id} value={cat.id}>
+                                                <div className="flex items-center">
+                                                    {Array.from({ length: cat.depth }).map((_, i) => (
+                                                        <span key={i} className="inline-block w-4 border-l border-muted-foreground/30 h-4 ml-1 mr-1" />
+                                                    ))}
+                                                    {cat.name}
+                                                </div>
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
 
-                    <div className="flex items-center justify-between rounded-lg border p-4">
-                        <div className="space-y-0.5">
-                            <Label htmlFor="edit-active">Active Status</Label>
-                            <p className="text-xs text-muted-foreground">
-                                Inactive categories are hidden from the store.
-                            </p>
-                        </div>
-                        <Switch
-                            id="edit-active"
-                            checked={formData.isActive}
-                            onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked })}
-                        />
-                    </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="edit-description">Description</Label>
+                                <Textarea
+                                    id="edit-description"
+                                    className="min-h-[100px] resize-none"
+                                    value={formData.description}
+                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                    placeholder="Describe what's in this category..."
+                                />
+                            </div>
+
+                            <div className="flex items-center justify-between rounded-lg border p-4">
+                                <div className="space-y-0.5">
+                                    <Label htmlFor="edit-active">Active Status</Label>
+                                    <p className="text-xs text-muted-foreground">
+                                        Inactive categories are hidden from the store.
+                                    </p>
+                                </div>
+                                <Switch
+                                    id="edit-active"
+                                    checked={formData.isActive}
+                                    onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked })}
+                                />
+                            </div>
+                        </TabsContent>
+
+                        <TabsContent value="seo" className="space-y-4 pt-4">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="edit-template-type">Template Type</Label>
+                                    <Select
+                                        value={formData.templateType}
+                                        onValueChange={(val) => setFormData({ ...formData, templateType: val })}
+                                    >
+                                        <SelectTrigger id="edit-template-type">
+                                            <SelectValue placeholder="Select template type" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="generic">Generic</SelectItem>
+                                            <SelectItem value="electronics">Electronics</SelectItem>
+                                            <SelectItem value="fashion">Fashion</SelectItem>
+                                            <SelectItem value="beauty">Beauty</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="edit-price-ranges">Price Ranges (comma separated)</Label>
+                                    <Input
+                                        id="edit-price-ranges"
+                                        value={formData.priceRanges}
+                                        onChange={(e) => setFormData({ ...formData, priceRanges: e.target.value })}
+                                        placeholder="e.g. 20000, 30000, 50000"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="edit-seo-templates">SEO Templates (JSON)</Label>
+                                <Textarea
+                                    id="edit-seo-templates"
+                                    className="font-mono text-xs min-h-[150px]"
+                                    value={formData.seoTemplates}
+                                    onChange={(e) => setFormData({ ...formData, seoTemplates: e.target.value })}
+                                    placeholder='{ "title": "Best {category} Under {price}", ... }'
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="edit-filters">Filter Config (JSON)</Label>
+                                <Textarea
+                                    id="edit-filters"
+                                    className="font-mono text-xs min-h-[100px]"
+                                    value={formData.filters}
+                                    onChange={(e) => setFormData({ ...formData, filters: e.target.value })}
+                                    placeholder='{ "brand": ["Apple", "Samsung"], ... }'
+                                />
+                            </div>
+                        </TabsContent>
+                    </Tabs>
 
                     <DialogFooter>
                         <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
@@ -413,6 +491,10 @@ const CREATE_CATEGORY = gql`
       slug
       isActive
       parentId
+      templateType
+      priceRanges
+      filters
+      seoTemplates
     }
   }
 `;
@@ -427,6 +509,10 @@ const CREATE_CATEGORY_TREE = gql`
       parentId
       parentName
       description
+      templateType
+      priceRanges
+      filters
+      seoTemplates
     }
   }
 `;
@@ -441,6 +527,10 @@ const UPDATE_CATEGORY = gql`
       parentId
       parentName
       description
+      templateType
+      priceRanges
+      filters
+      seoTemplates
     }
   }
 `;
@@ -461,6 +551,10 @@ const BULK_UPDATE_CATEGORIES = gql`
       parentId
       parentName
       description
+      templateType
+      priceRanges
+      filters
+      seoTemplates
     }
   }
 `;
@@ -1609,6 +1703,10 @@ const GET_CONTENT = gql`
       isActive
       parentName
       parentId
+      templateType
+      priceRanges
+      filters
+      seoTemplates
     }
   }
 `;

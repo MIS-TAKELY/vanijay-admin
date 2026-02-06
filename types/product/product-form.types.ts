@@ -131,6 +131,11 @@ export interface FormData {
   warrantyDescription: string;
   warranty?: string;
   warrantyConditions?: string;
+
+  // SEO & Marketing
+  pros: string;
+  cons: string;
+  affiliateLink: string;
 }
 
 // Step interface

@@ -93,6 +93,10 @@ export interface ReturnPolicy extends BaseEntity {
   duration?: number;
   unit?: string;
   conditions?: string;
+  // SEO & Marketing
+  pros?: string[];
+  cons?: string[];
+  affiliateLink?: string;
 }
 
 // Main Product Type
@@ -117,6 +121,9 @@ export interface Product extends BaseEntity {
   isFragile?: boolean;
   noInternationalShipping?: boolean;
   restrictedStates?: string[];
+  pros?: string[];
+  cons?: string[];
+  affiliateLink?: string;
 }
 
 // Product Attribute (for variant generation)
