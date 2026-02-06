@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { LayoutDashboard, Users, ShoppingBag, Settings, Store, Globe, Container, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 
 const navItems = [
     { href: '/', label: 'Overview', icon: LayoutDashboard },
@@ -54,6 +55,10 @@ export function Sidebar({ className, ...props }: SidebarProps) {
                     })}
                 </nav>
             </ScrollArea>
+            <div className="p-4 border-t mt-auto flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Appearance</span>
+                <ModeToggle />
+            </div>
         </div>
     );
 }
