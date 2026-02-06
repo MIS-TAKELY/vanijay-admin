@@ -22,7 +22,7 @@ interface CategoryFormProps {
 type FormValues = z.infer<typeof categorySchema>;
 
 const CategoryForm = ({ isOpen, onClose, initialData, onSuccess }: CategoryFormProps) => {
-    const { register, handleSubmit, reset, formState: { errors, isSubmitting }, setValue, watch } = useForm<FormValues>({
+    const { register, handleSubmit, reset, formState: { errors, isSubmitting }, setValue, watch } = useForm({
         resolver: zodResolver(categorySchema),
         defaultValues: {
             title: '',

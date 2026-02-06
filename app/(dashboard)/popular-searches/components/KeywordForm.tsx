@@ -24,7 +24,7 @@ interface KeywordFormProps {
 type FormValues = z.infer<typeof keywordSchema>;
 
 const KeywordForm = ({ isOpen, onClose, initialData, categoryId, onSuccess }: KeywordFormProps) => {
-    const { register, handleSubmit, reset, formState: { errors, isSubmitting }, setValue, watch } = useForm<FormValues>({
+    const { register, handleSubmit, reset, formState: { errors, isSubmitting }, setValue, watch } = useForm({
         resolver: zodResolver(keywordSchema),
         defaultValues: {
             name: '',
