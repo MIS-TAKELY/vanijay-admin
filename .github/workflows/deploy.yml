@@ -111,7 +111,7 @@ jobs:
               --env ADMIN_DATABASE_URL="$ADMIN_DATABASE_URL" \
               --env DATABASE_URL="$DATABASE_URL" \
               ghcr.io/mis-takely/vanijay-admin:latest \
-              npx prisma migrate deploy --config prisma.config.ts
+              npx prisma@7.2.0 migrate deploy --config prisma.config.ts
 
             echo "Running Shared Prisma migrations..."
             docker run --rm \
@@ -119,7 +119,7 @@ jobs:
               --env ADMIN_DATABASE_URL="$ADMIN_DATABASE_URL" \
               --env DATABASE_URL="$DATABASE_URL" \
               ghcr.io/mis-takely/vanijay-admin:latest \
-              npx prisma migrate deploy --config prisma.main.config.ts
+              npx prisma@7.2.0 migrate deploy --config prisma.main.config.ts
 
             echo "Starting application containers..."
             # This recreates the app container with the new image
