@@ -24,6 +24,22 @@ import {
     CardTitle
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 const GET_SEO_PAGES = gql`
   query GetSeoPages {
@@ -67,6 +83,25 @@ const DELETE_SEO_PAGE = gql`
   }
 `;
 
+const GET_CATEGORIES = gql`
+  query GetCategoriesForSeo {
+    categories {
+      id
+      name
+      slug
+    }
+  }
+`;
+
+const CREATE_SEO_PAGE = gql`
+  mutation CreateSeoPage($input: CreateSeoPageInput!) {
+    createSeoPage(input: $input) {
+      id
+      urlPath
+    }
+  }
+`;
+
 export default function SeoPagesPage() {
     const [search, setSearch] = useState("");
     const { data, loading, error, refetch } = useQuery(GET_SEO_PAGES);
@@ -92,6 +127,8 @@ export default function SeoPagesPage() {
         onError: (err) => toast.error(err.message)
     });
 
+    const [isCreateOpen, setIsCreateOpen] = useState(false);
+
     const pages = data?.seoPages || [];
     const filteredPages = pages.filter((p: any) =>
         p.urlPath.toLowerCase().includes(search.toLowerCase()) ||
@@ -111,11 +148,23 @@ export default function SeoPagesPage() {
                     </h1>
                     <p className="text-muted-foreground">Manage dynamic category portfolio pages</p>
                 </div>
-                <Button onClick={() => generateSeoPages()} disabled={isGenerating}>
-                    {isGenerating ? <RefreshCcw className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
-                    Generate All Missing Pages
-                </Button>
+                <div className="flex items-center gap-2">
+                    <Button variant="outline" onClick={() => setIsCreateOpen(true)}>
+                        <Plus className="mr-2 h-4 w-4" />
+                        Create Custom Page
+                    </Button>
+                    <Button onClick={() => generateSeoPages()} disabled={isGenerating}>
+                        {isGenerating ? <RefreshCcw className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCcw className="mr-2 h-4 w-4" />}
+                        Generate All Missing Pages
+                    </Button>
+                </div>
             </div>
+
+            <CreateSeoPageDialog
+                open={isCreateOpen}
+                onOpenChange={setIsCreateOpen}
+                onSuccess={() => refetch()}
+            />
 
             <div className="flex items-center gap-4">
                 <div className="relative flex-1">
@@ -190,5 +239,129 @@ export default function SeoPagesPage() {
                 ))}
             </div>
         </div>
+    );
+}
+
+function CreateSeoPageDialog({ open, onOpenChange, onSuccess }: {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    onSuccess: () => void;
+}) {
+    const { data: catData } = useQuery(GET_CATEGORIES);
+    const [createSeoPage, { loading }] = useMutation(CREATE_SEO_PAGE, {
+        onCompleted: () => {
+            toast.success("Custom SEO page created");
+            onOpenChange(false);
+            onSuccess();
+        },
+        onError: (err) => toast.error(err.message)
+    });
+
+    const [formData, setFormData] = useState({
+        categoryId: "",
+        priceThreshold: "",
+        urlPath: "",
+        metaTitle: "",
+        metaDescription: ""
+    });
+
+    const categories = catData?.categories || [];
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!formData.categoryId || !formData.urlPath) {
+            toast.error("Category and URL Path are required");
+            return;
+        }
+
+        await createSeoPage({
+            variables: {
+                input: {
+                    ...formData,
+                    priceThreshold: formData.priceThreshold ? parseInt(formData.priceThreshold) : null,
+                }
+            }
+        });
+    };
+
+    return (
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Create Custom SEO Page</DialogTitle>
+                    <DialogDescription>
+                        Manually define a landing page for specific keywords or price points.
+                    </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+                    <div className="space-y-2">
+                        <Label>Target Category</Label>
+                        <Select
+                            onValueChange={(val) => {
+                                const cat = categories.find((c: any) => c.id === val);
+                                setFormData({
+                                    ...formData,
+                                    categoryId: val,
+                                    urlPath: formData.urlPath || `/best-${cat?.slug || ""}`
+                                });
+                            }}
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select a category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {categories.map((cat: any) => (
+                                    <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label>URL Path</Label>
+                            <Input
+                                placeholder="/best-phones"
+                                value={formData.urlPath}
+                                onChange={(e) => setFormData({ ...formData, urlPath: e.target.value })}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Price Under (Optional)</Label>
+                            <Input
+                                type="number"
+                                placeholder="50000"
+                                value={formData.priceThreshold}
+                                onChange={(e) => setFormData({ ...formData, priceThreshold: e.target.value })}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label>Meta Title</Label>
+                        <Input
+                            placeholder="Best Smartphones in Nepal..."
+                            value={formData.metaTitle}
+                            onChange={(e) => setFormData({ ...formData, metaTitle: e.target.value })}
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label>Meta Description</Label>
+                        <Input
+                            placeholder="Compare and buy the best..."
+                            value={formData.metaDescription}
+                            onChange={(e) => setFormData({ ...formData, metaDescription: e.target.value })}
+                        />
+                    </div>
+
+                    <DialogFooter>
+                        <Button type="submit" disabled={loading} className="w-full">
+                            {loading ? "Creating..." : "Create Page"}
+                        </Button>
+                    </DialogFooter>
+                </form>
+            </DialogContent>
+        </Dialog>
     );
 }

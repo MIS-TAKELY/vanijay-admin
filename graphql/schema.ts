@@ -152,7 +152,7 @@ export const typeDefs = `
     id: String!
     categoryId: String!
     category: Category
-    priceThreshold: Int!
+    priceThreshold: Int
     urlPath: String!
     metaTitle: String
     metaDescription: String
@@ -480,6 +480,15 @@ export const typeDefs = `
     generateSeoPages(categoryIds: [String!]): [SeoPage]
     regenerateSeoPage(id: String!): SeoPage
     deleteSeoPage(id: String!): Boolean!
+    createSeoPage(input: CreateSeoPageInput!): SeoPage
+  }
+
+  input CreateSeoPageInput {
+    categoryId: String!
+    priceThreshold: Int
+    urlPath: String!
+    metaTitle: String
+    metaDescription: String
   }
 
   input BulkUpdateCategoryInput {

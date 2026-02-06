@@ -1714,7 +1714,21 @@ export const resolvers = {
         deleteSeoPage: async (_: any, { id }: { id: string }) => {
             await prismaMain.seoPage.delete({ where: { id } });
             return true;
-        }
+        },
+        createSeoPage: async (_: any, { input }: { input: any }) => {
+            try {
+                return await prismaMain.seoPage.create({
+                    data: {
+                        ...input,
+                        isStale: false
+                    },
+                    include: { category: true }
+                });
+            } catch (error: any) {
+                console.error("Create SEO page error:", error);
+                throw new Error(error.message || "Failed to create SEO page");
+            }
+        },
     },
     Category: {
         filters: (cat: any) => cat.filters ? (typeof cat.filters === 'string' ? cat.filters : JSON.stringify(cat.filters, null, 2)) : null,
