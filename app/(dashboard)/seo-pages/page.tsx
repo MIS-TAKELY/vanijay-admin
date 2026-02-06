@@ -178,11 +178,9 @@ export default function SeoPagesPage() {
                                 <Button
                                     variant="ghost"
                                     size="sm"
-                                    href={`https://vanijay.com${page.urlPath}`}
-                                    target="_blank"
                                     asChild
                                 >
-                                    <a href={`#`} target="_blank">
+                                    <a href={`https://vanijay.com${page.urlPath}`} target="_blank">
                                         <ExternalLink className="h-4 w-4" />
                                     </a>
                                 </Button>

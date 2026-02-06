@@ -173,7 +173,7 @@ export const typeDefs = `
       startDate: String
       endDate: String
   }
-
+  type DashboardStats {
     totalUsers: Int
     totalOrders: Int
     totalSales: Float
