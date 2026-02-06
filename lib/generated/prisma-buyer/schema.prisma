@@ -1,70 +1,74 @@
 generator client {
   provider        = "prisma-client-js"
   output          = "../app/generated/prisma"
-  binaryTargets   = ["native", "windows", "rhel-openssl-3.0.x"]
   previewFeatures = ["postgresqlExtensions"]
+  binaryTargets   = ["native", "windows", "rhel-openssl-3.0.x"]
 }
 
 generator clientAdmin {
   provider        = "prisma-client-js"
   output          = "../../admin/lib/generated/prisma-buyer"
-  binaryTargets   = ["native", "windows", "rhel-openssl-3.0.x"]
   previewFeatures = ["postgresqlExtensions"]
+  binaryTargets   = ["native", "windows", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
   provider   = "postgresql"
-  extensions = [vector]
+  extensions = [pg_trgm]
 }
 
 model User {
-  id                      String                    @id @default(cuid())
-  name                    String                    @default("")
-  username                String                    @unique @db.VarChar(255)
-  email                   String                    @unique @db.VarChar(255)
-  emailVerified           Boolean                   @default(false)
-  image                   String?
-  firstName               String?
-  lastName                String?
-  avatarImageUrl          String?
-  phone                   String?                   @unique @db.VarChar(20)
-  phoneVerified           Boolean                   @default(false)
-  otp                     String?
-  otpExpiresAt            DateTime?
-  gender                  Gender?
-  dob                     DateTime?
-  createdAt               DateTime                  @default(now())
-  updatedAt               DateTime                  @updatedAt
-  displayUsername         String?                   @db.VarChar(255)
-  password                String?
-  hasProfile              Boolean                   @default(false)
-  isBanned                Boolean                   @default(false)
-  accounts                Account[]
-  addresses               Address[]                 @relation("UserAddresses")
-  cartItems               CartItem[]                @relation("UserCartItems")
-  ConversationParticipant ConversationParticipant[]
-  sellerConversations     Conversation[]            @relation("SellerConversations")
-  buyerConversations      Conversation[]            @relation("BuyerConversations")
-  sentMessages            Message[]                 @relation("UserSentMessages")
-  notifications           Notification[]
-  disputes                OrderDispute[]
-  orders                  Order[]                   @relation("BuyerOrders")
-  paymentMethods          PaymentMethod[]           @relation("UserPayments")
-  payouts                 Payout[]                  @relation("SellerPayouts")
-  productAnswers          ProductAnswer[]           @relation("SellerAnswers")
-  productNotifications    ProductNotification[]     @relation("UserNotifications")
-  productQuestions        ProductQuestion[]
-  products                Product[]                 @relation("SellerProducts")
-  recentlyViewed          RecentlyViewed[]
-  ReviewVote              ReviewVote[]
-  reviews                 Review[]
-  sellerOrders            SellerOrder[]             @relation("SellerOrders")
-  sellerProfile           SellerProfile?
-  sessions                Session[]
-  roles                   UserRole[]
-  wishlists               Wishlist[]
-  role                    String                    @default("USER")
-  logs                    SystemLog[]
+  id                             String                    @id @default(cuid())
+  name                           String                    @default("")
+  username                       String                    @unique @db.VarChar(255)
+  email                          String                    @unique @db.VarChar(255)
+  emailVerified                  Boolean                   @default(false)
+  image                          String?
+  firstName                      String?
+  lastName                       String?
+  avatarImageUrl                 String?
+  phone                          String?                   @unique @db.VarChar(20)
+  phoneVerified                  Boolean                   @default(false)
+  otp                            String?
+  otpExpiresAt                   DateTime?
+  gender                         Gender?
+  dob                            DateTime?
+  createdAt                      DateTime                  @default(now())
+  updatedAt                      DateTime                  @updatedAt
+  displayUsername                String?                   @db.VarChar(255)
+  password                       String?
+  hasProfile                     Boolean                   @default(false)
+  isBanned                       Boolean                   @default(false)
+  accounts                       Account[]
+  addresses                      Address[]                 @relation("UserAddresses")
+  cartItems                      CartItem[]                @relation("UserCartItems")
+  ConversationParticipant        ConversationParticipant[]
+  sellerConversations            Conversation[]            @relation("SellerConversations")
+  buyerConversations             Conversation[]            @relation("BuyerConversations")
+  sentMessages                   Message[]                 @relation("UserSentMessages")
+  notifications                  Notification[]
+  disputes                       OrderDispute[]
+  orders                         Order[]                   @relation("BuyerOrders")
+  returns                        Return[]
+  paymentMethods                 PaymentMethod[]           @relation("UserPayments")
+  payouts                        Payout[]                  @relation("SellerPayouts")
+  productAnswers                 ProductAnswer[]           @relation("SellerAnswers")
+  productNotifications           ProductNotification[]     @relation("UserNotifications")
+  productQuestions               ProductQuestion[]
+  products                       Product[]                 @relation("SellerProducts")
+  recentlyViewed                 RecentlyViewed[]
+  ReviewVote                     ReviewVote[]
+  reviews                        Review[]
+  sellerOrders                   SellerOrder[]             @relation("SellerOrders")
+  sellerProfile                  SellerProfile?
+  sessions                       Session[]
+  roles                          UserRole[]
+  wishlists                      Wishlist[]
+  role                           String                    @default("USER")
+  logs                           SystemLog[]
+  createdPopularSearchCategories PopularSearchCategory[]   @relation("CreatedPopularSearchCategories")
+  createdPopularSearchKeywords   PopularSearchKeyword[]    @relation("CreatedPopularSearchKeywords")
+  popularSearchAudits            PopularSearchAudit[]      @relation("PopularSearchAudits")
 
   @@index([email])
   @@map("user")
@@ -97,41 +101,46 @@ model UserRole {
 }
 
 model SellerProfile {
-  id                 String             @id @default(cuid())
-  userId             String             @unique
-  shopName           String             @unique
-  slug               String             @unique
-  logo               String?
-  banner             String?
-  description        String?
-  tagline            String?
-  businessName       String?
-  businessRegNo      String?
-  businessType       String?
-  phone              String             @db.VarChar(20)
-  altPhone           String?            @db.VarChar(20)
-  email              String?
-  pickupAddressId    String?
-  returnPolicy       String?
-  shippingPolicy     String?
-  about              String?
-  verificationStatus VerificationStatus @default(PENDING)
-  verifiedAt         DateTime?
-  isActive           Boolean            @default(false)
-  averageRating      Decimal?           @default(0) @db.Decimal(3, 2)
-  totalReviews       Int?               @default(0)
-  totalSales         Int?               @default(0)
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
-  keywords           String[]
-  metaDescription    String?
-  metaTitle          String?
-  pickupAddress      Address?           @relation("SellerPickupAddress", fields: [pickupAddressId], references: [id])
-  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                  String             @id @default(cuid())
+  userId              String             @unique
+  shopName            String             @unique
+  slug                String             @unique
+  logo                String?
+  banner              String?
+  description         String?
+  tagline             String?
+  businessName        String?
+  businessRegNo       String?
+  businessType        String?
+  phone               String             @db.VarChar(20)
+  altPhone            String?            @db.VarChar(20)
+  email               String?
+  pickupAddressId     String?
+  returnPolicy        String?
+  shippingPolicy      String?
+  about               String?
+  verificationStatus  VerificationStatus @default(PENDING)
+  verifiedAt          DateTime?
+  isActive            Boolean            @default(false)
+  averageRating       Decimal?           @default(0) @db.Decimal(3, 2)
+  totalReviews        Int?               @default(0)
+  totalSales          Int?               @default(0)
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  keywords            String[]
+  metaDescription     String?
+  metaTitle           String?
+  // SEO sitemap fields
+  isIndexable         Boolean            @default(true)
+  canonicalUrl        String?
+  lastIndexableUpdate DateTime?
+  pickupAddress       Address?           @relation("SellerPickupAddress", fields: [pickupAddressId], references: [id])
+  user                User               @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([slug])
   @@index([shopName])
   @@index([verificationStatus])
+  @@index([isActive, isIndexable])
   @@map("seller_profiles")
 }
 
@@ -266,6 +275,10 @@ model Category {
   keywords                 String[]
   metaDescription          String?
   metaTitle                String?
+  // SEO sitemap fields
+  isIndexable              Boolean                   @default(true)
+  canonicalUrl             String?
+  lastIndexableUpdate      DateTime?
   parent                   Category?                 @relation("CategoryHierarchy", fields: [parentId], references: [id])
   children                 Category[]                @relation("CategoryHierarchy")
   categoryOffers           CategoryOffer[]
@@ -274,6 +287,7 @@ model Category {
   products                 Product[]
 
   @@index([slug])
+  @@index([isActive, isIndexable])
   @@map("categories")
 }
 
@@ -368,39 +382,45 @@ model ReturnPolicy {
 }
 
 model Product {
-  id                         String                 @id @default(cuid())
-  sellerId                   String
-  name                       String
-  slug                       String                 @unique
-  description                String?
-  features                   String[]
-  status                     ProductStatus          @default(INACTIVE)
-  specificationTable         Json?
-  specificationDisplayFormat String                 @default("bullet")
-  createdAt                  DateTime               @default(now())
-  updatedAt                  DateTime               @updatedAt
-  categoryId                 String?
-  brand                      String
-  embedding                  Unsupported("vector")?
-  keywords                   String[]
-  metaDescription            String?
-  metaTitle                  String?
-  Conversation               Conversation[]
-  deliveryOptions            DeliveryOption[]
-  images                     ProductImage[]
-  notifications              ProductNotification[]  @relation("ProductNotifications")
-  productOffers              ProductOffer[]
-  questions                  ProductQuestion[]
-  variants                   ProductVariant[]
-  category                   Category?              @relation(fields: [categoryId], references: [id])
-  seller                     User                   @relation("SellerProducts", fields: [sellerId], references: [id], onDelete: Cascade)
-  recentlyViewed             RecentlyViewed[]
-  returnPolicy               ReturnPolicy[]
-  reviews                    Review[]
-  warranty                   Warranty[]
-  wishlistItems              WishlistItem[]
+  id                  String                      @id @default(cuid())
+  sellerId            String
+  name                String
+  slug                String                      @unique
+  description         String?
+  features            String[]
+  status              ProductStatus               @default(INACTIVE)
+  specificationTable  Json?
+  createdAt           DateTime                    @default(now())
+  updatedAt           DateTime                    @updatedAt
+  categoryId          String?
+  brand               String
+  soldCount           Int                         @default(0)
+  averageRating       Decimal?                    @default(0) @db.Decimal(3, 2)
+  keywords            String[]
+  metaDescription     String?
+  metaTitle           String?
+  // SEO sitemap fields
+  isIndexable         Boolean                     @default(true)
+  canonicalUrl        String?
+  lastIndexableUpdate DateTime?
+  Conversation        Conversation[]
+  deliveryOptions     DeliveryOption[]
+  images              ProductImage[]
+  notifications       ProductNotification[]       @relation("ProductNotifications")
+  productOffers       ProductOffer[]
+  questions           ProductQuestion[]
+  variants            ProductVariant[]
+  category            Category?                   @relation(fields: [categoryId], references: [id])
+  seller              User                        @relation("SellerProducts", fields: [sellerId], references: [id], onDelete: Cascade)
+  recentlyViewed      RecentlyViewed[]
+  returnPolicy        ReturnPolicy[]
+  reviews             Review[]
+  warranty            Warranty[]
+  wishlistItems       WishlistItem[]
+  embedding           Unsupported("vector(384)")?
 
   @@index([slug, sellerId])
+  @@index([status, isIndexable])
   @@map("products")
 }
 
@@ -488,6 +508,7 @@ model Order {
   updatedAt        DateTime       @updatedAt
   offerId          String?
   disputes         OrderDispute[]
+  returns          Return[]
   items            OrderItem[]
   buyer            User           @relation("BuyerOrders", fields: [buyerId], references: [id], onDelete: Cascade)
   offer            Offer?         @relation(fields: [offerId], references: [id])
@@ -501,16 +522,17 @@ model Order {
 }
 
 model OrderItem {
-  id         String         @id @default(cuid())
-  orderId    String
-  variantId  String
-  quantity   Int
-  unitPrice  Decimal        @db.Money
-  totalPrice Decimal        @db.Money
-  createdAt  DateTime       @default(now())
-  updatedAt  DateTime       @updatedAt
-  order      Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  variant    ProductVariant @relation(fields: [variantId], references: [id])
+  id          String         @id @default(cuid())
+  orderId     String
+  variantId   String
+  quantity    Int
+  unitPrice   Decimal        @db.Money
+  totalPrice  Decimal        @db.Money
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  returnItems ReturnItem[]
+  order       Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variant     ProductVariant @relation(fields: [variantId], references: [id])
 
   @@index([orderId])
   @@map("order_items")
@@ -779,6 +801,61 @@ model Verification {
   @@map("verification")
 }
 
+model PopularSearchCategory {
+  id           String                 @id @default(cuid())
+  title        String
+  slug         String                 @unique
+  icon         String?
+  displayOrder Int                    @default(0) @map("display_order")
+  isActive     Boolean                @default(true) @map("is_active")
+  isIndexed    Boolean                @default(true) @map("is_indexed")
+  createdAt    DateTime               @default(now()) @map("created_at")
+  updatedAt    DateTime               @updatedAt @map("updated_at")
+  createdBy    String?                @map("created_by")
+  creator      User?                  @relation("CreatedPopularSearchCategories", fields: [createdBy], references: [id])
+  keywords     PopularSearchKeyword[]
+
+  @@map("popular_search_categories")
+}
+
+model PopularSearchKeyword {
+  id              String                @id @default(cuid())
+  categoryId      String                @map("category_id")
+  name            String
+  href            String
+  targetType      String                @default("_self") @map("target_type")
+  isActive        Boolean               @default(true) @map("is_active")
+  isIndexed       Boolean               @default(true) @map("is_indexed")
+  isFeatured      Boolean               @default(false) @map("is_featured")
+  clickCount      Int                   @default(0) @map("click_count")
+  impressionCount Int                   @default(0) @map("impression_count")
+  displayOrder    Int                   @default(0) @map("display_order")
+  createdAt       DateTime              @default(now()) @map("created_at")
+  updatedAt       DateTime              @updatedAt @map("updated_at")
+  createdBy       String?               @map("created_by")
+  creator         User?                 @relation("CreatedPopularSearchKeywords", fields: [createdBy], references: [id])
+  deletedAt       DateTime?             @map("deleted_at")
+  category        PopularSearchCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@index([categoryId])
+  @@map("popular_search_keywords")
+}
+
+model PopularSearchAudit {
+  id          String   @id @default(cuid())
+  actionType  String   @map("action_type")
+  entityType  String   @map("entity_type")
+  entityId    String?  @map("entity_id")
+  oldValues   Json?    @map("old_values")
+  newValues   Json?    @map("new_values")
+  performedBy String?  @map("performed_by")
+  performer   User?    @relation("PopularSearchAudits", fields: [performedBy], references: [id])
+  performedAt DateTime @default(now()) @map("performed_at")
+  ipAddress   String?  @map("ip_address")
+
+  @@map("popular_search_audit")
+}
+
 model OrderDispute {
   id            String        @id @default(cuid())
   orderId       String
@@ -1034,4 +1111,88 @@ enum DisputeStatus {
 enum DisputeType {
   CANCEL
   RETURN
+}
+
+model Return {
+  id              String            @id @default(cuid())
+  orderId         String
+  userId          String
+  status          ReturnStatus      @default(REQUESTED)
+  refundStatus    RefundStatus      @default(PENDING)
+  refundMethod    RefundMethod?
+  refundAmount    Decimal?          @db.Money
+  reason          String
+  description     String?
+  images          String[]
+  type            ReturnRequestType
+  logisticsMode   LogisticsMode     @default(PLATFORM_PICKUP)
+  trackingNumber  String?
+  pickupAddressId String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  // Logistics & Inspection
+  pickupScheduledAt DateTime?
+  receivedAt        DateTime?
+  inspectedAt       DateTime?
+  rejectionReason   String?
+
+  order Order        @relation(fields: [orderId], references: [id])
+  user  User         @relation(fields: [userId], references: [id])
+  items ReturnItem[]
+
+  @@index([orderId])
+  @@index([userId])
+  @@index([status])
+  @@map("returns")
+}
+
+model ReturnItem {
+  id          String  @id @default(cuid())
+  returnId    String
+  orderItemId String
+  quantity    Int
+  reason      String?
+
+  return    Return    @relation(fields: [returnId], references: [id], onDelete: Cascade)
+  orderItem OrderItem @relation(fields: [orderItemId], references: [id])
+
+  @@map("return_items")
+}
+
+enum ReturnStatus {
+  REQUESTED
+  APPROVED
+  REJECTED
+  PICKUP_SCHEDULED
+  IN_TRANSIT
+  RECEIVED
+  INSPECTED
+  ACCEPTED
+  DENIED
+  CANCELLED
+}
+
+enum RefundStatus {
+  PENDING
+  INITIATED
+  COMPLETED
+  FAILED
+  NOT_APPLICABLE
+}
+
+enum RefundMethod {
+  ORIGINAL_PAYMENT
+  WALLET
+  BANK_TRANSFER
+}
+
+enum LogisticsMode {
+  PLATFORM_PICKUP
+  SELF_SHIP
+}
+
+enum ReturnRequestType {
+  REFUND
+  REPLACEMENT
 }
