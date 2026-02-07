@@ -2,42 +2,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import sharp from "sharp";
 
-// Helper to upload buffer to Cloudinary
+// Helper to upload buffer to Cloudinary with rotation
+import { uploadBufferWithRotation } from "@/utils/cloudinary-rotation";
+
 async function uploadBufferToCloudinary(
     buffer: Buffer,
     folder: string = "admin",
     filename?: string,
     mimeType: string = "image/webp"
 ): Promise<any> {
-    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-    const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
-
-    if (!cloudName || !uploadPreset) {
-        throw new Error("Missing Cloudinary configuration");
-    }
-
-    const formData = new FormData();
-    const blob = new Blob([buffer as any], { type: mimeType });
-    formData.append("file", blob, filename || "image");
-    formData.append("upload_preset", uploadPreset);
-    formData.append("resource_type", "auto");
-    if (folder) formData.append("folder", folder);
-
-    const response = await fetch(
-        `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`,
-        {
-            method: "POST",
-            body: formData,
-        }
-    );
-
-    if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Cloudinary error:", errorText);
-        throw new Error(`Cloudinary upload failed: ${response.statusText}`);
-    }
-
-    return response.json();
+    // Note: folder parameter is ignored as Cloudinary unsigned presets
+    // have predefined folder configurations
+    return uploadBufferWithRotation(buffer, filename, mimeType);
 }
 
 export async function POST(req: NextRequest) {
