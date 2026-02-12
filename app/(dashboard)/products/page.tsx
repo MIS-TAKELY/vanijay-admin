@@ -28,8 +28,8 @@ import { clsx } from "clsx";
 import BulkProductImport from "@/components/product/BulkProductImport";
 
 const GET_PRODUCTS = gql`
-  query GetProducts($take: Int, $skip: Int) {
-    products(take: $take, skip: $skip) {
+  query GetProducts($take: Int, $skip: Int, $search: String) {
+    products(take: $take, skip: $skip, search: $search) {
       items {
         id
         name
@@ -62,7 +62,7 @@ export default function ProductsPage() {
     const router = useRouter();
 
     const { data, loading, error, refetch } = useQuery(GET_PRODUCTS, {
-        variables: { take: pageSize, skip: (currentPage - 1) * pageSize }
+        variables: { take: pageSize, skip: (currentPage - 1) * pageSize, search }
     });
 
     const [updateProduct] = useMutation(UPDATE_PRODUCT);
@@ -71,14 +71,7 @@ export default function ProductsPage() {
     const totalCount = data?.products?.totalCount || 0;
     const totalPages = Math.ceil(totalCount / pageSize);
 
-    const filteredProducts = useMemo(() => {
-        if (!search) return products;
-        return products.filter((p: any) =>
-            p.name.toLowerCase().includes(search.toLowerCase()) ||
-            p.sellerName.toLowerCase().includes(search.toLowerCase()) ||
-            p.category.toLowerCase().includes(search.toLowerCase())
-        );
-    }, [products, search]);
+
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
@@ -150,7 +143,7 @@ export default function ProductsPage() {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-border/30 text-foreground">
-                                    {filteredProducts.map((product: any) => (
+                                    {products.map((product: any) => (
                                         <tr
                                             key={product.id}
                                             className="transition-all duration-300 group hover:bg-primary/[0.02] cursor-pointer"

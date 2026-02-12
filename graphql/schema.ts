@@ -427,7 +427,7 @@ export const typeDefs = `
     sellerFullDetails(userId: String!): SellerFullDetails
     productWithOrders(productId: String!): ProductWithOrders
     sellers(take: Int, skip: Int): [SellerProfileSchema]
-    products(take: Int, skip: Int): ProductsResponse
+    products(take: Int, skip: Int, search: String): ProductsResponse
     product(id: String!): Product
     sellerProducts(sellerId: String!, take: Int, skip: Int): [Product]
     userDetails(userId: String!): UserDetails

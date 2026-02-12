@@ -147,9 +147,21 @@ export const resolvers = {
                 orderBy: { createdAt: 'desc' }
             });
         },
-        products: async (_: any, { take = 10, skip = 0 }) => {
+        products: async (_: any, { take = 10, skip = 0, search }: any) => {
+            const where: any = {};
+            if (search) {
+                where.OR = [
+                    { name: { contains: search, mode: 'insensitive' } },
+                    { category: { name: { contains: search, mode: 'insensitive' } } },
+                    { seller: { name: { contains: search, mode: 'insensitive' } } },
+                    { seller: { sellerProfile: { shopName: { contains: search, mode: 'insensitive' } } } },
+                    { variants: { some: { sku: { contains: search, mode: 'insensitive' } } } }
+                ];
+            }
+
             const [products, totalCount] = await Promise.all([
                 prismaMain.product.findMany({
+                    where,
                     take,
                     skip,
                     include: {
@@ -159,7 +171,7 @@ export const resolvers = {
                     },
                     orderBy: { createdAt: 'desc' }
                 }),
-                prismaMain.product.count()
+                prismaMain.product.count({ where })
             ]);
 
             const items = products.map((p: any) => ({
