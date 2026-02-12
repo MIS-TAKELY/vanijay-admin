@@ -64,6 +64,7 @@ export const typeDefs = `
     status: String
     category: String
     sellerName: String
+    createdAt: String
     updatedAt: String
     pros: [String]
     cons: [String]
