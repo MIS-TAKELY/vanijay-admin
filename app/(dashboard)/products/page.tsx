@@ -55,6 +55,12 @@ const UPDATE_PRODUCT = gql`
   }
 `;
 
+const DELETE_PRODUCT = gql`
+    mutation DeleteProduct($id: String!, $force: Boolean) {
+        deleteProduct(id: $id, force: $force)
+    }
+`;
+
 export default function ProductsPage() {
     const [search, setSearch] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
@@ -70,13 +76,6 @@ export default function ProductsPage() {
     });
 
     const [updateProduct] = useMutation(UPDATE_PRODUCT);
-
-    // Add delete mutation
-    const DELETE_PRODUCT = gql`
-        mutation DeleteProduct($id: String!, $force: Boolean) {
-            deleteProduct(id: $id, force: $force)
-        }
-    `;
     const [deleteProduct, { loading: deleteLoading }] = useMutation(DELETE_PRODUCT);
 
     const products = data?.products?.items || [];
@@ -88,6 +87,7 @@ export default function ProductsPage() {
     };
 
     const handleDeleteClick = (product: { id: string, name: string }) => {
+        console.log("Opening delete modal for:", product.name);
         setProductToDelete(product);
         setIsForceDelete(false);
         setDeleteError(null);
@@ -96,6 +96,8 @@ export default function ProductsPage() {
 
     const confirmDelete = async () => {
         if (!productToDelete) return;
+
+        console.log(`Attempting delete. Product: ${productToDelete.name}, Force: ${isForceDelete}`);
 
         try {
             const { data } = await deleteProduct({

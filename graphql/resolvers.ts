@@ -1055,6 +1055,7 @@ export const resolvers = {
             };
         },
         deleteProduct: async (_: any, { id, force }: { id: string, force?: boolean }) => {
+            console.log(`[deleteProduct] called with id=${id}, force=${force}`);
             try {
                 // 1. Check if product exists
                 const product = await prismaMain.product.findUnique({
