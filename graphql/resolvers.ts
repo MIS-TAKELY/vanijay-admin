@@ -1054,6 +1054,69 @@ export const resolvers = {
                 }))
             };
         },
+        deleteProduct: async (_: any, { id, force }: { id: string, force?: boolean }) => {
+            try {
+                // 1. Check if product exists
+                const product = await prismaMain.product.findUnique({
+                    where: { id },
+                    include: {
+                        variants: {
+                            include: {
+                                orderItems: true
+                            }
+                        }
+                    }
+                });
+
+                if (!product) {
+                    throw new Error("Product not found");
+                }
+
+                // 2. Check for associated orders
+                const hasOrders = product.variants.some(v => v.orderItems.length > 0);
+
+                if (hasOrders && !force) {
+                    throw new Error("This product has associated orders. Deleting it may affect order history. Use force delete to proceed.");
+                }
+
+                // 3. Delete Logic
+                await prismaMain.$transaction(async (tx) => {
+                    // Delete related data first (though cascade deals with most)
+                    // Explicitly deleting images, variants etc if needed, but Prisma schema usually handles this.
+                    // However, if we need to clean up external resources (like S3 images), we'd do it here.
+
+                    // For now, relying on Prisma Cascade or simple delete
+                    await tx.product.delete({
+                        where: { id }
+                    });
+                });
+
+                // 4. Invalidate Cache
+                try {
+                    const keysToDelete = [
+                        `products:all`,
+                        `product:${id}`,
+                        product.slug ? `product:details:v2:${product.slug}` : null
+                    ].filter(Boolean) as string[];
+
+                    if (keysToDelete.length > 0) {
+                        await redis.del(...keysToDelete);
+                    }
+                } catch (e) {
+                    console.error("Cache invalidation failed (deleteProduct):", e);
+                }
+
+                return true;
+
+            } catch (error: any) {
+                console.error("Delete product error:", error);
+                // Preserve specific error messages
+                if (error.message.includes("associated orders")) {
+                    throw error;
+                }
+                throw new Error(error.message || "Failed to delete product");
+            }
+        },
         createCategory: async (_: any, { input }: { input: any }) => {
             try {
                 const { parentName, __typename, ...cleanInput } = input;

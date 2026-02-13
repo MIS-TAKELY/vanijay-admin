@@ -60,6 +60,10 @@ export default function ProductsPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 10;
     const router = useRouter();
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [productToDelete, setProductToDelete] = useState<{ id: string, name: string } | null>(null);
+    const [isForceDelete, setIsForceDelete] = useState(false);
+    const [deleteError, setDeleteError] = useState<string | null>(null);
 
     const { data, loading, error, refetch } = useQuery(GET_PRODUCTS, {
         variables: { take: pageSize, skip: (currentPage - 1) * pageSize, search }
@@ -67,14 +71,57 @@ export default function ProductsPage() {
 
     const [updateProduct] = useMutation(UPDATE_PRODUCT);
 
+    // Add delete mutation
+    const DELETE_PRODUCT = gql`
+        mutation DeleteProduct($id: String!, $force: Boolean) {
+            deleteProduct(id: $id, force: $force)
+        }
+    `;
+    const [deleteProduct, { loading: deleteLoading }] = useMutation(DELETE_PRODUCT);
+
     const products = data?.products?.items || [];
     const totalCount = data?.products?.totalCount || 0;
     const totalPages = Math.ceil(totalCount / pageSize);
 
-
-
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
+    };
+
+    const handleDeleteClick = (product: { id: string, name: string }) => {
+        setProductToDelete(product);
+        setIsForceDelete(false);
+        setDeleteError(null);
+        setIsDeleteModalOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!productToDelete) return;
+
+        try {
+            await deleteProduct({
+                variables: {
+                    id: productToDelete.id,
+                    force: isForceDelete
+                }
+            });
+
+            toast.success("Product Deleted", {
+                description: `Successfully deleted ${productToDelete.name}`
+            });
+            setIsDeleteModalOpen(false);
+            setProductToDelete(null);
+            refetch();
+        } catch (err: any) {
+            if (err.message.includes("associated orders") && !isForceDelete) {
+                setDeleteError(err.message);
+                setIsForceDelete(true);
+            } else {
+                toast.error("Deletion Failed", {
+                    description: err.message
+                });
+                setIsDeleteModalOpen(false); // Close on generic error to avoid stuck state
+            }
+        }
     };
 
     if (error) return (
@@ -213,8 +260,11 @@ export default function ProductsPage() {
                                                     <Button
                                                         variant="ghost"
                                                         size="sm"
-                                                        className="h-8 w-8 rounded-full"
-                                                        onClick={(e) => e.stopPropagation()}
+                                                        className="h-8 w-8 rounded-full text-destructive hover:bg-destructive/10"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleDeleteClick(product);
+                                                        }}
                                                     >
                                                         <MoreHorizontal className="h-4 w-4" />
                                                     </Button>
@@ -282,6 +332,49 @@ export default function ProductsPage() {
                     )}
                 </div>
             </div>
+
+            {/* Custom Modal for Delete Confirmation */}
+            {isDeleteModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in">
+                    <div className="bg-card w-full max-w-md rounded-2xl border shadow-xl p-6 space-y-6 animate-in zoom-in-95">
+                        <div className="space-y-2 text-center">
+                            <div className="mx-auto h-12 w-12 rounded-full bg-destructive/10 flex items-center justify-center mb-4">
+                                <AlertCircle className="h-6 w-6 text-destructive" />
+                            </div>
+                            <h2 className="text-xl font-bold tracking-tight">
+                                {deleteError ? "Force Delete Required" : "Confirm Deletion"}
+                            </h2>
+                            <p className="text-muted-foreground text-sm">
+                                {deleteError
+                                    ? <span className="text-destructive font-medium block mb-2">{deleteError}</span>
+                                    : `Are you sure you want to delete "${productToDelete?.name}"?`
+                                }
+                                {deleteError
+                                    ? "Do you want to force delete this product? This action cannot be undone and may affect historical order data."
+                                    : "This action cannot be undone."
+                                }
+                            </p>
+                        </div>
+                        <div className="flex gap-4 justify-center">
+                            <Button variant="outline" onClick={() => setIsDeleteModalOpen(false)} disabled={deleteLoading}>
+                                Cancel
+                            </Button>
+                            <Button
+                                variant={deleteError ? "destructive" : "default"}
+                                onClick={confirmDelete}
+                                disabled={deleteLoading}
+                                className={clsx(deleteError && "bg-destructive hover:bg-destructive/90")}
+                            >
+                                {deleteLoading ? (
+                                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                                ) : (
+                                    deleteError ? "Force Delete" : "Delete Product"
+                                )}
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div >
     );
 }

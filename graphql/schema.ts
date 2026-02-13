@@ -458,6 +458,7 @@ export const typeDefs = `
     hardDeleteUser(userId: String!): Boolean!
     bulkDeleteUsers(userIds: [String!]!, force: Boolean): BulkDeleteResult!
     updateProduct(id: String!, input: UpdateProductInput!): Product
+    deleteProduct(id: String!, force: Boolean): Boolean!
     createCategory(input: CreateCategoryInput!): Category
     createCategoryTree(input: [CategoryTreeInput!]!): [Category]
     updateCategory(id: String!, input: UpdateCategoryInput!): Category
