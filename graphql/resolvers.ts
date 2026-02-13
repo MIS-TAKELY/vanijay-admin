@@ -1092,6 +1092,22 @@ export const resolvers = {
                         }
                     });
 
+                    // 1.5 Handle ConversationParticipants (No cascade from Conversation)
+                    // Product -> Conversation (Cascade) -> ConversationParticipant (Restrict)
+                    // We must delete participants to allow conversations (and thus product) to be deleted.
+                    const conversations = await tx.conversation.findMany({
+                        where: { productId: id },
+                        select: { id: true }
+                    });
+                    const conversationIds = conversations.map(c => c.id);
+
+                    if (conversationIds.length > 0) {
+                        await tx.conversationParticipant.deleteMany({
+                            where: { conversationId: { in: conversationIds } }
+                        });
+                        // internal messages usually cascade from conversation, so likely fine.
+                    }
+
                     if (force && (hasOrders || variantIds.length > 0)) {
                         // Manually delete blocking constraints if force is true
 
