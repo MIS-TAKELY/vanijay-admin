@@ -1081,11 +1081,35 @@ export const resolvers = {
 
                 // 3. Delete Logic
                 await prismaMain.$transaction(async (tx) => {
-                    // Delete related data first (though cascade deals with most)
-                    // Explicitly deleting images, variants etc if needed, but Prisma schema usually handles this.
-                    // However, if we need to clean up external resources (like S3 images), we'd do it here.
+                    const variantIds = product.variants.map(v => v.id);
 
-                    // For now, relying on Prisma Cascade or simple delete
+                    if (force && (hasOrders || variantIds.length > 0)) {
+                        // Manually delete blocking constraints if force is true
+
+                        // 1. Delete OrderItems associated with these variants
+                        // Note: This modifies historical orders!
+                        await tx.orderItem.deleteMany({
+                            where: {
+                                variantId: { in: variantIds }
+                            }
+                        });
+
+                        // 2. Delete SellerOrderItems associated with these variants
+                        await tx.sellerOrderItem.deleteMany({
+                            where: {
+                                variantId: { in: variantIds }
+                            }
+                        });
+                    }
+
+                    // 3. Delete Reviews associated with the product (No cascade on product relation)
+                    await tx.review.deleteMany({
+                        where: {
+                            productId: id
+                        }
+                    });
+
+                    // 4. Delete the product (Prisma cascade handles variants and other relations)
                     await tx.product.delete({
                         where: { id }
                     });
@@ -1110,6 +1134,14 @@ export const resolvers = {
 
             } catch (error: any) {
                 console.error("Delete product error:", error);
+
+                // Improve error message for foreign key constraints if they still slip through
+                if (error.code === 'P2003') {
+                    // Constraint violation
+                    const field = error.meta?.field_name || "unknown field";
+                    throw new Error(`Cannot delete product due to associated data constraint (${field}). Please check for related records.`);
+                }
+
                 // Preserve specific error messages
                 if (error.message.includes("associated orders")) {
                     throw error;
