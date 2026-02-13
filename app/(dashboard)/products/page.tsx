@@ -361,16 +361,31 @@ export default function ProductsPage() {
                                     : "This action cannot be undone."
                                 }
                             </p>
+
+                            {!deleteError && (
+                                <div className="flex items-center justify-center gap-2 pt-2">
+                                    <input
+                                        type="checkbox"
+                                        id="forceDeleteCheckbox"
+                                        checked={isForceDelete}
+                                        onChange={(e) => setIsForceDelete(e.target.checked)}
+                                        className="h-4 w-4 rounded border-primary text-primary focus:ring-primary/20"
+                                    />
+                                    <label htmlFor="forceDeleteCheckbox" className="text-sm font-medium text-muted-foreground cursor-pointer select-none">
+                                        Force delete even if orders exist
+                                    </label>
+                                </div>
+                            )}
                         </div>
                         <div className="flex gap-4 justify-center">
                             <Button variant="outline" onClick={() => setIsDeleteModalOpen(false)} disabled={deleteLoading}>
                                 Cancel
                             </Button>
                             <Button
-                                variant={deleteError ? "destructive" : "default"}
+                                variant={deleteError || isForceDelete ? "destructive" : "default"}
                                 onClick={confirmDelete}
                                 disabled={deleteLoading}
-                                className={clsx(deleteError && "bg-destructive hover:bg-destructive/90")}
+                                className={clsx((deleteError || isForceDelete) && "bg-destructive hover:bg-destructive/90")}
                             >
                                 {deleteLoading ? (
                                     <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
