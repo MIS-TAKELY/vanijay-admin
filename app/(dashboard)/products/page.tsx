@@ -98,28 +98,35 @@ export default function ProductsPage() {
         if (!productToDelete) return;
 
         try {
-            await deleteProduct({
+            const { data } = await deleteProduct({
                 variables: {
                     id: productToDelete.id,
                     force: isForceDelete
                 }
             });
 
-            toast.success("Product Deleted", {
-                description: `Successfully deleted ${productToDelete.name}`
-            });
-            setIsDeleteModalOpen(false);
-            setProductToDelete(null);
-            refetch();
+            if (data?.deleteProduct) {
+                toast.success("Product Deleted", {
+                    description: `Successfully deleted ${productToDelete.name}`
+                });
+                setIsDeleteModalOpen(false);
+                setProductToDelete(null);
+                refetch();
+            }
         } catch (err: any) {
-            if (err.message.includes("associated orders") && !isForceDelete) {
-                setDeleteError(err.message);
+            console.error("Delete Error Full Object:", JSON.stringify(err, null, 2));
+
+            // Check for GraphQL errors specifically
+            const errorMessage = err.graphQLErrors?.[0]?.message || err.message || "Unknown error occurred";
+
+            if (errorMessage.includes("associated orders") && !isForceDelete) {
+                setDeleteError(errorMessage);
                 setIsForceDelete(true);
             } else {
                 toast.error("Deletion Failed", {
-                    description: err.message
+                    description: errorMessage
                 });
-                setIsDeleteModalOpen(false); // Close on generic error to avoid stuck state
+                setIsDeleteModalOpen(false);
             }
         }
     };
