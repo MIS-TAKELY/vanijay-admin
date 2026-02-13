@@ -1083,31 +1083,46 @@ export const resolvers = {
                 await prismaMain.$transaction(async (tx) => {
                     const variantIds = product.variants.map(v => v.id);
 
+                    // 1. Delete Reviews associated with the product (No cascade on product relation)
+                    // Doing this first to avoid potential constraints if reviews link to orderItems
+                    await tx.review.deleteMany({
+                        where: {
+                            productId: id
+                        }
+                    });
+
                     if (force && (hasOrders || variantIds.length > 0)) {
                         // Manually delete blocking constraints if force is true
 
-                        // 1. Delete OrderItems associated with these variants
-                        // Note: This modifies historical orders!
-                        await tx.orderItem.deleteMany({
-                            where: {
-                                variantId: { in: variantIds }
-                            }
+                        // 2. Find OrderItems to identify dependent ReturnItems
+                        const orderItems = await tx.orderItem.findMany({
+                            where: { variantId: { in: variantIds } },
+                            select: { id: true }
                         });
+                        const orderItemIds = orderItems.map(oi => oi.id);
 
-                        // 2. Delete SellerOrderItems associated with these variants
+                        if (orderItemIds.length > 0) {
+                            // 2.1 Delete ReturnItems manually (Cross-schema constraint not known to prismaMain)
+                            // "return_items" table from prisma-buyer schema references "order_items"
+                            const formattedIds = orderItemIds.map(id => `'${id}'`).join(", ");
+                            await tx.$executeRawUnsafe(`DELETE FROM "return_items" WHERE "orderItemId" IN (${formattedIds})`);
+
+                            // 2.2 Delete OrderItems associated with these variants
+                            // Note: This modifies historical orders!
+                            await tx.orderItem.deleteMany({
+                                where: {
+                                    id: { in: orderItemIds }
+                                }
+                            });
+                        }
+
+                        // 3. Delete SellerOrderItems associated with these variants
                         await tx.sellerOrderItem.deleteMany({
                             where: {
                                 variantId: { in: variantIds }
                             }
                         });
                     }
-
-                    // 3. Delete Reviews associated with the product (No cascade on product relation)
-                    await tx.review.deleteMany({
-                        where: {
-                            productId: id
-                        }
-                    });
 
                     // 4. Delete the product (Prisma cascade handles variants and other relations)
                     await tx.product.delete({
