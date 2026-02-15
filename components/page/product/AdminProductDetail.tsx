@@ -100,13 +100,49 @@ export default function AdminProductDetail({
   // Parse specification table
   const specTable = useMemo(() => {
     try {
-      return typeof product.specificationTable === "string"
-        ? JSON.parse(product.specificationTable)
-        : product.specificationTable;
+      // 1. Try global specificationTable
+      if (product.specificationTable) {
+        const parsed =
+          typeof product.specificationTable === "string"
+            ? JSON.parse(product.specificationTable)
+            : product.specificationTable;
+
+        if (
+          parsed &&
+          Array.isArray(parsed.rows) &&
+          parsed.rows.filter((r: any) => r.some((c: any) => c.trim())).length > 0
+        ) {
+          return parsed;
+        }
+      }
+
+      // 2. Fallback to activeVariant.specifications
+      if (activeVariant?.specifications?.length) {
+        return {
+          headers: ["Attribute", "Value"],
+          rows: activeVariant.specifications.map((s: any) => [s.key, s.value]),
+        };
+      }
+
+      // 3. Fallback to any variant's specifications if active variant has none
+      const firstVarWithSpecs = product.variants?.find(
+        (v: any) => v.specifications?.length > 0
+      );
+      if (firstVarWithSpecs?.specifications?.length) {
+        return {
+          headers: ["Attribute", "Value"],
+          rows: firstVarWithSpecs.specifications.map((s: any) => [
+            s.key,
+            s.value,
+          ]),
+        };
+      }
+
+      return null;
     } catch {
       return null;
     }
-  }, [product.specificationTable]);
+  }, [product.specificationTable, product.variants, activeVariant]);
 
   // Get primary images
   const primaryImages =

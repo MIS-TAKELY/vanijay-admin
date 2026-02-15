@@ -54,11 +54,20 @@ export default function EditSpecificationsDialog({ product, open, onOpenChange, 
                     ? JSON.parse(product.specificationTable)
                     : product.specificationTable;
 
-                if (parsed && Array.isArray(parsed.headers) && Array.isArray(parsed.rows)) {
+                if (parsed && Array.isArray(parsed.headers) && Array.isArray(parsed.rows) && parsed.rows.filter((r: any) => r.some((c: any) => c.trim())).length > 0) {
                     setSpecTable(parsed);
                 } else {
-                    // Default if empty or invalid
-                    setSpecTable({ headers: ["Feature", "Value"], rows: [["", ""]] });
+                    // Fallback to variants
+                    const defaultVar = product.variants?.find((v: any) => v.isDefault) || product.variants?.[0];
+                    if (defaultVar?.specifications?.length) {
+                        setSpecTable({
+                            headers: ["Attribute", "Value"],
+                            rows: defaultVar.specifications.map((s: any) => [s.key, s.value])
+                        });
+                    } else {
+                        // Default if empty or invalid
+                        setSpecTable({ headers: ["Feature", "Value"], rows: [["", ""]] });
+                    }
                 }
             } catch (e) {
                 setSpecTable({ headers: ["Feature", "Value"], rows: [["", ""]] });
