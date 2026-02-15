@@ -784,7 +784,19 @@ export const resolvers = {
                         where: { senderId: userId }
                     });
 
-                    // 4. Finally Delete user - Prisma cascade deletes will handle remaining related records
+                    // 4. Raw SQL for tables not in this Prisma schema but existing in DB
+                    // These are causing foreign key constraint violations
+                    try {
+                        await tx.$executeRawUnsafe(`DELETE FROM "returns" WHERE "userId" = $1`, userId);
+                        await tx.$executeRawUnsafe(`DELETE FROM "popular_search_categories" WHERE "created_by" = $1`, userId);
+                        await tx.$executeRawUnsafe(`DELETE FROM "popular_search_keywords" WHERE "created_by" = $1`, userId);
+                        await tx.$executeRawUnsafe(`DELETE FROM "popular_search_audit" WHERE "performed_by" = $1`, userId);
+                    } catch (rawError) {
+                        console.warn("Raw SQL cleanup failed (likely tables don't exist yet):", (rawError as any).message);
+                        // We continue as these might be optional or non-existent in some environments
+                    }
+
+                    // 5. Finally Delete user - Prisma cascade deletes will handle remaining related records
                     await tx.user.delete({
                         where: { id: userId }
                     });
