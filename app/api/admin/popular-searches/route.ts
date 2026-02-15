@@ -12,12 +12,12 @@ export async function GET(req: Request) {
         if (status === 'active') where.isActive = true;
         if (status === 'inactive') where.isActive = false;
 
-        const categories = await prismaBuyer.popularSearchCategory.findMany({
+        const categories = await prismaBuyer.popular_search_categories.findMany({
             where,
-            orderBy: { displayOrder: 'asc' },
+            orderBy: { display_order: 'asc' },
             include: {
-                keywords: {
-                    orderBy: { displayOrder: 'asc' },
+                popular_search_keywords: {
+                    orderBy: { display_order: 'asc' },
                 },
             },
         });
@@ -35,15 +35,23 @@ export async function POST(req: Request) {
         const data = categorySchema.parse(body);
 
         // Check slug uniqueness
-        const existing = await prismaBuyer.popularSearchCategory.findUnique({
+        const existing = await prismaBuyer.popular_search_categories.findUnique({
             where: { slug: data.slug },
         });
         if (existing) {
             return NextResponse.json({ error: 'Slug already exists' }, { status: 400 });
         }
 
-        const category = await prismaBuyer.popularSearchCategory.create({
-            data,
+        const category = await prismaBuyer.popular_search_categories.create({
+            data: {
+                id: crypto.randomUUID(),
+                title: data.title,
+                slug: data.slug,
+                icon: data.icon,
+                display_order: data.displayOrder,
+                is_active: data.isActive,
+                is_indexed: data.isIndexed,
+            },
         });
 
         return NextResponse.json(category);
