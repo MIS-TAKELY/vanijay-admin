@@ -784,7 +784,33 @@ export const resolvers = {
                         where: { senderId: userId }
                     });
 
-                    // 4. Raw SQL for tables not in this Prisma schema but existing in DB
+                    // 4. Find user's orders to clean up dependencies that don't cascade (Payment, Shipment, Returns)
+                    const userOrders = await tx.order.findMany({
+                        where: { buyerId: userId },
+                        select: { id: true }
+                    });
+                    const userOrderIds = userOrders.map(o => o.id);
+
+                    if (userOrderIds.length > 0) {
+                        // Delete Payments associated with these orders
+                        await tx.payment.deleteMany({
+                            where: { orderId: { in: userOrderIds } }
+                        });
+
+                        // Delete Shipments associated with these orders
+                        await tx.shipment.deleteMany({
+                            where: { orderId: { in: userOrderIds } }
+                        });
+
+                        // Also clean up returns by order IDs just in case
+                        try {
+                            await tx.$executeRawUnsafe(`DELETE FROM "returns" WHERE "orderId" = ANY($1)`, userOrderIds);
+                        } catch (e) {
+                            // Ignore if table or column doesn't exist
+                        }
+                    }
+
+                    // 5. Raw SQL for tables not in this Prisma schema but existing in DB
                     // These are causing foreign key constraint violations
                     try {
                         await tx.$executeRawUnsafe(`DELETE FROM "returns" WHERE "userId" = $1`, userId);
@@ -796,7 +822,7 @@ export const resolvers = {
                         // We continue as these might be optional or non-existent in some environments
                     }
 
-                    // 5. Finally Delete user - Prisma cascade deletes will handle remaining related records
+                    // 6. Finally Delete user - Prisma cascade deletes will handle remaining related records
                     await tx.user.delete({
                         where: { id: userId }
                     });
