@@ -20,6 +20,7 @@ export type {
   DeliveryOptionData,
   FormData,
   Media,
+  SpecificationSection,
   Step,
   Errors,
   StatusFilter,

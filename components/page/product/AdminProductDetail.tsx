@@ -97,8 +97,8 @@ export default function AdminProductDetail({
     setSelectedAttributes((prev) => ({ ...prev, [key]: value }));
   }, []);
 
-  // Parse specification table
-  const specTable = useMemo(() => {
+  // Parse specification sections
+  const specSections = useMemo(() => {
     try {
       // 1. Try global specificationTable
       if (product.specificationTable) {
@@ -107,21 +107,40 @@ export default function AdminProductDetail({
             ? JSON.parse(product.specificationTable)
             : product.specificationTable;
 
-        if (
+        if (Array.isArray(parsed)) {
+          // New Multi-Section format
+          return parsed.filter(
+            (section: any) =>
+              section.rows &&
+              Array.isArray(section.rows) &&
+              section.rows.some((r: any) => r.some((c: any) => c && c.trim()))
+          );
+        } else if (
           parsed &&
           Array.isArray(parsed.rows) &&
-          parsed.rows.filter((r: any) => r.some((c: any) => c.trim())).length > 0
+          parsed.rows.filter((r: any) => r.some((c: any) => c && c.trim())).length >
+          0
         ) {
-          return parsed;
+          // Legacy Single Table format
+          return [
+            {
+              title: "Technical Specifications",
+              headers: parsed.headers || ["Attribute", "Value"],
+              rows: parsed.rows,
+            },
+          ];
         }
       }
 
       // 2. Fallback to activeVariant.specifications
       if (activeVariant?.specifications?.length) {
-        return {
-          headers: ["Attribute", "Value"],
-          rows: activeVariant.specifications.map((s: any) => [s.key, s.value]),
-        };
+        return [
+          {
+            title: "Technical Specifications",
+            headers: ["Attribute", "Value"],
+            rows: activeVariant.specifications.map((s: any) => [s.key, s.value]),
+          },
+        ];
       }
 
       // 3. Fallback to any variant's specifications if active variant has none
@@ -129,18 +148,21 @@ export default function AdminProductDetail({
         (v: any) => v.specifications?.length > 0
       );
       if (firstVarWithSpecs?.specifications?.length) {
-        return {
-          headers: ["Attribute", "Value"],
-          rows: firstVarWithSpecs.specifications.map((s: any) => [
-            s.key,
-            s.value,
-          ]),
-        };
+        return [
+          {
+            title: "Technical Specifications",
+            headers: ["Attribute", "Value"],
+            rows: firstVarWithSpecs.specifications.map((s: any) => [
+              s.key,
+              s.value,
+            ]),
+          },
+        ];
       }
 
-      return null;
+      return [];
     } catch {
-      return null;
+      return [];
     }
   }, [product.specificationTable, product.variants, activeVariant]);
 
@@ -438,44 +460,62 @@ export default function AdminProductDetail({
                   </Button>
                 </div>
 
-                {specTable ? (
-                  <div className="border rounded-2xl overflow-hidden">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="bg-muted/50 border-b">
-                          {specTable.headers?.map(
-                            (header: string, i: number) => (
-                              <th
-                                key={i}
-                                className="px-4 py-3 font-semibold text-left text-muted-foreground border-r last:border-r-0"
-                              >
-                                {header}
-                              </th>
-                            )
-                          )}
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y">
-                        {specTable.rows?.map((row: string[], i: number) => (
-                          <tr
-                            key={i}
-                            className={cn(
-                              "hover:bg-muted/30 transition-colors",
-                              i % 2 === 0 ? "bg-background" : "bg-muted/10"
-                            )}
-                          >
-                            {row.map((cell, j) => (
-                              <td
-                                key={j}
-                                className="px-4 py-3 border-r last:border-r-0"
-                              >
-                                {cell}
-                              </td>
-                            ))}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                {specSections && specSections.length > 0 ? (
+                  <div className="space-y-10">
+                    {specSections.map((section: any, idx: number) => (
+                      <div key={idx} className="space-y-4">
+                        {section.title && (
+                          <div className="flex items-center gap-3">
+                            <div className="h-1 w-1 rounded-full bg-primary" />
+                            <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-widest">
+                              {section.title}
+                            </h4>
+                          </div>
+                        )}
+                        <div className="border rounded-2xl overflow-hidden">
+                          <table className="w-full text-sm">
+                            <thead>
+                              <tr className="bg-muted/50 border-b">
+                                {section.headers?.map(
+                                  (header: string, i: number) => (
+                                    <th
+                                      key={i}
+                                      className="px-4 py-3 font-semibold text-left text-muted-foreground border-r last:border-r-0"
+                                    >
+                                      {header}
+                                    </th>
+                                  )
+                                )}
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y">
+                              {section.rows?.map(
+                                (row: string[], i: number) => (
+                                  <tr
+                                    key={i}
+                                    className={cn(
+                                      "hover:bg-muted/30 transition-colors",
+                                      i % 2 === 0
+                                        ? "bg-background"
+                                        : "bg-muted/10"
+                                    )}
+                                  >
+                                    {row.map((cell, j) => (
+                                      <td
+                                        key={j}
+                                        className="px-4 py-3 border-r last:border-r-0"
+                                      >
+                                        {cell}
+                                      </td>
+                                    ))}
+                                  </tr>
+                                )
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 ) : (
                   <p className="text-muted-foreground text-center py-12 italic bg-muted/10 rounded-2xl border border-dashed">

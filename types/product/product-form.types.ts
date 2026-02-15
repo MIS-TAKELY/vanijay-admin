@@ -25,6 +25,12 @@ export interface Media {
   sortOrder?: number;
 }
 
+export interface SpecificationSection {
+  title: string;
+  headers: string[];
+  rows: string[][];
+}
+
 // Variant Data used in the Form State
 export interface ProductVariantData {
   id?: string;
@@ -35,10 +41,7 @@ export interface ProductVariantData {
   attributes: Record<string, string>;
   isDefault: boolean;
   specifications?: Array<{ key: string; value: string }>;
-  specificationTable?: {
-    headers: string[];
-    rows: string[][];
-  };
+  specificationTable?: SpecificationSection | SpecificationSection[];
 }
 
 export interface DeliveryOptionData {
@@ -82,10 +85,7 @@ export interface FormData {
     key: string;
     value: string;
   }>;
-  specificationTable?: {
-    headers: string[];
-    rows: string[][];
-  };
+  specificationTable?: SpecificationSection | SpecificationSection[];
   specificationDisplayFormat: "bullet" | "table" | "custom_table";
 
   // Offers
