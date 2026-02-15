@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FormData, ProductVariantData } from "@/types/pages/product";
+import { FormData, ProductVariantData, SpecificationSection } from "@/types/pages/product";
 import React, { useState, useMemo, useEffect } from "react";
 import { SpecificationTable } from "../SpecificationTable";
 import {
@@ -72,6 +72,28 @@ export const ProductPreview = React.memo(
       ? activeVariant.specificationTable
       : formData.specificationTable;
 
+    const specSections = useMemo((): SpecificationSection[] => {
+      try {
+        if (!displaySpecTable) return [];
+
+        const parsed = typeof displaySpecTable === 'string'
+          ? JSON.parse(displaySpecTable)
+          : displaySpecTable;
+
+        if (Array.isArray(parsed)) {
+          return parsed.filter((s: any) => s.rows && s.rows.length > 0);
+        } else if (parsed && Array.isArray(parsed.headers) && Array.isArray(parsed.rows)) {
+          return [{
+            title: "Technical Specifications",
+            headers: parsed.headers,
+            rows: parsed.rows
+          }];
+        }
+        return [];
+      } catch {
+        return [];
+      }
+    }, [displaySpecTable]);
     return (
       <div className="space-y-8 animate-in fade-in duration-700">
         <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 p-2 px-4 rounded-full w-fit">
@@ -298,10 +320,21 @@ export const ProductPreview = React.memo(
                     )}
                   </div>
 
-                  {(displaySpecs.length > 0 || displaySpecTable) ? (
-                    displaySpecTable ? (
-                      <div className="border rounded-2xl overflow-hidden backdrop-blur-sm shadow-sm transition-all duration-500">
-                        <SpecificationTable data={displaySpecTable} />
+                  {(displaySpecs.length > 0 || specSections.length > 0) ? (
+                    specSections.length > 0 ? (
+                      <div className="space-y-8 transition-all duration-500">
+                        {specSections.map((section, idx) => (
+                          <div key={idx} className="space-y-3">
+                            {section.title && (
+                              <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider px-1">
+                                {section.title}
+                              </h4>
+                            )}
+                            <div className="border rounded-2xl overflow-hidden backdrop-blur-sm shadow-sm">
+                              <SpecificationTable data={section} />
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     ) : (
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 animate-in slide-in-from-bottom-2 duration-500">
