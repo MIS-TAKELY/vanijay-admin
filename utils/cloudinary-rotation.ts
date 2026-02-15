@@ -24,6 +24,9 @@ let rotationIndex = 0;
 export function getNextCloudinaryAccount(): CloudinaryAccount {
     const index = rotationIndex;
 
+    // Increment for next call BEFORE validation to ensure we don't get stuck
+    rotationIndex = (rotationIndex + 1) % ACCOUNT_COUNT;
+
     // Support both old and new env variable naming
     const cloudName = process.env[`NEXT_PUBLIC_CLOUDINARY_ACCOUNT_${index}_NAME`] ||
         process.env[`NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME${index === 0 ? '' : index}`];
@@ -33,9 +36,6 @@ export function getNextCloudinaryAccount(): CloudinaryAccount {
     if (!cloudName || !uploadPreset) {
         throw new Error(`Cloudinary account ${index} configuration missing`);
     }
-
-    // Increment for next call
-    rotationIndex = (rotationIndex + 1) % ACCOUNT_COUNT;
 
     return {
         cloudName,
