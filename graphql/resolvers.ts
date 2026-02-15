@@ -748,7 +748,43 @@ export const resolvers = {
                 });
 
                 await prismaMain.$transaction(async (tx) => {
-                    // Delete user - Prisma cascade deletes will handle related records
+                    // 1. Delete SystemLogs where user is admin
+                    await tx.systemLog.deleteMany({
+                        where: { adminId: userId }
+                    });
+
+                    // 2. Resolve Conversation blocking issues
+                    // Find conversations where user is sender or receiver (these will be deleted by cascade, but blocked by participants)
+                    const userConversations = await tx.conversation.findMany({
+                        where: {
+                            OR: [
+                                { senderId: userId },
+                                { recieverId: userId }
+                            ]
+                        },
+                        select: { id: true }
+                    });
+
+                    const conversationIds = userConversations.map(c => c.id);
+
+                    if (conversationIds.length > 0) {
+                        // Delete participants from conversations that are about to be deleted
+                        await tx.conversationParticipant.deleteMany({
+                            where: { conversationId: { in: conversationIds } }
+                        });
+                    }
+
+                    // Delete user's participation in ANY conversation (to clear user->participant FK)
+                    await tx.conversationParticipant.deleteMany({
+                        where: { userId: userId }
+                    });
+
+                    // 3. Delete Messages sent by user (to clear user->message FK)
+                    await tx.message.deleteMany({
+                        where: { senderId: userId }
+                    });
+
+                    // 4. Finally Delete user - Prisma cascade deletes will handle remaining related records
                     await tx.user.delete({
                         where: { id: userId }
                     });
