@@ -14,63 +14,66 @@ generator clientAdmin {
 
 datasource db {
   provider   = "postgresql"
-  extensions = [pg_trgm, vector]
+  extensions = [pg_trgm]
 }
 
 model User {
-  id                        String                      @id @default(cuid())
-  name                      String                      @default("")
-  username                  String                      @unique @db.VarChar(255)
-  email                     String                      @unique @db.VarChar(255)
-  emailVerified             Boolean                     @default(false)
-  image                     String?
-  firstName                 String?
-  lastName                  String?
-  avatarImageUrl            String?
-  phoneNumber               String?                     @unique @map("phone") @db.VarChar(20)
-  phoneNumberVerified       Boolean                     @default(false) @map("phoneVerified")
-  otp                       String?
-  otpExpiresAt              DateTime?
-  emailOtp                  String?
-  emailOtpExpiresAt         DateTime?
-  gender                    Gender?
-  dob                       DateTime?
-  createdAt                 DateTime                    @default(now())
-  updatedAt                 DateTime                    @updatedAt
-  displayUsername           String?                     @db.VarChar(255)
-  password                  String?
-  hasProfile                Boolean                     @default(false)
-  isBanned                  Boolean                     @default(false)
-  role                      String                      @default("USER")
-  accounts                  Account[]
-  addresses                 Address[]                   @relation("UserAddresses")
-  cartItems                 CartItem[]                  @relation("UserCartItems")
-  ConversationParticipant   ConversationParticipant[]
-  sellerConversations       Conversation[]              @relation("SellerConversations")
-  buyerConversations        Conversation[]              @relation("BuyerConversations")
-  sentMessages              Message[]                   @relation("UserSentMessages")
-  notifications             Notification[]
-  disputes                  OrderDispute[]
-  orders                    Order[]                     @relation("BuyerOrders")
-  paymentMethods            PaymentMethod[]             @relation("UserPayments")
-  payouts                   Payout[]                    @relation("SellerPayouts")
-  popular_search_audit      popular_search_audit[]
-  popular_search_categories popular_search_categories[]
-  popular_search_keywords   popular_search_keywords[]
-  productAnswers            ProductAnswer[]             @relation("SellerAnswers")
-  productNotifications      ProductNotification[]       @relation("UserNotifications")
-  productQuestions          ProductQuestion[]
-  products                  Product[]                   @relation("SellerProducts")
-  recentlyViewed            RecentlyViewed[]
-  returns                   Return[]
-  ReviewVote                ReviewVote[]
-  reviews                   Review[]
-  sellerOrders              SellerOrder[]               @relation("SellerOrders")
-  sellerProfile             SellerProfile?
-  sessions                  Session[]
-  logs                      SystemLog[]
-  roles                     UserRole[]
-  wishlists                 Wishlist[]
+  id                             String                    @id @default(cuid())
+  name                           String                    @default("")
+  username                       String                    @unique @db.VarChar(255)
+  email                          String                    @unique @db.VarChar(255)
+  emailVerified                  Boolean                   @default(false)
+  image                          String?
+  firstName                      String?
+  lastName                       String?
+  avatarImageUrl                 String?
+  phoneNumber                    String?                   @unique @map("phone") @db.VarChar(20)
+  phoneNumberVerified            Boolean                   @default(false) @map("phoneVerified")
+  otp                            String?
+  otpExpiresAt                   DateTime?
+  emailOtp                       String?
+  emailOtpExpiresAt              DateTime?
+  gender                         Gender?
+  dob                            DateTime?
+  createdAt                      DateTime                  @default(now())
+  updatedAt                      DateTime                  @updatedAt
+  displayUsername                String?                   @db.VarChar(255)
+  password                       String?
+  hasProfile                     Boolean                   @default(false)
+  isBanned                       Boolean                   @default(false)
+  emailNotifications             Boolean                   @default(true)
+  whatsappNotifications          Boolean                   @default(true)
+  inAppNotifications             Boolean                   @default(true)
+  role                           String                    @default("USER")
+  accounts                       Account[]
+  addresses                      Address[]                 @relation("UserAddresses")
+  cartItems                      CartItem[]                @relation("UserCartItems")
+  ConversationParticipant        ConversationParticipant[]
+  sellerConversations            Conversation[]            @relation("SellerConversations")
+  buyerConversations             Conversation[]            @relation("BuyerConversations")
+  sentMessages                   Message[]                 @relation("UserSentMessages")
+  notifications                  Notification[]
+  disputes                       OrderDispute[]
+  orders                         Order[]                   @relation("BuyerOrders")
+  paymentMethods                 PaymentMethod[]           @relation("UserPayments")
+  payouts                        Payout[]                  @relation("SellerPayouts")
+  popularSearchAudits            PopularSearchAudit[]      @relation("PopularSearchAudits")
+  createdPopularSearchCategories PopularSearchCategory[]   @relation("CreatedPopularSearchCategories")
+  createdPopularSearchKeywords   PopularSearchKeyword[]    @relation("CreatedPopularSearchKeywords")
+  productAnswers                 ProductAnswer[]           @relation("SellerAnswers")
+  productNotifications           ProductNotification[]     @relation("UserNotifications")
+  productQuestions               ProductQuestion[]
+  products                       Product[]                 @relation("SellerProducts")
+  recentlyViewed                 RecentlyViewed[]
+  returns                        Return[]
+  ReviewVote                     ReviewVote[]
+  reviews                        Review[]
+  sellerOrders                   SellerOrder[]             @relation("SellerOrders")
+  sellerProfile                  SellerProfile?
+  sessions                       Session[]
+  logs                           SystemLog[]
+  roles                          UserRole[]
+  wishlists                      Wishlist[]
 
   @@index([email])
   @@map("user")
@@ -288,7 +291,7 @@ model Category {
   categorySpecification    CategorySpecification[]
   landingPageCategoryCards LandingPageCategoryCard[]
   products                 Product[]
-  seo_pages                seo_pages[]
+  seoPages                 SeoPage[]
 
   @@index([slug])
   @@index([isActive, isIndexable], map: "idx_categories_isactive_isindexable")
@@ -817,6 +820,61 @@ model Verification {
   @@map("verification")
 }
 
+model PopularSearchCategory {
+  id           String                 @id @default(cuid())
+  title        String
+  slug         String                 @unique
+  icon         String?
+  displayOrder Int                    @default(0) @map("display_order")
+  isActive     Boolean                @default(true) @map("is_active")
+  isIndexed    Boolean                @default(true) @map("is_indexed")
+  createdAt    DateTime               @default(now()) @map("created_at")
+  updatedAt    DateTime               @default(now()) @updatedAt @map("updated_at")
+  createdBy    String?                @map("created_by")
+  creator      User?                  @relation("CreatedPopularSearchCategories", fields: [createdBy], references: [id])
+  keywords     PopularSearchKeyword[]
+
+  @@map("popular_search_categories")
+}
+
+model PopularSearchKeyword {
+  id              String                @id @default(cuid())
+  categoryId      String                @map("category_id")
+  name            String
+  href            String
+  targetType      String                @default("_self") @map("target_type")
+  isActive        Boolean               @default(true) @map("is_active")
+  isIndexed       Boolean               @default(true) @map("is_indexed")
+  isFeatured      Boolean               @default(false) @map("is_featured")
+  clickCount      Int                   @default(0) @map("click_count")
+  impressionCount Int                   @default(0) @map("impression_count")
+  displayOrder    Int                   @default(0) @map("display_order")
+  createdAt       DateTime              @default(now()) @map("created_at")
+  updatedAt       DateTime              @default(now()) @updatedAt @map("updated_at")
+  createdBy       String?               @map("created_by")
+  deletedAt       DateTime?             @map("deleted_at")
+  category        PopularSearchCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  creator         User?                 @relation("CreatedPopularSearchKeywords", fields: [createdBy], references: [id])
+
+  @@index([categoryId])
+  @@map("popular_search_keywords")
+}
+
+model PopularSearchAudit {
+  id          String   @id @default(cuid())
+  actionType  String   @map("action_type")
+  entityType  String   @map("entity_type")
+  entityId    String?  @map("entity_id")
+  oldValues   Json?    @map("old_values")
+  newValues   Json?    @map("new_values")
+  performedBy String?  @map("performed_by")
+  performedAt DateTime @default(now()) @map("performed_at")
+  ipAddress   String?  @map("ip_address")
+  performer   User?    @relation("PopularSearchAudits", fields: [performedBy], references: [id])
+
+  @@map("popular_search_audit")
+}
+
 model OrderDispute {
   id            String        @id @default(cuid())
   orderId       String
@@ -969,58 +1027,8 @@ model ReturnItem {
   @@map("return_items")
 }
 
-model popular_search_audit {
-  id           String   @id
-  action_type  String
-  entity_type  String
-  entity_id    String?
-  old_values   Json?
-  new_values   Json?
-  performed_by String?
-  performed_at DateTime @default(now())
-  ip_address   String?
-  user         User?    @relation(fields: [performed_by], references: [id])
-}
-
-model popular_search_categories {
-  id                      String                    @id
-  title                   String
-  slug                    String                    @unique
-  icon                    String?
-  display_order           Int                       @default(0)
-  is_active               Boolean                   @default(true)
-  is_indexed              Boolean                   @default(true)
-  created_at              DateTime                  @default(now())
-  updated_at              DateTime                  @default(now())
-  created_by              String?
-  user                    User?                     @relation(fields: [created_by], references: [id])
-  popular_search_keywords popular_search_keywords[]
-}
-
-model popular_search_keywords {
-  id                        String                    @id
-  category_id               String
-  name                      String
-  href                      String
-  target_type               String                    @default("_self")
-  is_active                 Boolean                   @default(true)
-  is_indexed                Boolean                   @default(true)
-  is_featured               Boolean                   @default(false)
-  click_count               Int                       @default(0)
-  impression_count          Int                       @default(0)
-  display_order             Int                       @default(0)
-  created_at                DateTime                  @default(now())
-  updated_at                DateTime                  @default(now())
-  created_by                String?
-  deleted_at                DateTime?
-  popular_search_categories popular_search_categories @relation(fields: [category_id], references: [id], onDelete: Cascade)
-  user                      User?                     @relation(fields: [created_by], references: [id])
-
-  @@index([category_id])
-}
-
-model seo_pages {
-  id              String   @id
+model SeoPage {
+  id              String   @id @default(cuid())
   categoryId      String
   priceThreshold  Int
   urlPath         String   @unique
@@ -1031,10 +1039,11 @@ model seo_pages {
   isIndexed       Boolean  @default(false)
   isStale         Boolean  @default(false)
   createdAt       DateTime @default(now())
-  updatedAt       DateTime @default(now())
-  categories      Category @relation(fields: [categoryId], references: [id], map: "seo_pages_categoryid_fkey")
+  updatedAt       DateTime @default(now()) @updatedAt
+  category        Category @relation(fields: [categoryId], references: [id], map: "seo_pages_categoryid_fkey")
 
   @@index([urlPath], map: "seo_pages_urlpath_idx")
+  @@map("seo_pages")
 }
 
 enum Role {
