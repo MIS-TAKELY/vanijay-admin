@@ -1930,6 +1930,21 @@ export const resolvers = {
         },
         createSeoPage: async (_: any, { input }: { input: any }) => {
             try {
+                // Ensure urlPath is a slug
+                if (input.urlPath) {
+                    input.urlPath = input.urlPath
+                        .toLowerCase()
+                        .trim()
+                        .replace(/\s+/g, '-')           // spaces to dashes
+                        .replace(/[^a-z0-9\s-]/g, '')    // remove special chars
+                        .replace(/-+/g, '-')            // collapse multiple dashes
+                        .replace(/^-|-$/g, '');         // trim leading/trailing dashes
+
+                    if (!input.urlPath.startsWith('/')) {
+                        input.urlPath = `/${input.urlPath}`;
+                    }
+                }
+
                 return await prismaMain.seoPage.create({
                     data: {
                         ...input,

@@ -231,7 +231,7 @@ export default function SeoPagesPage() {
                                     disabled={!page.urlPath || page.urlPath === '/'}
                                 >
                                     <a
-                                        href={`https://vanijay.com${page.urlPath.startsWith('/') ? page.urlPath : `/${page.urlPath}`}`}
+                                        href={`https://vanijay.com${slugifyPath(page.urlPath)}`}
                                         target="_blank"
                                         title={page.urlPath || 'No path set'}
                                         onClick={(e) => {
