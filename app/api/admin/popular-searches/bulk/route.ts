@@ -28,7 +28,7 @@ export async function POST(req: Request) {
                 if (!categoryTitle || !keywordName || !url) continue;
 
                 // Find or Create Category
-                let category = await tx.popular_search_categories.findFirst({
+                let category = await tx.popularSearchCategory.findFirst({
                     where: { title: categoryTitle }
                 });
 
@@ -37,31 +37,31 @@ export async function POST(req: Request) {
                     const slug = categoryTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
                     // Ensure slug unique? simpler to just append random if needed, but for now assume clean
                     // Or try findUnique by slug
-                    const existingSlug = await tx.popular_search_categories.findUnique({ where: { slug } });
+                    const existingSlug = await tx.popularSearchCategory.findUnique({ where: { slug } });
                     if (existingSlug) {
                         // Skip or append random
                         continue;
                     }
 
-                    category = await tx.popular_search_categories.create({
+                    category = await tx.popularSearchCategory.create({
                         data: {
                             id: crypto.randomUUID(),
                             title: categoryTitle,
                             slug,
-                            display_order: 99 // Put at end
+                            displayOrder: 99 // Put at end
                         }
                     });
                 }
 
                 // Create Keyword
-                await tx.popular_search_keywords.create({
+                await tx.popularSearchKeyword.create({
                     data: {
                         id: crypto.randomUUID(),
                         name: keywordName,
                         href: url,
-                        target_type: target || '_self',
-                        category_id: category.id,
-                        display_order: 99
+                        targetType: target || '_self',
+                        categoryId: category.id,
+                        displayOrder: 99
                     }
                 });
                 importedCount++;
@@ -77,20 +77,20 @@ export async function POST(req: Request) {
 
 export async function GET() {
     try {
-        const categories = await prismaBuyer.popular_search_categories.findMany({
-            include: { popular_search_keywords: true },
-            orderBy: { display_order: 'asc' }
+        const categories = await prismaBuyer.popularSearchCategory.findMany({
+            include: { keywords: true },
+            orderBy: { displayOrder: 'asc' }
         });
 
         const csvRows = [['category', 'keyword', 'url', 'target', 'clicks']];
         categories.forEach(cat => {
-            cat.popular_search_keywords.forEach(kw => {
+            cat.keywords.forEach(kw => {
                 csvRows.push([
                     `"${cat.title}"`,
                     `"${kw.name}"`,
                     `"${kw.href}"`,
-                    `"${kw.target_type}"`,
-                    kw.click_count.toString()
+                    `"${kw.targetType}"`,
+                    kw.clickCount.toString()
                 ]);
             });
         });

@@ -9,18 +9,18 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         const body = await req.json();
         const data = keywordSchema.partial().parse(body);
 
-        const keyword = await prismaBuyer.popular_search_keywords.update({
+        const keyword = await prismaBuyer.popularSearchKeyword.update({
             where: { id },
             data: {
                 name: data.name,
                 href: data.href,
-                target_type: data.targetType,
-                is_active: data.isActive,
-                is_indexed: data.isIndexed,
-                is_featured: data.isFeatured,
-                display_order: data.displayOrder,
+                targetType: data.targetType,
+                isActive: data.isActive,
+                isIndexed: data.isIndexed,
+                isFeatured: data.isFeatured,
+                displayOrder: data.displayOrder,
                 ...(data.categoryId && {
-                    popular_search_categories: {
+                    category: {
                         connect: { id: data.categoryId }
                     }
                 })
@@ -37,7 +37,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params;
-        await prismaBuyer.popular_search_keywords.delete({
+        await prismaBuyer.popularSearchKeyword.delete({
             where: { id },
         });
         return NextResponse.json({ success: true });

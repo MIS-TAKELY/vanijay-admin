@@ -10,14 +10,14 @@ export async function POST(req: Request) {
         await prismaBuyer.$transaction(async (tx) => {
             for (const item of items) {
                 if (type === 'category') {
-                    await tx.popular_search_categories.update({
+                    await tx.popularSearchCategory.update({
                         where: { id: item.id },
-                        data: { display_order: item.order },
+                        data: { displayOrder: item.order },
                     });
                 } else {
-                    await tx.popular_search_keywords.update({
+                    await tx.popularSearchKeyword.update({
                         where: { id: item.id },
-                        data: { display_order: item.order },
+                        data: { displayOrder: item.order },
                     });
                 }
             }
