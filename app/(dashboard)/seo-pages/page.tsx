@@ -228,8 +228,21 @@ export default function SeoPagesPage() {
                                     variant="ghost"
                                     size="sm"
                                     asChild
+                                    disabled={!page.urlPath || page.urlPath === '/'}
                                 >
-                                    <a href={`https://vanijay.com${page.urlPath.startsWith('/') ? page.urlPath : `/${page.urlPath}`}`} target="_blank">
+                                    <a
+                                        href={`https://vanijay.com${page.urlPath.startsWith('/') ? page.urlPath : `/${page.urlPath}`}`}
+                                        target="_blank"
+                                        title={page.urlPath || 'No path set'}
+                                        onClick={(e) => {
+                                            const path = page.urlPath;
+                                            console.log('[SEO Page] urlPath value:', path);
+                                            if (!path || path === '/') {
+                                                e.preventDefault();
+                                                alert(`This page has no valid URL path stored. Current value: "${path}"`);
+                                            }
+                                        }}
+                                    >
                                         <ExternalLink className="h-4 w-4" />
                                     </a>
                                 </Button>
