@@ -242,6 +242,19 @@ export default function SeoPagesPage() {
     );
 }
 
+function slugifyPath(input: string): string {
+    // Ensure it starts with a slash, then lowercase and replace spaces/special chars with dashes
+    const raw = input.startsWith('/') ? input.slice(1) : input;
+    const slug = raw
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')   // remove special chars except spaces and dashes
+        .replace(/\s+/g, '-')            // spaces to dashes
+        .replace(/-+/g, '-')             // collapse multiple dashes
+        .replace(/^-|-$/g, '');          // trim leading/trailing dashes
+    return slug ? `/${slug}` : '/';
+}
+
 function CreateSeoPageDialog({ open, onOpenChange, onSuccess }: {
     open: boolean;
     onOpenChange: (open: boolean) => void;
@@ -274,10 +287,14 @@ function CreateSeoPageDialog({ open, onOpenChange, onSuccess }: {
             return;
         }
 
+        // Safety net: ensure urlPath is always a clean slug
+        const safeUrlPath = slugifyPath(formData.urlPath);
+
         await createSeoPage({
             variables: {
                 input: {
                     ...formData,
+                    urlPath: safeUrlPath,
                     priceThreshold: formData.priceThreshold ? parseInt(formData.priceThreshold) : null,
                 }
             }
@@ -302,7 +319,7 @@ function CreateSeoPageDialog({ open, onOpenChange, onSuccess }: {
                                 setFormData({
                                     ...formData,
                                     categoryId: val,
-                                    urlPath: formData.urlPath || `/best-${cat?.slug || ""}`
+                                    urlPath: formData.urlPath || slugifyPath(`best-${cat?.slug || ""}`)
                                 });
                             }}
                         >
@@ -321,10 +338,16 @@ function CreateSeoPageDialog({ open, onOpenChange, onSuccess }: {
                         <div className="space-y-2">
                             <Label>URL Path</Label>
                             <Input
-                                placeholder="/best-phones"
+                                placeholder="/best-phones-under-20000"
                                 value={formData.urlPath}
-                                onChange={(e) => setFormData({ ...formData, urlPath: e.target.value })}
+                                onChange={(e) => {
+                                    const raw = e.target.value;
+                                    // Auto-slugify while preserving the leading slash
+                                    const slugged = slugifyPath(raw);
+                                    setFormData({ ...formData, urlPath: slugged });
+                                }}
                             />
+                            <p className="text-xs text-muted-foreground">Spaces and special characters are auto-converted to slugs (e.g. <code>/best-phones</code>).</p>
                         </div>
                         <div className="space-y-2">
                             <Label>Price Under (Optional)</Label>
