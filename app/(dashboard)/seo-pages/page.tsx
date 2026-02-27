@@ -229,7 +229,7 @@ export default function SeoPagesPage() {
                                     size="sm"
                                     asChild
                                 >
-                                    <a href={`https://vanijay.com${page.urlPath}`} target="_blank">
+                                    <a href={`https://vanijay.com${page.urlPath.startsWith('/') ? page.urlPath : `/${page.urlPath}`}`} target="_blank">
                                         <ExternalLink className="h-4 w-4" />
                                     </a>
                                 </Button>
