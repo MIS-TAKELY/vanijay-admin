@@ -12,17 +12,17 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Category ID is required' }, { status: 400 });
         }
 
-        const keyword = await prismaBuyer.popularSearchKeyword.create({
+        const keyword = await prismaBuyer.popular_search_keywords.create({
             data: {
                 id: crypto.randomUUID(),
                 name: data.name,
                 href: data.href,
-                targetType: data.targetType,
-                isActive: data.isActive,
-                isIndexed: data.isIndexed,
-                isFeatured: data.isFeatured,
-                displayOrder: data.displayOrder,
-                category: {
+                target_type: data.targetType,
+                is_active: data.isActive,
+                is_indexed: data.isIndexed,
+                is_featured: data.isFeatured,
+                display_order: data.displayOrder,
+                popular_search_categories: {
                     connect: { id: data.categoryId }
                 }
             },
@@ -48,18 +48,18 @@ export async function PUT(req: Request) {
 
         const validatedData = keywordSchema.parse(data);
 
-        const keyword = await prismaBuyer.popularSearchKeyword.update({
+        const keyword = await prismaBuyer.popular_search_keywords.update({
             where: { id },
             data: {
                 name: validatedData.name,
                 href: validatedData.href,
-                targetType: validatedData.targetType,
-                isActive: validatedData.isActive,
-                isIndexed: validatedData.isIndexed,
-                isFeatured: validatedData.isFeatured,
-                displayOrder: validatedData.displayOrder,
+                target_type: validatedData.targetType,
+                is_active: validatedData.isActive,
+                is_indexed: validatedData.isIndexed,
+                is_featured: validatedData.isFeatured,
+                display_order: validatedData.displayOrder,
                 ...(validatedData.categoryId && {
-                    category: {
+                    popular_search_categories: {
                         connect: { id: validatedData.categoryId }
                     }
                 })

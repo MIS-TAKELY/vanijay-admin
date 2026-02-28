@@ -1,9 +1,16 @@
-import { Redis } from '@upstash/redis';
+import { Redis as UpstashRedis } from "@upstash/redis";
 
-// For server-side usage
-export const redis = new Redis({
-    url: process.env.UPSTASH_REDIS_REST_URL!,
-    token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-});
+const REDIS_URL = process.env.REDIS_URL || "redis://127.0.0.1:6379";
+const UPSTASH_URL = process.env.UPSTASH_REDIS_REST_URL;
+const UPSTASH_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
 
-// For client-side PubSub (if needed via HTTP or custom hook, mostly handled by @upstash/realtime on client)
+let redisClient: any;
+
+if (typeof window === "undefined" && process.env.NEXT_RUNTIME !== "edge") {
+    const IORedis = require("ioredis");
+    redisClient = new IORedis(REDIS_URL);
+} else {
+    redisClient = new UpstashRedis({ url: UPSTASH_URL!, token: UPSTASH_TOKEN! });
+}
+
+export const redis = redisClient;

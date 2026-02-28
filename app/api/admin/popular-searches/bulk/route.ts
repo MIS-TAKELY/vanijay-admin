@@ -19,7 +19,7 @@ export async function POST(req: Request) {
         // header row might exist, skip if first cell is 'category'
         const startIdx = (rows[0] && rows[0][0]?.toLowerCase() === 'category') ? 1 : 0;
 
-        await prismaBuyer.$transaction(async (tx) => {
+        await prismaBuyer.$transaction(async (tx: any) => {
             for (let i = startIdx; i < rows.length; i++) {
                 const row = rows[i];
                 if (row.length < 3) continue;
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
                 if (!categoryTitle || !keywordName || !url) continue;
 
                 // Find or Create Category
-                let category = await tx.popularSearchCategory.findFirst({
+                let category = await tx.popular_search_categories.findFirst({
                     where: { title: categoryTitle }
                 });
 
@@ -37,13 +37,13 @@ export async function POST(req: Request) {
                     const slug = categoryTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
                     // Ensure slug unique? simpler to just append random if needed, but for now assume clean
                     // Or try findUnique by slug
-                    const existingSlug = await tx.popularSearchCategory.findUnique({ where: { slug } });
+                    const existingSlug = await tx.popular_search_categories.findUnique({ where: { slug } });
                     if (existingSlug) {
                         // Skip or append random
                         continue;
                     }
 
-                    category = await tx.popularSearchCategory.create({
+                    category = await tx.popular_search_categories.create({
                         data: {
                             id: crypto.randomUUID(),
                             title: categoryTitle,
@@ -54,7 +54,7 @@ export async function POST(req: Request) {
                 }
 
                 // Create Keyword
-                await tx.popularSearchKeyword.create({
+                await tx.popular_search_keywords.create({
                     data: {
                         id: crypto.randomUUID(),
                         name: keywordName,
@@ -77,20 +77,20 @@ export async function POST(req: Request) {
 
 export async function GET() {
     try {
-        const categories = await prismaBuyer.popularSearchCategory.findMany({
-            include: { keywords: true },
-            orderBy: { displayOrder: 'asc' }
+        const categories = await prismaBuyer.popular_search_categories.findMany({
+            include: { popular_search_keywords: true },
+            orderBy: { display_order: 'asc' }
         });
 
         const csvRows = [['category', 'keyword', 'url', 'target', 'clicks']];
         categories.forEach(cat => {
-            cat.keywords.forEach(kw => {
+            cat.popular_search_keywords.forEach((kw: any) => {
                 csvRows.push([
                     `"${cat.title}"`,
                     `"${kw.name}"`,
                     `"${kw.href}"`,
-                    `"${kw.targetType}"`,
-                    kw.clickCount.toString()
+                    `"${kw.target_type}"`,
+                    kw.click_count.toString()
                 ]);
             });
         });
