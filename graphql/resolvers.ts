@@ -1,6 +1,7 @@
 import { prisma, prismaMain } from '../lib/prisma';
 // import { prismaBuyer } from '../lib/prisma-buyer';
 import { redis } from '../lib/redis';
+import { typesenseClient } from '../lib/typesense';
 
 export const resolvers = {
     Query: {
@@ -1070,6 +1071,61 @@ export const resolvers = {
             } catch (error) {
                 console.error("Failed to invalidate cache:", error);
             }
+
+            // --- DEEP REVALIDATION & SEARCH SYNC ---
+            (async () => {
+                try {
+                    // 1. Typesense Search Sync
+                    if (updatedProduct.status === 'ACTIVE') {
+                        const defaultVariant = updatedProduct.variants.find((v: any) => v.isDefault) || updatedProduct.variants[0];
+                        const price = defaultVariant ? Number(defaultVariant.price) : 0;
+                        const stock = defaultVariant ? defaultVariant.stock : 0;
+
+                        const document = {
+                            id: updatedProduct.id,
+                            name: updatedProduct.name,
+                            slug: (updatedProduct as any).slug || '',
+                            description: updatedProduct.description || '',
+                            brand: updatedProduct.brand || 'Generic',
+                            categoryName: updatedProduct.category?.name || 'Uncategorized',
+                            categoryId: updatedProduct.categoryId || '',
+                            price: price,
+                            image: updatedProduct.images[0]?.url || '',
+                            status: updatedProduct.status,
+                            soldCount: 0, // Admin might not have this easily, omitting or keeping 0
+                            averageRating: 0,
+                            createdAt: Math.floor(updatedProduct.createdAt.getTime() / 1000),
+                            facet_attributes: (defaultVariant as any)?.specifications?.map((s: any) => `${s.key}:${s.value}`) || [],
+                        };
+
+                        await typesenseClient.collections('products').documents().upsert(document);
+                        console.log(`[Typesense] Upserted ACTIVE product: ${updatedProduct.name}`);
+                    } else {
+                        await typesenseClient.collections('products').documents(updatedProduct.id).delete().catch(() => { });
+                        console.log(`[Typesense] Deleted INACTIVE product from index: ${updatedProduct.name}`);
+                    }
+
+                    // 2. Buyer ISR Revalidation
+                    const buyerUrl = process.env.NEXT_PUBLIC_BUYER_URL || 'https://www.vanijay.com';
+                    const revalidateSecret = process.env.REVALIDATE_SECRET || 'default_secret_123';
+                    const productSlug = (updatedProduct as any).slug;
+
+                    if (productSlug) {
+                        await fetch(`${buyerUrl}/api/revalidate`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ slug: productSlug, secret: revalidateSecret })
+                        }).then(r => r.json()).then(data => {
+                            console.log(`[Revalidate] Buyer response:`, data);
+                        }).catch(err => {
+                            console.error(`[Revalidate] Failed to notify buyer:`, err.message);
+                        });
+                    }
+                } catch (syncError) {
+                    console.error("[Sync/Revalidate] Background error:", syncError);
+                }
+            })();
+            // ---------------------------------------
 
             return {
                 id: updatedProduct.id,
