@@ -1016,7 +1016,7 @@ export const resolvers = {
                             isDefault: v.isDefault,
                             attributes: safeParse(v.attributes),
                             specificationTable: safeParse(v.specificationTable),
-                            ...(v.specifications && {
+                            ...(v.specifications?.length > 0 && {
                                 specifications: {
                                     deleteMany: {},
                                     create: v.specifications.map((s: any) => ({

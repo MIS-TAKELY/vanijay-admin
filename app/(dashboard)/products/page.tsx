@@ -45,8 +45,8 @@ const GET_PRODUCTS = gql`
 `;
 
 const UPDATE_PRODUCT = gql`
-  mutation UpdateProduct($id: String!, $price: Float, $stock: Int, $status: String) {
-    updateProduct(id: $id, price: $price, stock: $stock, status: $status) {
+  mutation UpdateProduct($id: String!, $input: UpdateProductInput!) {
+    updateProduct(id: $id, input: $input) {
       id
       price
       stock
@@ -212,18 +212,12 @@ export default function ProductsPage() {
                                             <td className="p-6 align-middle text-center border-r border-border/10">
                                                 <InlineEdit
                                                     value={product.price}
-                                                    onSave={(val) => updateProduct({
-                                                        variables: { id: product.id, price: parseFloat(val) },
-                                                        optimisticResponse: {
-                                                            updateProduct: {
-                                                                __typename: 'Product',
-                                                                id: product.id,
-                                                                price: parseFloat(val),
-                                                                stock: product.stock,
-                                                                status: product.status
-                                                            }
-                                                        }
-                                                    })}
+                                                    onSave={async (_val) => {
+                                                        // Price is a variant-level field — navigate to product detail to edit
+                                                        toast.error("Edit price on the product detail page", {
+                                                            description: "Price is a variant-level field."
+                                                        });
+                                                    }}
                                                     type="number"
                                                     prefix="Rs. "
                                                 />
@@ -231,18 +225,12 @@ export default function ProductsPage() {
                                             <td className="p-6 align-middle text-center border-r border-border/10">
                                                 <InlineEdit
                                                     value={product.stock}
-                                                    onSave={(val) => updateProduct({
-                                                        variables: { id: product.id, stock: parseInt(val) },
-                                                        optimisticResponse: {
-                                                            updateProduct: {
-                                                                __typename: 'Product',
-                                                                id: product.id,
-                                                                price: product.price,
-                                                                stock: parseInt(val),
-                                                                status: product.status
-                                                            }
-                                                        }
-                                                    })}
+                                                    onSave={async (_val) => {
+                                                        // Stock is a variant-level field — navigate to product detail to edit
+                                                        toast.error("Edit stock on the product detail page", {
+                                                            description: "Stock is a variant-level field."
+                                                        });
+                                                    }}
                                                     type="number"
                                                 />
                                             </td>
@@ -258,7 +246,7 @@ export default function ProductsPage() {
                                                 <InlineStatusEdit
                                                     status={product.status}
                                                     onSave={(newStatus) => updateProduct({
-                                                        variables: { id: product.id, status: newStatus },
+                                                        variables: { id: product.id, input: { status: newStatus } },
                                                         optimisticResponse: {
                                                             updateProduct: {
                                                                 __typename: 'Product',
