@@ -153,8 +153,9 @@ export default function EditBasicInfoDialog({ product, open, onOpenChange, onSuc
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="ACTIVE">Active</SelectItem>
+                                    <SelectItem value="INACTIVE">Inactive</SelectItem>
                                     <SelectItem value="DRAFT">Draft</SelectItem>
-                                    <SelectItem value="ARCHIVED">Archived</SelectItem>
+                                    <SelectItem value="DISCONTINUED">Discontinued</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>

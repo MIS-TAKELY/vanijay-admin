@@ -194,7 +194,8 @@ export default function ProductsPage() {
                                         <th className="h-16 px-6 text-center font-black uppercase tracking-widest text-[10px] text-muted-foreground border-r border-border/20">Valuation</th>
                                         <th className="h-16 px-6 text-center font-black uppercase tracking-widest text-[10px] text-muted-foreground border-r border-border/20">Availability</th>
                                         <th className="h-16 px-6 text-left font-black uppercase tracking-widest text-[10px] text-muted-foreground border-r border-border/20">Classification</th>
-                                        <th className="h-16 px-6 text-left font-black uppercase tracking-widest text-[10px] text-muted-foreground">Origin</th>
+                                        <th className="h-16 px-6 text-left font-black uppercase tracking-widest text-[10px] text-muted-foreground border-r border-border/20">Origin</th>
+                                        <th className="h-16 px-6 text-center font-black uppercase tracking-widest text-[10px] text-muted-foreground border-r border-border/20">Status</th>
                                         <th className="h-16 px-6 text-center font-black uppercase tracking-widest text-[10px] text-muted-foreground">Operator</th>
                                     </tr>
                                 </thead>
@@ -250,8 +251,25 @@ export default function ProductsPage() {
                                                     {product.category || 'GENERIC_CLASS'}
                                                 </span>
                                             </td>
-                                            <td className="p-6 align-middle font-bold text-xs uppercase tracking-widest text-primary/60">
+                                            <td className="p-6 align-middle font-bold text-xs uppercase tracking-widest text-primary/60 border-r border-border/10">
                                                 {product.sellerName}
+                                            </td>
+                                            <td className="p-6 align-middle text-center border-r border-border/10">
+                                                <InlineStatusEdit
+                                                    status={product.status}
+                                                    onSave={(newStatus) => updateProduct({
+                                                        variables: { id: product.id, status: newStatus },
+                                                        optimisticResponse: {
+                                                            updateProduct: {
+                                                                __typename: 'Product',
+                                                                id: product.id,
+                                                                price: product.price,
+                                                                stock: product.stock,
+                                                                status: newStatus
+                                                            }
+                                                        }
+                                                    })}
+                                                />
                                             </td>
                                             <td className="p-6 align-middle text-center">
                                                 <div className="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-all transform scale-90 group-hover:scale-100">
@@ -420,6 +438,87 @@ function StatusCard({ label, value, icon: Icon, color }: { label: string, value:
                 <Icon className="h-6 w-6" />
             </div>
         </div>
+    );
+}
+
+function InlineStatusEdit({ status, onSave }: { status: string, onSave: (val: string) => Promise<any> }) {
+    const [isLoading, setIsLoading] = useState(false);
+
+    const toggleStatus = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        const nextStatus = status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
+        setIsLoading(true);
+        try {
+            await onSave(nextStatus);
+            toast.success("Status Synchronized", {
+                description: `Product is now ${nextStatus.toLowerCase()}.`
+            });
+        } catch (err: any) {
+            toast.error("Sync Protocol Failure", {
+                description: err.message
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const getStatusConfig = (status: string) => {
+        switch (status) {
+            case 'ACTIVE':
+                return {
+                    label: 'Active',
+                    bg: 'bg-emerald-500/10',
+                    text: 'text-emerald-600',
+                    border: 'border-emerald-500/20',
+                    dot: 'bg-emerald-500'
+                };
+            case 'INACTIVE':
+                return {
+                    label: 'Inactive',
+                    bg: 'bg-amber-500/10',
+                    text: 'text-amber-600',
+                    border: 'border-amber-500/20',
+                    dot: 'bg-amber-500'
+                };
+            case 'DRAFT':
+                return {
+                    label: 'Draft',
+                    bg: 'bg-slate-500/10',
+                    text: 'text-slate-600',
+                    border: 'border-slate-500/20',
+                    dot: 'bg-slate-500'
+                };
+            default:
+                return {
+                    label: status,
+                    bg: 'bg-muted',
+                    text: 'text-muted-foreground',
+                    border: 'border-border',
+                    dot: 'bg-muted-foreground'
+                };
+        }
+    };
+
+    const config = getStatusConfig(status);
+
+    return (
+        <button
+            onClick={toggleStatus}
+            disabled={isLoading}
+            className={clsx(
+                "inline-flex items-center gap-2 rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest border transition-all hover:scale-105 active:scale-95 disabled:opacity-50",
+                config.bg,
+                config.text,
+                config.border
+            )}
+        >
+            {isLoading ? (
+                <div className="h-2 w-2 animate-spin rounded-full border-2 border-current border-t-transparent" />
+            ) : (
+                <div className={clsx("h-1.5 w-1.5 rounded-full animate-pulse", config.dot)} />
+            )}
+            {config.label}
+        </button>
     );
 }
 
