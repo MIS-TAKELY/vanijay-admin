@@ -107,7 +107,9 @@ export const transformProductToFormData = (product: Product): FormData => {
     description: product.description || "",
     brand: product.brand || "",
     ...categoryHierarchy,
-    status: product.status || ProductStatus.ACTIVE,
+    status: (['DRAFT', 'ACTIVE', 'INACTIVE', 'DISCONTINUED'].includes(product.status)
+      ? product.status
+      : ProductStatus.INACTIVE) as ProductStatus,
     hasVariants,
     attributes,
     variants,

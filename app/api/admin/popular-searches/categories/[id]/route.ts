@@ -9,15 +9,15 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         const body = await req.json();
         const data = categorySchema.partial().parse(body);
 
-        const category = await prismaBuyer.popular_search_categories.update({
+        const category = await prismaBuyer.popularSearchCategory.update({
             where: { id },
             data: {
                 title: data.title,
                 slug: data.slug,
                 icon: data.icon,
-                display_order: data.displayOrder,
-                is_active: data.isActive,
-                is_indexed: data.isIndexed,
+                displayOrder: data.displayOrder,
+                isActive: data.isActive,
+                isIndexed: data.isIndexed,
             },
         });
 
@@ -31,7 +31,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params;
-        await prismaBuyer.popular_search_categories.delete({
+        await prismaBuyer.popularSearchCategory.delete({
             where: { id },
         });
         return NextResponse.json({ success: true });

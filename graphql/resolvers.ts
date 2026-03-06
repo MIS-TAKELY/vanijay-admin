@@ -943,7 +943,11 @@ export const resolvers = {
                         ...(brand && { brand }),
                         ...(description && { description }),
                         ...(categoryId && { categoryId }),
-                        ...(status && { status: status as any }),
+                        ...(status && {
+                            status: ['DRAFT', 'ACTIVE', 'INACTIVE', 'DISCONTINUED'].includes(status)
+                                ? (status as any)
+                                : 'INACTIVE'
+                        }),
                         ...(specificationTable && { specificationTable: safeParse(specificationTable) }),
                         ...(specificationDisplayFormat && { specificationDisplayFormat }),
                         pros: input.pros || undefined,
