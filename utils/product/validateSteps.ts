@@ -99,6 +99,10 @@ export const buildProductInput = (
       attributes: v.attributes ? JSON.stringify(v.attributes) : undefined,
       isDefault: v.isDefault,
       specificationTable: v.specificationTable ? JSON.stringify(v.specificationTable) : undefined,
+      specifications: v.specifications?.map((s: any) => ({
+        key: s.key,
+        value: s.value,
+      })),
     }));
   } else {
     // Create single variant for simple product
@@ -115,6 +119,10 @@ export const buildProductInput = (
         attributes: JSON.stringify({}), // Empty object as stringified JSON
         isDefault: true,
         specificationTable: formData.specificationTable ? JSON.stringify(formData.specificationTable) : undefined,
+        specifications: formData.specifications?.map((s: any) => ({
+          key: s.key,
+          value: s.value,
+        })),
       },
     ];
   }

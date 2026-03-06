@@ -352,6 +352,12 @@ export const typeDefs = `
     isDefault: Boolean
     attributes: String # JSON string
     specificationTable: String # JSON string
+    specifications: [UpdateSpecificationInput]
+  }
+
+  input UpdateSpecificationInput {
+    key: String!
+    value: String!
   }
 
   input UpdateProductImageInput {

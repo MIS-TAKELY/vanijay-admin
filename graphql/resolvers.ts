@@ -1016,6 +1016,15 @@ export const resolvers = {
                             isDefault: v.isDefault,
                             attributes: safeParse(v.attributes),
                             specificationTable: safeParse(v.specificationTable),
+                            ...(v.specifications && {
+                                specifications: {
+                                    deleteMany: {},
+                                    create: v.specifications.map((s: any) => ({
+                                        key: s.key,
+                                        value: s.value,
+                                    })),
+                                },
+                            }),
                         };
 
                         if (v.id) {
