@@ -98,7 +98,7 @@ export const buildProductInput = (
       stock: parseInt(String(v.stock), 10) || 0,
       attributes: v.attributes ? JSON.stringify(v.attributes) : undefined,
       isDefault: v.isDefault,
-      specificationTable: v.specificationTable ? JSON.stringify(v.specificationTable) : undefined,
+      specificationTable: v.specificationTable ? (typeof v.specificationTable === 'string' ? v.specificationTable : JSON.stringify(v.specificationTable)) : undefined,
       specifications: v.specifications?.map((s: any) => ({
         key: s.key,
         value: s.value,
@@ -118,7 +118,7 @@ export const buildProductInput = (
         stock: parseInt(String(formData.stock), 10) || 0,
         attributes: JSON.stringify({}), // Empty object as stringified JSON
         isDefault: true,
-        specificationTable: formData.specificationTable ? JSON.stringify(formData.specificationTable) : undefined,
+        specificationTable: formData.specificationTable ? (typeof formData.specificationTable === 'string' ? formData.specificationTable : JSON.stringify(formData.specificationTable)) : undefined,
         specifications: formData.specifications?.map((s: any) => ({
           key: s.key,
           value: s.value,
@@ -137,7 +137,7 @@ export const buildProductInput = (
       formData.subSubcategory || formData.subcategory || formData.categoryId,
     brand: formData.brand || "Generic",
     status: formData.status,
-    specificationTable: formData.specificationTable ? JSON.stringify(formData.specificationTable) : undefined,
+    specificationTable: formData.specificationTable ? (typeof formData.specificationTable === 'string' ? formData.specificationTable : JSON.stringify(formData.specificationTable)) : undefined,
     specificationDisplayFormat: formData.specificationDisplayFormat,
 
     variants: apiVariants,
