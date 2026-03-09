@@ -192,6 +192,7 @@ export const resolvers = {
                 pros: p.pros,
                 cons: p.cons,
                 affiliateLink: p.affiliateLink,
+                paymentMethods: p.paymentMethods,
             }));
 
             return {
@@ -240,6 +241,7 @@ export const resolvers = {
                 pros: p.pros,
                 cons: p.cons,
                 affiliateLink: p.affiliateLink,
+                paymentMethods: p.paymentMethods,
                 images: p.images.map((img: any) => ({
                     id: img.id,
                     url: img.url,
@@ -954,6 +956,7 @@ export const resolvers = {
                         pros: input.pros || undefined,
                         cons: input.cons || undefined,
                         affiliateLink: input.affiliateLink || undefined,
+                        paymentMethods: input.paymentMethods || undefined,
                     }
                 });
 
@@ -1826,6 +1829,7 @@ export const resolvers = {
                                 pros: item.pros || [],
                                 cons: item.cons || [],
                                 affiliateLink: item.affiliateLink,
+                                paymentMethods: item.paymentMethods || undefined,
                                 variants: {
                                     create: {
                                         sku: item.sku,
@@ -2014,9 +2018,12 @@ export const resolvers = {
                     }
                 }
 
+                const { pinnedProductIds, ...restInput } = input;
+
                 return await prismaMain.seoPage.create({
                     data: {
-                        ...input,
+                        ...restInput,
+                        pinnedProductIds: pinnedProductIds || [],
                         isStale: false
                     },
                     include: { category: true }
@@ -2026,6 +2033,25 @@ export const resolvers = {
                 throw new Error(error.message || "Failed to create SEO page");
             }
         },
+        updateSeoPage: async (_: any, { id, input }: { id: string; input: any }) => {
+            try {
+                const { pinnedProductIds, ...restInput } = input;
+
+                const data: any = { ...restInput };
+                if (pinnedProductIds !== undefined) {
+                    data.pinnedProductIds = pinnedProductIds;
+                }
+
+                return await prismaMain.seoPage.update({
+                    where: { id },
+                    data,
+                    include: { category: true }
+                });
+            } catch (error: any) {
+                console.error("Update SEO page error:", error);
+                throw new Error(error.message || "Failed to update SEO page");
+            }
+        },
     },
     Category: {
         filters: (cat: any) => cat.filters ? (typeof cat.filters === 'string' ? cat.filters : JSON.stringify(cat.filters, null, 2)) : null,
@@ -2033,6 +2059,7 @@ export const resolvers = {
     },
     SeoPage: {
         structuredData: (page: any) => page.structuredData ? (typeof page.structuredData === 'string' ? page.structuredData : JSON.stringify(page.structuredData, null, 2)) : null,
+        pinnedProductIds: (page: any) => page.pinnedProductIds || [],
         lastGeneratedAt: (page: any) => page.lastGeneratedAt?.toISOString() || null,
         createdAt: (page: any) => page.createdAt.toISOString(),
         updatedAt: (page: any) => page.updatedAt.toISOString(),

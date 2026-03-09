@@ -1,6 +1,6 @@
 // utils/product/transformProductData.ts
 import { FormData, Product } from "@/types/pages/product";
-import { DiscountType, ReturnType, ProductStatus, WarrantyType } from "@/types/common/enums";
+import { DiscountType, ReturnType, ProductStatus, WarrantyType, PaymentMethodType } from "@/types/common/enums";
 import type { ProductAttribute } from "@/types/product/product.types";
 import type { ProductVariantData, DeliveryOptionData } from "@/types/product/product-form.types";
 
@@ -180,7 +180,18 @@ export const transformProductToFormData = (product: Product): FormData => {
     // SEO & Marketing
     pros: product.pros?.join(", ") || "",
     cons: product.cons?.join(", ") || "",
-    affiliateLink: product.affiliateLink || ""
+    affiliateLink: product.affiliateLink || "",
+    paymentMethods:
+      product.paymentMethods && product.paymentMethods.length > 0
+        ? product.paymentMethods
+        : [
+          PaymentMethodType.CASH_ON_DELIVERY,
+          PaymentMethodType.WALLET,
+          PaymentMethodType.CREDIT_CARD,
+          PaymentMethodType.DEBIT_CARD,
+          PaymentMethodType.UPI,
+          PaymentMethodType.NET_BANKING,
+        ],
   };
 };
 

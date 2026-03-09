@@ -9,6 +9,7 @@ import type {
   WarrantyType,
   ReturnType,
   ShippingMethod,
+  PaymentMethodType,
 } from "../common/enums";
 import type { Category } from "../category/category.types";
 import type { ProductAttribute } from "./product.types";
@@ -136,6 +137,7 @@ export interface FormData {
   pros: string;
   cons: string;
   affiliateLink: string;
+  paymentMethods: PaymentMethodType[];
 }
 
 // Step interface

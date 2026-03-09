@@ -418,6 +418,7 @@ model Product {
   warranty                   Warranty[]
   wishlistItems              WishlistItem[]
   deliveryCharge             Decimal                @default(0) @db.Decimal(12, 2)
+  paymentMethods             PaymentMethodType[]    @default([CREDIT_CARD, DEBIT_CARD, UPI, NET_BANKING, WALLET, CASH_ON_DELIVERY])
 
   @@index([slug, sellerId])
   @@index([soldCount(sort: Desc), averageRating(sort: Desc)], map: "idx_products_sold_rating")
@@ -1195,19 +1196,20 @@ model ReturnItem {
 }
 
 model SeoPage {
-  id              String   @id @default(cuid())
-  categoryId      String
-  category        Category @relation(fields: [categoryId], references: [id])
-  priceThreshold  Int
-  urlPath         String   @unique
-  metaTitle       String?
-  metaDescription String?
-  structuredData  Json?
-  lastGeneratedAt DateTime @default(now())
-  isIndexed       Boolean  @default(false)
-  isStale         Boolean  @default(false)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id               String   @id @default(cuid())
+  categoryId       String
+  category         Category @relation(fields: [categoryId], references: [id])
+  priceThreshold   Int
+  urlPath          String   @unique
+  metaTitle        String?
+  metaDescription  String?
+  structuredData   Json?
+  pinnedProductIds String[] @default([])
+  lastGeneratedAt  DateTime @default(now())
+  isIndexed        Boolean  @default(false)
+  isStale          Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   @@index([urlPath])
   @@map("seo_pages")

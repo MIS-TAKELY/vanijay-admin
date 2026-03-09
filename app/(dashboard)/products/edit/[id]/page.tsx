@@ -18,6 +18,7 @@ const GET_PRODUCT = gql`
       sellerName
       createdAt
       updatedAt
+      paymentMethods
       specificationTable
       images {
         id

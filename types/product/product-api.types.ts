@@ -8,6 +8,7 @@ import type {
   DiscountType,
   WarrantyType,
   ReturnType,
+  PaymentMethodType,
 } from "../common/enums";
 import type { Money } from "../common/primitives";
 import type { Product } from "./product.types";
@@ -73,6 +74,7 @@ export interface ICreateProductInput {
   pros?: string[];
   cons?: string[];
   affiliateLink?: string;
+  paymentMethods?: PaymentMethodType[];
 }
 
 // API Response Types

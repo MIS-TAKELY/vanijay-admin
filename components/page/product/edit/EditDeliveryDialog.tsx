@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -14,7 +15,7 @@ import { useMutation, gql } from "@apollo/client";
 import { transformProductToFormData } from "@/utils/product/transformProductData";
 import { buildProductInput } from "@/utils/product/validateSteps";
 import { Loader2, Plus, Trash2 } from "lucide-react";
-import { WarrantyType, ReturnType } from "@/types/common/enums";
+import { WarrantyType, ReturnType, PaymentMethodType } from "@/types/common/enums";
 
 const UPDATE_PRODUCT = gql`
   mutation UpdateProduct($id: String!, $input: UpdateProductInput!) {
@@ -23,6 +24,7 @@ const UPDATE_PRODUCT = gql`
       deliveryOptions { id title }
       warranty { id type }
       returnPolicy { id type }
+      paymentMethods
     }
   }
 `;
@@ -45,6 +47,7 @@ export default function EditDeliveryDialog({ product, open, onOpenChange, onSucc
         returnDuration: "0",
         returnUnit: "days",
         returnConditions: "",
+        paymentMethods: [] as PaymentMethodType[],
     });
 
     const [updateProduct, { loading: isUpdating }] = useMutation(UPDATE_PRODUCT, {
@@ -71,6 +74,7 @@ export default function EditDeliveryDialog({ product, open, onOpenChange, onSucc
                 returnDuration: formData.returnDuration,
                 returnUnit: formData.returnUnit,
                 returnConditions: formData.returnConditions || formData.returnPolicy || "",
+                paymentMethods: formData.paymentMethods || [],
             });
         }
     }, [open, product]);
@@ -113,6 +117,7 @@ export default function EditDeliveryDialog({ product, open, onOpenChange, onSucc
             fullFormData.returnDuration = formDataState.returnDuration;
             fullFormData.returnUnit = formDataState.returnUnit;
             fullFormData.returnConditions = formDataState.returnConditions;
+            fullFormData.paymentMethods = formDataState.paymentMethods;
 
             // Build API Input
             const input = buildProductInput(fullFormData);
@@ -144,6 +149,7 @@ export default function EditDeliveryDialog({ product, open, onOpenChange, onSucc
                         <TabsTrigger value="delivery">Delivery Options</TabsTrigger>
                         <TabsTrigger value="warranty">Warranty</TabsTrigger>
                         <TabsTrigger value="return">Return Policy</TabsTrigger>
+                        <TabsTrigger value="payments">Payments</TabsTrigger>
                     </TabsList>
 
                     <div className="py-4">
@@ -303,6 +309,33 @@ export default function EditDeliveryDialog({ product, open, onOpenChange, onSucc
                                     placeholder="e.g. Item must be unused and in original packaging"
                                     disabled={formDataState.returnType === ReturnType.NO_RETURN}
                                 />
+                            </div>
+                        </TabsContent>
+                        <TabsContent value="payments" className="space-y-4">
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                {[
+                                    { id: 'CREDIT_CARD', label: 'Credit Card' },
+                                    { id: 'DEBIT_CARD', label: 'Debit Card' },
+                                    { id: 'UPI', label: 'UPI' },
+                                    { id: 'NET_BANKING', label: 'Net Banking' },
+                                    { id: 'WALLET', label: 'Wallet' },
+                                    { id: 'CASH_ON_DELIVERY', label: 'Cash on Delivery' },
+                                ].map((method) => (
+                                    <label key={method.id} className="flex items-center gap-2 cursor-pointer p-2 border rounded hover:bg-muted/50 transition-colors">
+                                        <Checkbox
+                                            checked={formDataState.paymentMethods?.includes(method.id as any)}
+                                            onCheckedChange={(checked: boolean) => {
+                                                const currentMethods = formDataState.paymentMethods || [];
+                                                if (checked) {
+                                                    setFormDataState(prev => ({ ...prev, paymentMethods: [...currentMethods, method.id as any] }));
+                                                } else {
+                                                    setFormDataState(prev => ({ ...prev, paymentMethods: currentMethods.filter(m => m !== method.id) }));
+                                                }
+                                            }}
+                                        />
+                                        <span className="text-sm font-medium">{method.label}</span>
+                                    </label>
+                                ))}
                             </div>
                         </TabsContent>
                     </div>

@@ -403,12 +403,31 @@ export const ProductPreview = React.memo(
                       </div>
                     </div>
                   </div>
+
+                  {/* Payment Methods */}
+                  <div className="md:col-span-2 space-y-4 bg-muted/10 p-6 rounded-3xl border border-border/50">
+                    <div className="flex items-center gap-3 text-primary">
+                      <ShoppingBag className="w-6 h-6" />
+                      <h4 className="font-bold">Accepted Payment Methods</h4>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {formData.paymentMethods && formData.paymentMethods.length > 0 ? (
+                        formData.paymentMethods.map((method) => (
+                          <Badge key={method} variant="secondary" className="bg-background border-border/50 text-xs py-1 px-3">
+                            {method.replace(/_/g, ' ')}
+                          </Badge>
+                        ))
+                      ) : (
+                        <p className="text-sm text-muted-foreground italic">No payment methods selected.</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </TabsContent>
             </CardContent>
           </Tabs>
         </Card>
-      </div>
+      </div >
     );
   }
 );

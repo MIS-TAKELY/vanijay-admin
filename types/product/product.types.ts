@@ -9,6 +9,7 @@ import type {
   WarrantyType,
   ReturnType,
   ShippingMethod,
+  PaymentMethodType,
 } from "../common/enums";
 import type { BaseEntity, Money, Timestamps } from "../common/primitives";
 import type { Category } from "../category/category.types";
@@ -124,6 +125,7 @@ export interface Product extends BaseEntity {
   pros?: string[];
   cons?: string[];
   affiliateLink?: string;
+  paymentMethods?: PaymentMethodType[];
 }
 
 // Product Attribute (for variant generation)

@@ -12,7 +12,7 @@ export async function sendWhatsAppOTP(phone: string, otp: string) {
     // Clean phone number: remove all non-digits
     const cleanPhone = phone.toString().replace(/\D/g, "");
 
-    const message = `Your verification code is: ${otp}. ⚠️ Do not share this code with anyone. Vanijay will never ask you for this code. This code expires in 10 minutes.`;
+    const message = `OTP: ${otp}\nSharing is caring—except this. Don't be a hero.`;
     const MAX_RETRIES = 5;
     let attempt = 0;
 

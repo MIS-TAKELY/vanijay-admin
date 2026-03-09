@@ -76,6 +76,7 @@ export const typeDefs = `
     deliveryOptions: [DeliveryOption]
     warranty: [Warranty]
     returnPolicy: [ReturnPolicy]
+    paymentMethods: [String]
   }
 
   type ProductsResponse {
@@ -158,6 +159,7 @@ export const typeDefs = `
     metaTitle: String
     metaDescription: String
     structuredData: String # JSON string
+    pinnedProductIds: [String]
     lastGeneratedAt: String
     isIndexed: Boolean!
     isStale: Boolean!
@@ -341,6 +343,7 @@ export const typeDefs = `
     pros: [String]
     cons: [String]
     affiliateLink: String
+    paymentMethods: [String]
   }
 
   input UpdateProductVariantInput {
@@ -489,6 +492,7 @@ export const typeDefs = `
     regenerateSeoPage(id: String!): SeoPage
     deleteSeoPage(id: String!): Boolean!
     createSeoPage(input: CreateSeoPageInput!): SeoPage
+    updateSeoPage(id: String!, input: UpdateSeoPageInput!): SeoPage
   }
 
   input CreateSeoPageInput {
@@ -497,6 +501,14 @@ export const typeDefs = `
     urlPath: String!
     metaTitle: String
     metaDescription: String
+    pinnedProductIds: [String]
+  }
+
+  input UpdateSeoPageInput {
+    metaTitle: String
+    metaDescription: String
+    priceThreshold: Int
+    pinnedProductIds: [String]
   }
 
   input BulkUpdateCategoryInput {
@@ -617,5 +629,6 @@ export const typeDefs = `
     affiliateLink: String
     status: String
     sellerId: String
+    paymentMethods: [String]
   }
 `;

@@ -23,6 +23,7 @@ import {
 
 import {
   DiscountType,
+  PaymentMethodType,
   ProductStatus,
   ReturnType,
   WarrantyType,
@@ -138,6 +139,14 @@ export function ProductForm({
       pros: "",
       cons: "",
       affiliateLink: "",
+      paymentMethods: [
+        PaymentMethodType.CREDIT_CARD,
+        PaymentMethodType.DEBIT_CARD,
+        PaymentMethodType.UPI,
+        PaymentMethodType.NET_BANKING,
+        PaymentMethodType.WALLET,
+        PaymentMethodType.CASH_ON_DELIVERY,
+      ],
     }
   );
 
