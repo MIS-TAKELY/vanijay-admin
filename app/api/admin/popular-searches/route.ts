@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prismaBuyer } from '@/lib/prisma';
+import { prismaMain } from '@/lib/prisma';
 import { categorySchema } from '@/utils/schemas/popular-searches';
 import { z } from 'zod';
 
@@ -12,7 +12,7 @@ export async function GET(req: Request) {
         if (status === 'active') where.isActive = true;
         if (status === 'inactive') where.isActive = false;
 
-        const categories = await prismaBuyer.popularSearchCategory.findMany({
+        const categories = await prismaMain.popularSearchCategory.findMany({
             where,
             orderBy: { displayOrder: 'asc' },
             include: {
@@ -34,15 +34,14 @@ export async function POST(req: Request) {
         const body = await req.json();
         const data = categorySchema.parse(body);
 
-        // Check slug uniqueness
-        const existing = await prismaBuyer.popularSearchCategory.findUnique({
+        const existing = await prismaMain.popularSearchCategory.findUnique({
             where: { slug: data.slug },
         });
         if (existing) {
             return NextResponse.json({ error: 'Slug already exists' }, { status: 400 });
         }
 
-        const category = await prismaBuyer.popularSearchCategory.create({
+        const category = await prismaMain.popularSearchCategory.create({
             data: {
                 id: crypto.randomUUID(),
                 title: data.title,

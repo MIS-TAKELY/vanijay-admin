@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prismaBuyer } from '@/lib/prisma';
+import { prismaMain } from '@/lib/prisma';
 import { z } from 'zod';
 
 // CSV Columns: category,keyword,url,target
@@ -8,18 +8,16 @@ import { z } from 'zod';
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-        const rows = body.rows as string[][]; // Array of arrays
+        const rows = body.rows as string[][];
 
         if (!rows || !Array.isArray(rows)) {
             return NextResponse.json({ error: 'Invalid data' }, { status: 400 });
         }
 
         let importedCount = 0;
-
-        // header row might exist, skip if first cell is 'category'
         const startIdx = (rows[0] && rows[0][0]?.toLowerCase() === 'category') ? 1 : 0;
 
-        await prismaBuyer.$transaction(async (tx: any) => {
+        await prismaMain.$transaction(async (tx: any) => {
             for (let i = startIdx; i < rows.length; i++) {
                 const row = rows[i];
                 if (row.length < 3) continue;
@@ -27,33 +25,25 @@ export async function POST(req: Request) {
                 const [categoryTitle, keywordName, url, target] = row;
                 if (!categoryTitle || !keywordName || !url) continue;
 
-                // Find or Create Category
                 let category = await tx.popularSearchCategory.findFirst({
                     where: { title: categoryTitle }
                 });
 
                 if (!category) {
-                    // Generate simple slug
                     const slug = categoryTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-                    // Ensure slug unique? simpler to just append random if needed, but for now assume clean
-                    // Or try findUnique by slug
                     const existingSlug = await tx.popularSearchCategory.findUnique({ where: { slug } });
-                    if (existingSlug) {
-                        // Skip or append random
-                        continue;
-                    }
+                    if (existingSlug) continue;
 
                     category = await tx.popularSearchCategory.create({
                         data: {
                             id: crypto.randomUUID(),
                             title: categoryTitle,
                             slug,
-                            displayOrder: 99 // Put at end
+                            displayOrder: 99
                         }
                     });
                 }
 
-                // Create Keyword
                 await tx.popularSearchKeyword.create({
                     data: {
                         id: crypto.randomUUID(),
@@ -77,13 +67,13 @@ export async function POST(req: Request) {
 
 export async function GET() {
     try {
-        const categories = await prismaBuyer.popularSearchCategory.findMany({
+        const categories = await prismaMain.popularSearchCategory.findMany({
             include: { keywords: true },
             orderBy: { displayOrder: 'asc' }
         });
 
         const csvRows = [['category', 'keyword', 'url', 'target', 'clicks']];
-        categories.forEach(cat => {
+        categories.forEach((cat: any) => {
             cat.keywords.forEach((kw: any) => {
                 csvRows.push([
                     `"${cat.title}"`,

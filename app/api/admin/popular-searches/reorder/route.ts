@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prismaBuyer } from '@/lib/prisma';
+import { prismaMain } from '@/lib/prisma';
 import { reorderSchema } from '@/utils/schemas/popular-searches';
 
 export async function POST(req: Request) {
@@ -7,7 +7,7 @@ export async function POST(req: Request) {
         const body = await req.json();
         const { type, items } = reorderSchema.parse(body);
 
-        await prismaBuyer.$transaction(async (tx) => {
+        await prismaMain.$transaction(async (tx: any) => {
             for (const item of items) {
                 if (type === 'category') {
                     await tx.popularSearchCategory.update({

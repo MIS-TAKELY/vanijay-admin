@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prismaBuyer } from '@/lib/prisma';
+import { prismaMain } from '@/lib/prisma';
 import { categorySchema } from '@/utils/schemas/popular-searches';
 import { z } from 'zod';
 
@@ -9,7 +9,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         const body = await req.json();
         const data = categorySchema.partial().parse(body);
 
-        const category = await prismaBuyer.popularSearchCategory.update({
+        const category = await prismaMain.popularSearchCategory.update({
             where: { id },
             data: {
                 title: data.title,
@@ -31,9 +31,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params;
-        await prismaBuyer.popularSearchCategory.delete({
-            where: { id },
-        });
+        await prismaMain.popularSearchCategory.delete({ where: { id } });
         return NextResponse.json({ success: true });
     } catch (error) {
         console.error('Error deleting category:', error);

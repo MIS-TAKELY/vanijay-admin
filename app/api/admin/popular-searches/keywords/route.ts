@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prismaBuyer } from '@/lib/prisma';
+import { prismaMain } from '@/lib/prisma';
 import { keywordSchema } from '@/utils/schemas/popular-searches';
 import { z } from 'zod';
 
@@ -12,7 +12,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Category ID is required' }, { status: 400 });
         }
 
-        const keyword = await prismaBuyer.popularSearchKeyword.create({
+        const keyword = await prismaMain.popularSearchKeyword.create({
             data: {
                 id: crypto.randomUUID(),
                 name: data.name,
@@ -22,9 +22,7 @@ export async function POST(req: Request) {
                 isIndexed: data.isIndexed,
                 isFeatured: data.isFeatured,
                 displayOrder: data.displayOrder,
-                category: {
-                    connect: { id: data.categoryId }
-                }
+                category: { connect: { id: data.categoryId } }
             },
         });
 
@@ -37,6 +35,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 }
+
 export async function PUT(req: Request) {
     try {
         const body = await req.json();
@@ -48,7 +47,7 @@ export async function PUT(req: Request) {
 
         const validatedData = keywordSchema.parse(data);
 
-        const keyword = await prismaBuyer.popularSearchKeyword.update({
+        const keyword = await prismaMain.popularSearchKeyword.update({
             where: { id },
             data: {
                 name: validatedData.name,
@@ -59,9 +58,7 @@ export async function PUT(req: Request) {
                 isFeatured: validatedData.isFeatured,
                 displayOrder: validatedData.displayOrder,
                 ...(validatedData.categoryId && {
-                    category: {
-                        connect: { id: validatedData.categoryId }
-                    }
+                    category: { connect: { id: validatedData.categoryId } }
                 })
             },
         });

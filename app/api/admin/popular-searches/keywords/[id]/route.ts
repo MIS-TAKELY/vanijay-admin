@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-import { prismaBuyer } from '@/lib/prisma';
+import { prismaMain } from '@/lib/prisma';
 import { keywordSchema } from '@/utils/schemas/popular-searches';
-import { z } from 'zod';
 
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
@@ -9,7 +8,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         const body = await req.json();
         const data = keywordSchema.partial().parse(body);
 
-        const keyword = await prismaBuyer.popularSearchKeyword.update({
+        const keyword = await prismaMain.popularSearchKeyword.update({
             where: { id },
             data: {
                 name: data.name,
@@ -20,9 +19,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
                 isFeatured: data.isFeatured,
                 displayOrder: data.displayOrder,
                 ...(data.categoryId && {
-                    category: {
-                        connect: { id: data.categoryId }
-                    }
+                    category: { connect: { id: data.categoryId } }
                 })
             },
         });
@@ -37,9 +34,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params;
-        await prismaBuyer.popularSearchKeyword.delete({
-            where: { id },
-        });
+        await prismaMain.popularSearchKeyword.delete({ where: { id } });
         return NextResponse.json({ success: true });
     } catch (error) {
         console.error('Error deleting keyword:', error);
