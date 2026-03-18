@@ -1154,6 +1154,7 @@ model PopularSearchAudit {
 
 model Return {
   id                String            @id @default(cuid())
+  returnNumber      String?           @unique
   orderId           String
   userId            String
   status            ReturnStatus      @default(REQUESTED)
