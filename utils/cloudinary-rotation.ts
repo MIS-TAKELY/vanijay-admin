@@ -24,18 +24,48 @@ let rotationIndex = 0;
 export function getNextCloudinaryAccount(): CloudinaryAccount {
     const index = rotationIndex;
 
-    // Increment for next call BEFORE validation to ensure we don't get stuck
-    rotationIndex = (rotationIndex + 1) % ACCOUNT_COUNT;
+    // Map explicit variables to avoid issues with dynamic access in standard Next.js build
+    const accounts: Record<number, { name: string | undefined, preset: string | undefined }> = {
+        0: {
+            name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+            preset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
+        },
+        1: {
+            name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME1,
+            preset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET1
+        },
+        2: {
+            name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME2,
+            preset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET2
+        },
+        3: {
+            name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME3,
+            preset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET3
+        },
+        4: {
+            name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME4,
+            preset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET4
+        }
+    };
 
-    // Support both old and new env variable naming
-    const cloudName = process.env[`NEXT_PUBLIC_CLOUDINARY_ACCOUNT_${index}_NAME`] ||
-        process.env[`NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME${index === 0 ? '' : index}`];
-    const uploadPreset = process.env[`NEXT_PUBLIC_CLOUDINARY_ACCOUNT_${index}_PRESET`] ||
-        process.env[`NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET${index === 0 ? '' : index}`];
+    const cloudName = accounts[index]?.name;
+    const uploadPreset = accounts[index]?.preset;
 
     if (!cloudName || !uploadPreset) {
+        // Fallback to account 0 if the current indexed account is missing
+        if (index > 0) {
+            rotationIndex = 0;
+            const fallbackName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+            const fallbackPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+            if (fallbackName && fallbackPreset) {
+                return { cloudName: fallbackName, uploadPreset: fallbackPreset, index: 0 };
+            }
+        }
         throw new Error(`Cloudinary account ${index} configuration missing`);
     }
+
+    // Increment for next call BEFORE validation to ensure we don't get stuck
+    rotationIndex = (rotationIndex + 1) % ACCOUNT_COUNT;
 
     return {
         cloudName,
