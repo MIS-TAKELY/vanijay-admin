@@ -167,6 +167,11 @@ export const typeDefs = `
     updatedAt: String!
   }
 
+  type SeoPagesResponse {
+    items: [SeoPage]
+    totalCount: Int
+  }
+
   type Offer {
       id: String!
       title: String!
@@ -447,7 +452,7 @@ export const typeDefs = `
     getLandingPageCategorySwipers: [LandingPageCategorySwiper!]!
     getLandingPageProductGrids: [LandingPageProductGrid!]!
     getLandingPageBanners: [LandingPageBanner!]!
-    seoPages: [SeoPage]
+    seoPages(take: Int, skip: Int, search: String): SeoPagesResponse
     seoAnalytics: SeoAnalytics
   }
 
@@ -505,6 +510,8 @@ export const typeDefs = `
   }
 
   input UpdateSeoPageInput {
+    categoryId: String
+    urlPath: String
     metaTitle: String
     metaDescription: String
     priceThreshold: Int

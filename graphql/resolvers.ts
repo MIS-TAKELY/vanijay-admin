@@ -6,11 +6,32 @@ import { typesenseClient } from '../lib/typesense';
 export const resolvers = {
     Query: {
         hello: () => 'Hello from Admin Graphql',
-        seoPages: async () => {
-            return await prismaMain.seoPage.findMany({
-                include: { category: true },
-                orderBy: { updatedAt: 'desc' }
-            });
+        seoPages: async (_: any, args: any) => {
+            const take = args.take || 15;
+            const skip = args.skip || 0;
+            const search = args.search;
+
+            const where: any = {};
+            if (search) {
+                where.OR = [
+                    { category: { name: { contains: search, mode: 'insensitive' } } },
+                    { urlPath: { contains: search, mode: 'insensitive' } },
+                    { metaTitle: { contains: search, mode: 'insensitive' } },
+                ];
+            }
+
+            const [items, totalCount] = await Promise.all([
+                prismaMain.seoPage.findMany({
+                    where,
+                    take,
+                    skip,
+                    include: { category: true },
+                    orderBy: { updatedAt: 'desc' }
+                }),
+                prismaMain.seoPage.count({ where })
+            ]);
+
+            return { items, totalCount };
         },
         seoAnalytics: async () => {
             const allPages = await prismaMain.seoPage.findMany({
@@ -2040,6 +2061,19 @@ export const resolvers = {
                 const data: any = { ...restInput };
                 if (pinnedProductIds !== undefined) {
                     data.pinnedProductIds = pinnedProductIds;
+                }
+
+                if (data.urlPath) {
+                    data.urlPath = data.urlPath
+                        .toLowerCase()
+                        .trim()
+                        .replace(/\\s+/g, '-')
+                        .replace(/[^a-z0-9\\s-]/g, '')
+                        .replace(/-+/g, '-')
+                        .replace(/^-|-$/g, '');
+                    if (!data.urlPath.startsWith('/')) {
+                        data.urlPath = `/${data.urlPath}`;
+                    }
                 }
 
                 return await prismaMain.seoPage.update({
