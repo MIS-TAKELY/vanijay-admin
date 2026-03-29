@@ -1,4 +1,5 @@
 // prisma.main.config.ts
+import 'dotenv/config';
 export default {
     schema: 'prisma/schema.main.prisma',
     migrations: {

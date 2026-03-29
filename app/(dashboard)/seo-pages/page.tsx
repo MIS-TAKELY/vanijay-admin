@@ -62,7 +62,7 @@ const GET_SEO_PAGES = gql`
         isStale
         lastGeneratedAt
         pinnedProductIds
-        category {
+        categories {
           id
           name
         }
@@ -420,7 +420,9 @@ export default function SeoPagesPage() {
                                     )}
                                 </div>
                             </div>
-                            <CardTitle className="text-base font-bold tracking-tight line-clamp-1 group-hover:text-primary transition-colors">{page.category?.name || "Uncategorized"}</CardTitle>
+                            <CardTitle className="text-base font-bold tracking-tight line-clamp-1 group-hover:text-primary transition-colors">
+                                {page.categories?.length > 0 ? page.categories.map((c: any) => c.name).join(", ") : "Uncategorized"}
+                            </CardTitle>
                             <CardDescription className="font-mono text-[11px] truncate mt-1 text-primary/70">{page.urlPath}</CardDescription>
                         </CardHeader>
                         
@@ -505,7 +507,7 @@ function EditSeoPageDialog({ open, onOpenChange, onSuccess, page }: {
     });
 
     const [formData, setFormData] = useState({
-        categoryId: "",
+        categoryIds: [] as string[],
         priceThreshold: "",
         urlPath: "",
         metaTitle: "",
@@ -515,7 +517,7 @@ function EditSeoPageDialog({ open, onOpenChange, onSuccess, page }: {
     useEffect(() => {
         if (open && page) {
             setFormData({
-                categoryId: page.category?.id || "",
+                categoryIds: page.categories?.map((c: any) => c.id) || [],
                 priceThreshold: page.priceThreshold ? String(page.priceThreshold) : "",
                 urlPath: page.urlPath || "",
                 metaTitle: page.metaTitle || "",
@@ -536,7 +538,7 @@ function EditSeoPageDialog({ open, onOpenChange, onSuccess, page }: {
             variables: {
                 id: page.id,
                 input: {
-                    categoryId: formData.categoryId,
+                    categoryIds: formData.categoryIds,
                     urlPath: safeUrlPath,
                     priceThreshold: formData.priceThreshold ? parseInt(formData.priceThreshold) : null,
                     metaTitle: formData.metaTitle,
@@ -563,14 +565,37 @@ function EditSeoPageDialog({ open, onOpenChange, onSuccess, page }: {
                 
                 <form onSubmit={handleSubmit} className="p-6 space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div className="space-y-2.5">
-                            <Label className="text-muted-foreground font-semibold text-xs uppercase tracking-wider">Target Category</Label>
+                        <div className="space-y-2.5 col-span-2">
+                            <Label className="text-muted-foreground font-semibold text-xs uppercase tracking-wider">Target Categories</Label>
+                            <div className="flex flex-wrap gap-2 mb-2 min-h-[40px] p-2 rounded-xl border border-dashed border-border bg-muted/20">
+                                {formData.categoryIds.map((id) => {
+                                    const cat = categories.find((c: any) => c.id === id);
+                                    return (
+                                        <Badge key={id} variant="secondary" className="pl-2 pr-1 h-7 rounded-lg group">
+                                            {cat?.name || "..."}
+                                            <button
+                                                type="button"
+                                                onClick={() => setFormData({ ...formData, categoryIds: formData.categoryIds.filter(cid => cid !== id) })}
+                                                className="ml-1 p-0.5 rounded-full hover:bg-destructive hover:text-white transition-colors"
+                                            >
+                                                <X className="h-3 w-3" />
+                                            </button>
+                                        </Badge>
+                                    );
+                                })}
+                                {formData.categoryIds.length === 0 && (
+                                    <span className="text-[10px] text-muted-foreground italic flex items-center h-7 px-2">No categories selected</span>
+                                )}
+                            </div>
                             <Select
-                                value={formData.categoryId}
-                                onValueChange={(val) => setFormData({ ...formData, categoryId: val })}
+                                onValueChange={(val) => {
+                                    if (!formData.categoryIds.includes(val)) {
+                                        setFormData({ ...formData, categoryIds: [...formData.categoryIds, val] });
+                                    }
+                                }}
                             >
                                 <SelectTrigger className="rounded-xl bg-card border-border/80 h-11 focus:ring-primary/20">
-                                    <SelectValue placeholder="Select a category" />
+                                    <SelectValue placeholder="Add a category..." />
                                 </SelectTrigger>
                                 <SelectContent className="rounded-xl border-border/60 blur-backdrop">
                                     {categories.map((cat: any) => (
@@ -659,7 +684,7 @@ function CreateSeoPageDialog({ open, onOpenChange, onSuccess }: {
     });
 
     const [formData, setFormData] = useState({
-        categoryId: "",
+        categoryIds: [] as string[],
         priceThreshold: "",
         urlPath: "",
         metaTitle: "",
@@ -670,14 +695,14 @@ function CreateSeoPageDialog({ open, onOpenChange, onSuccess }: {
     const categories = catData?.categories || [];
 
     const resetForm = () => {
-        setFormData({ categoryId: "", priceThreshold: "", urlPath: "", metaTitle: "", metaDescription: "" });
+        setFormData({ categoryIds: [], priceThreshold: "", urlPath: "", metaTitle: "", metaDescription: "" });
         setPinnedProducts([]);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!formData.categoryId || !formData.urlPath) {
-            toast.error("Category and URL Path are required");
+        if (formData.categoryIds.length === 0 || !formData.urlPath) {
+            toast.error("At least one Category and URL Path are required");
             return;
         }
         const safeUrlPath = slugifyPath(formData.urlPath);
@@ -705,19 +730,41 @@ function CreateSeoPageDialog({ open, onOpenChange, onSuccess }: {
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4 pt-2">
                     <div className="space-y-2">
-                        <Label>Target Category</Label>
+                        <Label>Target Categories</Label>
+                        <div className="flex flex-wrap gap-2 mb-2 min-h-[40px] p-2 rounded-xl border border-dashed border-border bg-muted/20">
+                            {formData.categoryIds.map((id) => {
+                                const cat = categories.find((c: any) => c.id === id);
+                                return (
+                                    <Badge key={id} variant="secondary" className="pl-2 pr-1 h-7 rounded-sm group">
+                                        {cat?.name || "..."}
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData({ ...formData, categoryIds: formData.categoryIds.filter(cid => cid !== id) })}
+                                            className="ml-1 p-0.5 rounded-full hover:bg-destructive hover:text-white transition-colors"
+                                        >
+                                            <X className="h-3 w-3" />
+                                        </button>
+                                    </Badge>
+                                );
+                            })}
+                            {formData.categoryIds.length === 0 && (
+                                <span className="text-[10px] text-muted-foreground italic flex items-center h-7 px-2">No categories selected</span>
+                            )}
+                        </div>
                         <Select
                             onValueChange={(val) => {
-                                const cat = categories.find((c: any) => c.id === val);
-                                setFormData({
-                                    ...formData,
-                                    categoryId: val,
-                                    urlPath: formData.urlPath || slugifyPath(`best-${cat?.slug || ""}`)
-                                });
+                                if (!formData.categoryIds.includes(val)) {
+                                    const cat = categories.find((c: any) => c.id === val);
+                                    setFormData({
+                                        ...formData,
+                                        categoryIds: [...formData.categoryIds, val],
+                                        urlPath: formData.urlPath || slugifyPath(`best-${cat?.slug || ""}`)
+                                    });
+                                }
                             }}
                         >
                             <SelectTrigger>
-                                <SelectValue placeholder="Select a category" />
+                                <SelectValue placeholder="Add a category..." />
                             </SelectTrigger>
                             <SelectContent>
                                 {categories.map((cat: any) => (

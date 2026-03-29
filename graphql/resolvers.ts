@@ -14,7 +14,7 @@ export const resolvers = {
             const where: any = {};
             if (search) {
                 where.OR = [
-                    { category: { name: { contains: search, mode: 'insensitive' } } },
+                    { categories: { some: { name: { contains: search, mode: 'insensitive' } } } },
                     { urlPath: { contains: search, mode: 'insensitive' } },
                     { metaTitle: { contains: search, mode: 'insensitive' } },
                 ];
@@ -25,7 +25,7 @@ export const resolvers = {
                     where,
                     take,
                     skip,
-                    include: { category: true },
+                    include: { categories: true },
                     orderBy: { updatedAt: 'desc' }
                 }),
                 prismaMain.seoPage.count({ where })
@@ -35,7 +35,7 @@ export const resolvers = {
         },
         seoAnalytics: async () => {
             const allPages = await prismaMain.seoPage.findMany({
-                include: { category: true }
+                include: { categories: true }
             });
 
             const statsMap: Record<string, any> = {};
@@ -46,17 +46,34 @@ export const resolvers = {
                 if (p.isStale) staleCount++;
                 if (p.isIndexed) indexedCount++;
 
-                const catId = p.categoryId;
-                if (!statsMap[catId]) {
-                    statsMap[catId] = {
-                        categoryId: catId,
-                        categoryName: p.category?.name || "Unknown",
-                        pageCount: 0,
-                        staleCount: 0
-                    };
+                const pageCategories = p.categories || [];
+                if (pageCategories.length === 0) {
+                    const catId = "uncategorized";
+                    if (!statsMap[catId]) {
+                        statsMap[catId] = {
+                            categoryId: catId,
+                            categoryName: "Uncategorized",
+                            pageCount: 0,
+                            staleCount: 0
+                        };
+                    }
+                    statsMap[catId].pageCount++;
+                    if (p.isStale) statsMap[catId].staleCount++;
+                } else {
+                    pageCategories.forEach((cat: any) => {
+                        const catId = cat.id;
+                        if (!statsMap[catId]) {
+                            statsMap[catId] = {
+                                categoryId: catId,
+                                categoryName: cat.name || "Unknown",
+                                pageCount: 0,
+                                staleCount: 0
+                            };
+                        }
+                        statsMap[catId].pageCount++;
+                        if (p.isStale) statsMap[catId].staleCount++;
+                    });
                 }
-                statsMap[catId].pageCount++;
-                if (p.isStale) statsMap[catId].staleCount++;
             });
 
             return {
@@ -1983,14 +2000,14 @@ export const resolvers = {
                         if (!seoPage) {
                             seoPage = await prismaMain.seoPage.create({
                                 data: {
-                                    categoryId: cat.id,
+                                    categories: { connect: { id: cat.id } },
                                     priceThreshold: price,
                                     urlPath,
                                     metaTitle: `Best ${cat.name} Under ${price} in Nepal | Updated Feb 2026`,
                                     metaDescription: `Compare and buy the best ${cat.name} priced under Rs. ${price}. Detailed specs, pros, cons, and latest prices.`,
                                     isStale: false
                                 },
-                                include: { category: true }
+                                include: { categories: true }
                             });
                         }
                         results.push(seoPage);
@@ -2005,7 +2022,7 @@ export const resolvers = {
         regenerateSeoPage: async (_: any, { id }: { id: string }) => {
             const seoPage = await prismaMain.seoPage.findUnique({
                 where: { id },
-                include: { category: true }
+                include: { categories: true }
             });
             if (!seoPage) throw new Error("SEO Page not found");
 
@@ -2015,7 +2032,7 @@ export const resolvers = {
                     lastGeneratedAt: new Date(),
                     isStale: false
                 },
-                include: { category: true }
+                include: { categories: true }
             });
         },
         deleteSeoPage: async (_: any, { id }: { id: string }) => {
@@ -2039,15 +2056,23 @@ export const resolvers = {
                     }
                 }
 
-                const { pinnedProductIds, ...restInput } = input;
+                const { pinnedProductIds, categoryIds, ...restInput } = input;
+
+                const createData: any = {
+                    ...restInput,
+                    pinnedProductIds: pinnedProductIds || [],
+                    isStale: false
+                };
+
+                if (categoryIds && categoryIds.length > 0) {
+                    createData.categories = {
+                        connect: categoryIds.map((id: string) => ({ id }))
+                    };
+                }
 
                 return await prismaMain.seoPage.create({
-                    data: {
-                        ...restInput,
-                        pinnedProductIds: pinnedProductIds || [],
-                        isStale: false
-                    },
-                    include: { category: true }
+                    data: createData,
+                    include: { categories: true }
                 });
             } catch (error: any) {
                 console.error("Create SEO page error:", error);
@@ -2056,19 +2081,25 @@ export const resolvers = {
         },
         updateSeoPage: async (_: any, { id, input }: { id: string; input: any }) => {
             try {
-                const { pinnedProductIds, ...restInput } = input;
+                const { pinnedProductIds, categoryIds, ...restInput } = input;
 
                 const data: any = { ...restInput };
                 if (pinnedProductIds !== undefined) {
                     data.pinnedProductIds = pinnedProductIds;
                 }
 
+                if (categoryIds !== undefined) {
+                    data.categories = {
+                        set: categoryIds.map((id: string) => ({ id }))
+                    };
+                }
+
                 if (data.urlPath) {
                     data.urlPath = data.urlPath
                         .toLowerCase()
                         .trim()
-                        .replace(/\\s+/g, '-')
-                        .replace(/[^a-z0-9\\s-]/g, '')
+                        .replace(/\s+/g, '-')
+                        .replace(/[^a-z0-9\s-]/g, '')
                         .replace(/-+/g, '-')
                         .replace(/^-|-$/g, '');
                     if (!data.urlPath.startsWith('/')) {
@@ -2079,7 +2110,7 @@ export const resolvers = {
                 return await prismaMain.seoPage.update({
                     where: { id },
                     data,
-                    include: { category: true }
+                    include: { categories: true }
                 });
             } catch (error: any) {
                 console.error("Update SEO page error:", error);

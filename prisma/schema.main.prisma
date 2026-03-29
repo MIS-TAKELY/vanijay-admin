@@ -1196,8 +1196,8 @@ model ReturnItem {
 
 model SeoPage {
   id                String   @id @default(cuid())
-  categoryId        String
-  category          Category @relation(fields: [categoryId], references: [id])
+  categories        Category[]
+
   priceThreshold    Int
   urlPath           String   @unique
   metaTitle         String?
