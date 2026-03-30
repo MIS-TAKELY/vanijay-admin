@@ -20,6 +20,7 @@ import {
     ChevronsUpDown
 } from "lucide-react";
 import { useState, useCallback, useRef, useEffect } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -40,13 +41,6 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import {
     Command,
     CommandEmpty,
@@ -416,7 +410,6 @@ export default function SeoPagesPage() {
         onError: (err) => toast.error(err.message)
     });
 
-    const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [managingPage, setManagingPage] = useState<any>(null);
     const [editingPage, setEditingPage] = useState<any>(null);
 
@@ -445,9 +438,11 @@ export default function SeoPagesPage() {
                     <p className="text-muted-foreground font-medium mt-1">Manage semantic endpoints & category visibility</p>
                 </div>
                 <div className="flex items-center gap-3 relative z-10">
-                    <Button variant="outline" onClick={() => setIsCreateOpen(true)} className="rounded-xl border-dashed hover:border-solid hover:bg-accent/50 transition-all h-11 px-5">
-                        <Plus className="mr-2 h-4 w-4" />
-                        New Endpoint
+                    <Button variant="outline" asChild className="rounded-xl border-dashed hover:border-solid hover:bg-accent/50 transition-all h-11 px-5">
+                        <Link href="/seo-pages/new">
+                            <Plus className="mr-2 h-4 w-4" />
+                            New Endpoint
+                        </Link>
                     </Button>
                     <Button onClick={() => generateSeoPages()} disabled={isGenerating} className="rounded-xl shadow-md h-11 px-5 hover:scale-[1.02] active:scale-95 transition-transform">
                         {isGenerating ? <RefreshCcw className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCcw className="mr-2 h-4 w-4" />}
@@ -456,8 +451,6 @@ export default function SeoPagesPage() {
                 </div>
             </div>
 
-            <CreateSeoPageDialog open={isCreateOpen} onOpenChange={setIsCreateOpen} onSuccess={() => refetch()} />
-            
             {editingPage && (
                 <EditSeoPageDialog open={Boolean(editingPage)} onOpenChange={(o) => { if (!o) setEditingPage(null); }} onSuccess={() => refetch()} page={editingPage} />
             )}
@@ -744,177 +737,6 @@ function EditSeoPageDialog({ open, onOpenChange, onSuccess, page }: {
     );
 }
 
-// ─── Create SEO Page Dialog ────────────────────────────────────────────────────
-
-// ─── Create SEO Page Dialog ────────────────────────────────────────────────────
-
-function CreateSeoPageDialog({ open, onOpenChange, onSuccess }: {
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-    onSuccess: () => void;
-}) {
-    const { data: catData } = useQuery(GET_CATEGORIES);
-    const [createSeoPage, { loading }] = useMutation(CREATE_SEO_PAGE, {
-        onCompleted: () => {
-            toast.success("Custom SEO page created");
-            onOpenChange(false);
-            onSuccess();
-            resetForm();
-        },
-        onError: (err) => toast.error(err.message)
-    });
-
-    const [formData, setFormData] = useState({
-        categoryIds: [] as string[],
-        priceThreshold: "",
-        urlPath: "",
-        metaTitle: "",
-        metaDescription: ""
-    });
-    const [pinnedProducts, setPinnedProducts] = useState<ProductMeta[]>([]);
-
-    const categories = catData?.categories || [];
-
-    const resetForm = () => {
-        setFormData({ categoryIds: [], priceThreshold: "", urlPath: "", metaTitle: "", metaDescription: "" });
-        setPinnedProducts([]);
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (formData.categoryIds.length === 0 || !formData.urlPath) {
-            toast.error("At least one Category and URL Path are required");
-            return;
-        }
-        const safeUrlPath = slugifyPath(formData.urlPath);
-
-        await createSeoPage({
-            variables: {
-                input: {
-                    ...formData,
-                    urlPath: safeUrlPath,
-                    priceThreshold: formData.priceThreshold ? parseInt(formData.priceThreshold) : null,
-                    pinnedProductIds: pinnedProducts.map((p) => p.id),
-                }
-            }
-        });
-    };
-
-    return (
-        <Dialog open={open} onOpenChange={(o) => { onOpenChange(o); if (!o) resetForm(); }}>
-            <DialogContent className="max-w-xl">
-                <DialogHeader>
-                    <DialogTitle>Create Custom SEO Page</DialogTitle>
-                    <DialogDescription>
-                        Manually define a landing page for specific keywords or price points.
-                    </DialogDescription>
-                </DialogHeader>
-                <form onSubmit={handleSubmit} className="space-y-4 pt-2">
-                    <div className="space-y-2">
-                        <Label>Target Categories</Label>
-                        <ScrollArea className="max-h-24 mb-2">
-                            <div className="flex flex-wrap gap-2 min-h-[40px] p-2 rounded-xl border border-dashed border-border bg-muted/20">
-                                {formData.categoryIds.map((id) => {
-                                    const cat = categories.find((c: any) => c.id === id);
-                                    return (
-                                        <Badge key={id} variant="secondary" className="pl-2 pr-1 h-7 rounded-sm group">
-                                            {cat?.name || "..."}
-                                            <button
-                                                type="button"
-                                                onClick={() => setFormData({ ...formData, categoryIds: formData.categoryIds.filter(cid => cid !== id) })}
-                                                className="ml-1 p-0.5 rounded-full hover:bg-destructive hover:text-white transition-colors"
-                                            >
-                                                <X className="h-3 w-3" />
-                                            </button>
-                                        </Badge>
-                                    );
-                                })}
-                                {formData.categoryIds.length === 0 && (
-                                    <span className="text-[10px] text-muted-foreground italic flex items-center h-7 px-2">No categories selected</span>
-                                )}
-                            </div>
-                        </ScrollArea>
-                        <CategoryPicker
-                            categories={categories}
-                            selectedIds={formData.categoryIds}
-                            placeholder="Add a category..."
-                            onSelect={(val: string) => {
-                                if (!formData.categoryIds.includes(val)) {
-                                    const cat = categories.find((c: any) => c.id === val);
-                                    setFormData({
-                                        ...formData,
-                                        categoryIds: [...formData.categoryIds, val],
-                                        urlPath: formData.urlPath || slugifyPath(`best-${cat?.slug || ""}`)
-                                    });
-                                }
-                            }}
-                        />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label>URL Path</Label>
-                            <Input
-                                placeholder="/best-phones-under-20000"
-                                value={formData.urlPath}
-                                onChange={(e) => {
-                                    const slugged = slugifyPath(e.target.value);
-                                    setFormData({ ...formData, urlPath: slugged });
-                                }}
-                            />
-                            <p className="text-xs text-muted-foreground">Auto-converted to slug format.</p>
-                        </div>
-                        <div className="space-y-2">
-                            <Label>Price Under (Optional)</Label>
-                            <Input
-                                type="number"
-                                placeholder="50000"
-                                value={formData.priceThreshold}
-                                onChange={(e) => setFormData({ ...formData, priceThreshold: e.target.value })}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label>Meta Title</Label>
-                        <Input
-                            placeholder="Best Smartphones in Nepal..."
-                            value={formData.metaTitle}
-                            onChange={(e) => setFormData({ ...formData, metaTitle: e.target.value })}
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label>Meta Description</Label>
-                        <Input
-                            placeholder="Compare and buy the best..."
-                            value={formData.metaDescription}
-                            onChange={(e) => setFormData({ ...formData, metaDescription: e.target.value })}
-                        />
-                    </div>
-
-                    {/* Product Picker */}
-                    <div className="space-y-2 rounded-lg border border-dashed border-border p-4 bg-muted/30">
-                        <div className="flex items-center gap-2 mb-1">
-                            <Pin className="h-4 w-4 text-primary" />
-                            <Label className="text-sm font-semibold">Pin Products to This Page</Label>
-                            {pinnedProducts.length > 0 && (
-                                <Badge variant="secondary" className="text-[10px]">{pinnedProducts.length} selected</Badge>
-                            )}
-                        </div>
-                        <ProductPicker selected={pinnedProducts} onChange={setPinnedProducts} />
-                    </div>
-
-                    <DialogFooter>
-                        <Button type="submit" disabled={loading} className="w-full">
-                            {loading ? "Creating..." : "Create Page"}
-                        </Button>
-                    </DialogFooter>
-                </form>
-            </DialogContent>
-        </Dialog>
-    );
-}
 
 // ─── Manage Products Dialog ───────────────────────────────────────────────────
 

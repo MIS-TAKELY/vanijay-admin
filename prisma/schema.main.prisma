@@ -1197,7 +1197,6 @@ model ReturnItem {
 model SeoPage {
   id                String   @id @default(cuid())
   categories        Category[]
-
   priceThreshold    Int?
   urlPath           String   @unique
   metaTitle         String?
