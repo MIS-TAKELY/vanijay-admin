@@ -341,29 +341,31 @@ function CategoryPicker({
             <PopoverContent className="w-full min-w-[280px] p-0 rounded-xl border-border/60 shadow-2xl blur-backdrop bg-popover/90 backdrop-blur-md" align="start">
                 <Command className="bg-transparent">
                     <CommandInput placeholder="Search categories..." className="h-11 border-none focus:ring-0" />
-                    <CommandList className="max-h-64">
+                    <CommandList>
                         <CommandEmpty>No category found.</CommandEmpty>
-                        <CommandGroup>
-                            {categories.map((category) => (
-                                <CommandItem
-                                    key={category.id}
-                                    value={category.name}
-                                    onSelect={() => {
-                                        onSelect(category.id);
-                                        setOpen(false);
-                                    }}
-                                    className="flex items-center justify-between py-2.5 px-3 cursor-pointer hover:bg-accent/50 transition-colors"
-                                >
-                                    <div className="flex flex-col">
-                                        <span className="font-medium text-sm">{category.name}</span>
-                                        <span className="text-[10px] text-muted-foreground font-mono">/{category.slug}</span>
-                                    </div>
-                                    {selectedIds.includes(category.id) && (
-                                        <Check className="h-4 w-4 text-primary" />
-                                    )}
-                                </CommandItem>
-                            ))}
-                        </CommandGroup>
+                        <ScrollArea className="h-72">
+                            <CommandGroup>
+                                {categories.map((category) => (
+                                    <CommandItem
+                                        key={category.id}
+                                        value={category.name}
+                                        onSelect={() => {
+                                            onSelect(category.id);
+                                            setOpen(false);
+                                        }}
+                                        className="flex items-center justify-between py-2.5 px-3 cursor-pointer hover:bg-accent/50 transition-colors"
+                                    >
+                                        <div className="flex flex-col">
+                                            <span className="font-medium text-sm">{category.name}</span>
+                                            <span className="text-[10px] text-muted-foreground font-mono">/{category.slug}</span>
+                                        </div>
+                                        {selectedIds.includes(category.id) && (
+                                            <Check className="h-4 w-4 text-primary" />
+                                        )}
+                                    </CommandItem>
+                                ))}
+                            </CommandGroup>
+                        </ScrollArea>
                     </CommandList>
                 </Command>
             </PopoverContent>
@@ -652,26 +654,28 @@ function EditSeoPageDialog({ open, onOpenChange, onSuccess, page }: {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div className="space-y-2.5 col-span-2">
                             <Label className="text-muted-foreground font-semibold text-xs uppercase tracking-wider">Target Categories</Label>
-                            <div className="flex flex-wrap gap-2 mb-2 min-h-[40px] p-2 rounded-xl border border-dashed border-border bg-muted/20">
-                                {formData.categoryIds.map((id) => {
-                                    const cat = categories.find((c: any) => c.id === id);
-                                    return (
-                                        <Badge key={id} variant="secondary" className="pl-2 pr-1 h-7 rounded-lg group">
-                                            {cat?.name || "..."}
-                                            <button
-                                                type="button"
-                                                onClick={() => setFormData({ ...formData, categoryIds: formData.categoryIds.filter(cid => cid !== id) })}
-                                                className="ml-1 p-0.5 rounded-full hover:bg-destructive hover:text-white transition-colors"
-                                            >
-                                                <X className="h-3 w-3" />
-                                            </button>
-                                        </Badge>
-                                    );
-                                })}
-                                {formData.categoryIds.length === 0 && (
-                                    <span className="text-[10px] text-muted-foreground italic flex items-center h-7 px-2">No categories selected</span>
-                                )}
-                            </div>
+                            <ScrollArea className="max-h-24 mb-2">
+                                <div className="flex flex-wrap gap-2 min-h-[40px] p-2 rounded-xl border border-dashed border-border bg-muted/20">
+                                    {formData.categoryIds.map((id) => {
+                                        const cat = categories.find((c: any) => c.id === id);
+                                        return (
+                                            <Badge key={id} variant="secondary" className="pl-2 pr-1 h-7 rounded-lg group">
+                                                {cat?.name || "..."}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setFormData({ ...formData, categoryIds: formData.categoryIds.filter(cid => cid !== id) })}
+                                                    className="ml-1 p-0.5 rounded-full hover:bg-destructive hover:text-white transition-colors"
+                                                >
+                                                    <X className="h-3 w-3" />
+                                                </button>
+                                            </Badge>
+                                        );
+                                    })}
+                                    {formData.categoryIds.length === 0 && (
+                                        <span className="text-[10px] text-muted-foreground italic flex items-center h-7 px-2">No categories selected</span>
+                                    )}
+                                </div>
+                            </ScrollArea>
                             <CategoryPicker
                                 categories={categories}
                                 selectedIds={formData.categoryIds}
@@ -810,26 +814,28 @@ function CreateSeoPageDialog({ open, onOpenChange, onSuccess }: {
                 <form onSubmit={handleSubmit} className="space-y-4 pt-2">
                     <div className="space-y-2">
                         <Label>Target Categories</Label>
-                        <div className="flex flex-wrap gap-2 mb-2 min-h-[40px] p-2 rounded-xl border border-dashed border-border bg-muted/20">
-                            {formData.categoryIds.map((id) => {
-                                const cat = categories.find((c: any) => c.id === id);
-                                return (
-                                    <Badge key={id} variant="secondary" className="pl-2 pr-1 h-7 rounded-sm group">
-                                        {cat?.name || "..."}
-                                        <button
-                                            type="button"
-                                            onClick={() => setFormData({ ...formData, categoryIds: formData.categoryIds.filter(cid => cid !== id) })}
-                                            className="ml-1 p-0.5 rounded-full hover:bg-destructive hover:text-white transition-colors"
-                                        >
-                                            <X className="h-3 w-3" />
-                                        </button>
-                                    </Badge>
-                                );
-                            })}
-                            {formData.categoryIds.length === 0 && (
-                                <span className="text-[10px] text-muted-foreground italic flex items-center h-7 px-2">No categories selected</span>
-                            )}
-                        </div>
+                        <ScrollArea className="max-h-24 mb-2">
+                            <div className="flex flex-wrap gap-2 min-h-[40px] p-2 rounded-xl border border-dashed border-border bg-muted/20">
+                                {formData.categoryIds.map((id) => {
+                                    const cat = categories.find((c: any) => c.id === id);
+                                    return (
+                                        <Badge key={id} variant="secondary" className="pl-2 pr-1 h-7 rounded-sm group">
+                                            {cat?.name || "..."}
+                                            <button
+                                                type="button"
+                                                onClick={() => setFormData({ ...formData, categoryIds: formData.categoryIds.filter(cid => cid !== id) })}
+                                                className="ml-1 p-0.5 rounded-full hover:bg-destructive hover:text-white transition-colors"
+                                            >
+                                                <X className="h-3 w-3" />
+                                            </button>
+                                        </Badge>
+                                    );
+                                })}
+                                {formData.categoryIds.length === 0 && (
+                                    <span className="text-[10px] text-muted-foreground italic flex items-center h-7 px-2">No categories selected</span>
+                                )}
+                            </div>
+                        </ScrollArea>
                         <CategoryPicker
                             categories={categories}
                             selectedIds={formData.categoryIds}
