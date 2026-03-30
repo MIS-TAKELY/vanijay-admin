@@ -1197,20 +1197,19 @@ model ReturnItem {
 }
 
 model SeoPage {
-  id         String     @id @default(cuid())
-  categories Category[]
-
+  id               String     @id @default(cuid())
+  categories       Category[]
   priceThreshold   Int?
-  urlPath          String   @unique
+  urlPath          String     @unique
   metaTitle        String?
   metaDescription  String?
   structuredData   Json?
-  pinnedProductIds String[] @default([])
-  lastGeneratedAt  DateTime @default(now())
-  isIndexed        Boolean  @default(false)
-  isStale          Boolean  @default(false)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  pinnedProductIds String[]   @default([])
+  lastGeneratedAt  DateTime   @default(now())
+  isIndexed        Boolean    @default(false)
+  isStale          Boolean    @default(false)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
 
   @@index([urlPath])
   @@map("seo_pages")

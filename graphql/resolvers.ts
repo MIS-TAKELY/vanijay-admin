@@ -33,6 +33,13 @@ export const resolvers = {
 
             return { items, totalCount };
         },
+        seoPage: async (_: any, { id }: { id: string }) => {
+            const page = await prismaMain.seoPage.findUnique({
+                where: { id },
+                include: { categories: true }
+            });
+            return page;
+        },
         seoAnalytics: async () => {
             const allPages = await prismaMain.seoPage.findMany({
                 include: { categories: true }

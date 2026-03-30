@@ -411,7 +411,6 @@ export default function SeoPagesPage() {
     });
 
     const [managingPage, setManagingPage] = useState<any>(null);
-    const [editingPage, setEditingPage] = useState<any>(null);
 
     const pages = data?.seoPages?.items || [];
     const totalCount = data?.seoPages?.totalCount || 0;
@@ -451,10 +450,7 @@ export default function SeoPagesPage() {
                 </div>
             </div>
 
-            {editingPage && (
-                <EditSeoPageDialog open={Boolean(editingPage)} onOpenChange={(o) => { if (!o) setEditingPage(null); }} onSuccess={() => refetch()} page={editingPage} />
-            )}
-            
+
             {managingPage && (
                 <ManageProductsDialog page={managingPage} open={Boolean(managingPage)} onOpenChange={(open) => { if (!open) setManagingPage(null); }} onSuccess={() => refetch()} />
             )}
@@ -519,8 +515,10 @@ export default function SeoPagesPage() {
                                     <Package className="mr-1.5 h-3.5 w-3.5" />
                                     Products
                                 </Button>
-                                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg bg-muted/40 hover:bg-accent hover:text-accent-foreground" onClick={() => setEditingPage(page)}>
-                                    <Pencil className="h-3.5 w-3.5" />
+                                <Button variant="ghost" size="icon" asChild className="h-8 w-8 rounded-lg bg-muted/40 hover:bg-accent hover:text-accent-foreground">
+                                    <Link href={`/seo-pages/${page.id}`}>
+                                        <Pencil className="h-3.5 w-3.5" />
+                                    </Link>
                                 </Button>
                                 <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg bg-muted/40 hover:bg-accent hover:text-accent-foreground" onClick={() => regenerateSeoPage({ variables: { id: page.id } })}>
                                     <RefreshCcw className="h-3.5 w-3.5" />
@@ -563,177 +561,6 @@ export default function SeoPagesPage() {
                 </div>
             )}
         </div>
-    );
-}
-
-// ─── Edit SEO Page Dialog ──────────────────────────────────────────────────────
-
-function EditSeoPageDialog({ open, onOpenChange, onSuccess, page }: {
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-    onSuccess: () => void;
-    page: any;
-}) {
-    const { data: catData } = useQuery(GET_CATEGORIES);
-    const [updateSeoPage, { loading }] = useMutation(UPDATE_SEO_PAGE, {
-        onCompleted: () => {
-            toast.success("SEO Endpoint Updated");
-            onOpenChange(false);
-            onSuccess();
-        },
-        onError: (err) => toast.error(err.message)
-    });
-
-    const [formData, setFormData] = useState({
-        categoryIds: [] as string[],
-        priceThreshold: "",
-        urlPath: "",
-        metaTitle: "",
-        metaDescription: ""
-    });
-
-    useEffect(() => {
-        if (open && page) {
-            setFormData({
-                categoryIds: page.categories?.map((c: any) => c.id) || [],
-                priceThreshold: page.priceThreshold ? String(page.priceThreshold) : "",
-                urlPath: page.urlPath || "",
-                metaTitle: page.metaTitle || "",
-                metaDescription: page.metaDescription || ""
-            });
-        }
-    }, [open, page]);
-
-    const categories = catData?.categories || [];
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        
-        // Let the backend handle thorough slugification, but we can do a base clean here
-        const safeUrlPath = formData.urlPath ? `/${formData.urlPath.replace(/^\/+/, '')}` : "";
-
-        await updateSeoPage({
-            variables: {
-                id: page.id,
-                input: {
-                    categoryIds: formData.categoryIds,
-                    urlPath: safeUrlPath,
-                    priceThreshold: formData.priceThreshold ? parseInt(formData.priceThreshold) : null,
-                    metaTitle: formData.metaTitle,
-                    metaDescription: formData.metaDescription
-                }
-            }
-        });
-    };
-
-    return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-xl p-0 overflow-hidden border-border/60 shadow-2xl rounded-2xl">
-                <div className="bg-gradient-to-r from-muted/50 to-muted/10 p-6 border-b border-border/40">
-                    <DialogHeader>
-                        <DialogTitle className="text-xl flex items-center gap-2">
-                            <Pencil className="h-5 w-5 text-primary" />
-                            Edit Semantic Endpoint
-                        </DialogTitle>
-                        <DialogDescription className="mt-1">
-                            Modify route routing and metadata definitions for {page?.urlPath}
-                        </DialogDescription>
-                    </DialogHeader>
-                </div>
-                
-                <form onSubmit={handleSubmit} className="p-6 space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div className="space-y-2.5 col-span-2">
-                            <Label className="text-muted-foreground font-semibold text-xs uppercase tracking-wider">Target Categories</Label>
-                            <ScrollArea className="max-h-24 mb-2">
-                                <div className="flex flex-wrap gap-2 min-h-[40px] p-2 rounded-xl border border-dashed border-border bg-muted/20">
-                                    {formData.categoryIds.map((id) => {
-                                        const cat = categories.find((c: any) => c.id === id);
-                                        return (
-                                            <Badge key={id} variant="secondary" className="pl-2 pr-1 h-7 rounded-lg group">
-                                                {cat?.name || "..."}
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setFormData({ ...formData, categoryIds: formData.categoryIds.filter(cid => cid !== id) })}
-                                                    className="ml-1 p-0.5 rounded-full hover:bg-destructive hover:text-white transition-colors"
-                                                >
-                                                    <X className="h-3 w-3" />
-                                                </button>
-                                            </Badge>
-                                        );
-                                    })}
-                                    {formData.categoryIds.length === 0 && (
-                                        <span className="text-[10px] text-muted-foreground italic flex items-center h-7 px-2">No categories selected</span>
-                                    )}
-                                </div>
-                            </ScrollArea>
-                            <CategoryPicker
-                                categories={categories}
-                                selectedIds={formData.categoryIds}
-                                placeholder="Add a category..."
-                                onSelect={(val: string) => {
-                                    if (!formData.categoryIds.includes(val)) {
-                                        setFormData({ ...formData, categoryIds: [...formData.categoryIds, val] });
-                                    }
-                                }}
-                            />
-                        </div>
-                        <div className="space-y-2.5">
-                            <Label className="text-muted-foreground font-semibold text-xs uppercase tracking-wider">Price Under (Optional)</Label>
-                            <Input
-                                type="number"
-                                placeholder="e.g. 50000"
-                                className="rounded-xl bg-card border-border/80 h-11 focus:ring-primary/20"
-                                value={formData.priceThreshold}
-                                onChange={(e) => setFormData({ ...formData, priceThreshold: e.target.value })}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="space-y-2.5">
-                        <Label className="text-muted-foreground font-semibold text-xs uppercase tracking-wider">URL Path (Slug)</Label>
-                        <div className="relative">
-                            <div className="absolute left-3 top-2.5 text-muted-foreground font-mono">/</div>
-                            <Input
-                                placeholder="best-phones-under-20000"
-                                className="rounded-xl bg-card border-border/80 pl-7 h-11 font-mono focus:ring-primary/20 text-sm"
-                                value={formData.urlPath.replace(/^\/+/, '')}
-                                onChange={(e) => setFormData({ ...formData, urlPath: `/${e.target.value}` })}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="space-y-2.5">
-                        <Label className="text-muted-foreground font-semibold text-xs uppercase tracking-wider">Meta Title</Label>
-                        <Input
-                            placeholder="Best Smartphones in Nepal..."
-                            className="rounded-xl bg-card border-border/80 h-11 focus:ring-primary/20 font-medium"
-                            value={formData.metaTitle}
-                            onChange={(e) => setFormData({ ...formData, metaTitle: e.target.value })}
-                        />
-                    </div>
-
-                    <div className="space-y-2.5">
-                        <Label className="text-muted-foreground font-semibold text-xs uppercase tracking-wider">Meta Description</Label>
-                        <textarea
-                            className="flex min-h-[90px] w-full rounded-xl border border-border/80 bg-card px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-primary/20 resize-none"
-                            placeholder="Compare and buy the best..."
-                            value={formData.metaDescription}
-                            onChange={(e) => setFormData({ ...formData, metaDescription: e.target.value })}
-                        />
-                    </div>
-
-                    <DialogFooter className="pt-2 border-t border-border/30 mt-6">
-                        <Button type="button" variant="ghost" onClick={() => onOpenChange(false)} className="rounded-xl">
-                            Cancel
-                        </Button>
-                        <Button type="submit" disabled={loading} className="rounded-xl px-8 shadow-md">
-                            {loading ? "Saving..." : "Save Route"}
-                        </Button>
-                    </DialogFooter>
-                </form>
-            </DialogContent>
-        </Dialog>
     );
 }
 

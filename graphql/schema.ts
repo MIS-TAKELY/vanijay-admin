@@ -452,6 +452,7 @@ export const typeDefs = `
     getLandingPageProductGrids: [LandingPageProductGrid!]!
     getLandingPageBanners: [LandingPageBanner!]!
     seoPages(take: Int, skip: Int, search: String): SeoPagesResponse
+    seoPage(id: String!): SeoPage
     seoAnalytics: SeoAnalytics
   }
 
