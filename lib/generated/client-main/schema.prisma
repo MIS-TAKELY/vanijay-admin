@@ -1200,7 +1200,7 @@ model SeoPage {
   id         String     @id @default(cuid())
   categories Category[]
 
-  priceThreshold   Int
+  priceThreshold   Int?
   urlPath          String   @unique
   metaTitle        String?
   metaDescription  String?

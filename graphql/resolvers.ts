@@ -2070,12 +2070,21 @@ export const resolvers = {
                     };
                 }
 
+                // Ensure priceThreshold is null if not provided or invalid
+                if (createData.priceThreshold !== undefined) {
+                    createData.priceThreshold = createData.priceThreshold ? parseInt(String(createData.priceThreshold)) : null;
+                }
+
                 return await prismaMain.seoPage.create({
                     data: createData,
                     include: { categories: true }
                 });
             } catch (error: any) {
                 console.error("Create SEO page error:", error);
+                // Provice more detailed error if it's a Prisma validation error
+                if (error.code === 'P2002') {
+                    throw new Error(`A page with this URL path already exists: ${input.urlPath}`);
+                }
                 throw new Error(error.message || "Failed to create SEO page");
             }
         },
@@ -2094,17 +2103,31 @@ export const resolvers = {
                     };
                 }
 
-                if (data.urlPath) {
-                    data.urlPath = data.urlPath
-                        .toLowerCase()
-                        .trim()
-                        .replace(/\s+/g, '-')
-                        .replace(/[^a-z0-9\s-]/g, '')
-                        .replace(/-+/g, '-')
-                        .replace(/^-|-$/g, '');
-                    if (!data.urlPath.startsWith('/')) {
-                        data.urlPath = `/${data.urlPath}`;
+                if (data.urlPath !== undefined) {
+                    if (data.urlPath) {
+                        data.urlPath = data.urlPath
+                            .toLowerCase()
+                            .trim()
+                            .replace(/\s+/g, '-')
+                            .replace(/[^a-z0-9\s-]/g, '')
+                            .replace(/-+/g, '-')
+                            .replace(/^-|-$/g, '');
+                        if (data.urlPath && !data.urlPath.startsWith('/')) {
+                            data.urlPath = `/${data.urlPath}`;
+                        }
+                        // If it became empty after cleaning, but was provided, we might want to prevent it 
+                        // from becoming just "/" if that's not intended.
+                        if (!data.urlPath || data.urlPath === '/') {
+                             delete data.urlPath; // Don't update if it results in invalid slug
+                        }
+                    } else {
+                        delete data.urlPath;
                     }
+                }
+
+                // Ensure priceThreshold is handled
+                if (data.priceThreshold !== undefined) {
+                    data.priceThreshold = data.priceThreshold ? parseInt(String(data.priceThreshold)) : null;
                 }
 
                 return await prismaMain.seoPage.update({
@@ -2114,6 +2137,9 @@ export const resolvers = {
                 });
             } catch (error: any) {
                 console.error("Update SEO page error:", error);
+                if (error.code === 'P2002') {
+                    throw new Error(`A page with this URL path already exists.`);
+                }
                 throw new Error(error.message || "Failed to update SEO page");
             }
         },

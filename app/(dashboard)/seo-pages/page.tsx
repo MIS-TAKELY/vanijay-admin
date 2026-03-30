@@ -15,7 +15,9 @@ import {
     Pin,
     Pencil,
     ChevronLeft,
-    ChevronRight
+    ChevronRight,
+    Check,
+    ChevronsUpDown
 } from "lucide-react";
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -45,6 +47,20 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from "@/components/ui/command";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 // ─── GraphQL ────────────────────────────────────────────────────────────────
@@ -283,6 +299,75 @@ function ProductPicker({
                 </p>
             )}
         </div>
+    );
+}
+
+// ─── Category Picker Component ────────────────────────────────────────────────
+
+interface CategoryMeta {
+    id: string;
+    name: string;
+    slug: string;
+}
+
+function CategoryPicker({
+    categories,
+    selectedIds,
+    onSelect,
+    placeholder = "Select category..."
+}: {
+    categories: CategoryMeta[];
+    selectedIds: string[];
+    onSelect: (categoryId: string) => void;
+    placeholder?: string;
+}) {
+    const [open, setOpen] = useState(false);
+
+    return (
+        <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+                <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className="w-full justify-between rounded-xl bg-card border-border/80 h-11 hover:border-primary/30 transition-all font-normal"
+                >
+                    <span className="truncate text-muted-foreground italic">
+                        {placeholder}
+                    </span>
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-full min-w-[280px] p-0 rounded-xl border-border/60 shadow-2xl blur-backdrop bg-popover/90 backdrop-blur-md" align="start">
+                <Command className="bg-transparent">
+                    <CommandInput placeholder="Search categories..." className="h-11 border-none focus:ring-0" />
+                    <CommandList className="max-h-64">
+                        <CommandEmpty>No category found.</CommandEmpty>
+                        <CommandGroup>
+                            {categories.map((category) => (
+                                <CommandItem
+                                    key={category.id}
+                                    value={category.name}
+                                    onSelect={() => {
+                                        onSelect(category.id);
+                                        setOpen(false);
+                                    }}
+                                    className="flex items-center justify-between py-2.5 px-3 cursor-pointer hover:bg-accent/50 transition-colors"
+                                >
+                                    <div className="flex flex-col">
+                                        <span className="font-medium text-sm">{category.name}</span>
+                                        <span className="text-[10px] text-muted-foreground font-mono">/{category.slug}</span>
+                                    </div>
+                                    {selectedIds.includes(category.id) && (
+                                        <Check className="h-4 w-4 text-primary" />
+                                    )}
+                                </CommandItem>
+                            ))}
+                        </CommandGroup>
+                    </CommandList>
+                </Command>
+            </PopoverContent>
+        </Popover>
     );
 }
 
@@ -587,22 +672,16 @@ function EditSeoPageDialog({ open, onOpenChange, onSuccess, page }: {
                                     <span className="text-[10px] text-muted-foreground italic flex items-center h-7 px-2">No categories selected</span>
                                 )}
                             </div>
-                            <Select
-                                onValueChange={(val) => {
+                            <CategoryPicker
+                                categories={categories}
+                                selectedIds={formData.categoryIds}
+                                placeholder="Add a category..."
+                                onSelect={(val: string) => {
                                     if (!formData.categoryIds.includes(val)) {
                                         setFormData({ ...formData, categoryIds: [...formData.categoryIds, val] });
                                     }
                                 }}
-                            >
-                                <SelectTrigger className="rounded-xl bg-card border-border/80 h-11 focus:ring-primary/20">
-                                    <SelectValue placeholder="Add a category..." />
-                                </SelectTrigger>
-                                <SelectContent className="rounded-xl border-border/60 blur-backdrop">
-                                    {categories.map((cat: any) => (
-                                        <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            />
                         </div>
                         <div className="space-y-2.5">
                             <Label className="text-muted-foreground font-semibold text-xs uppercase tracking-wider">Price Under</Label>
@@ -751,8 +830,11 @@ function CreateSeoPageDialog({ open, onOpenChange, onSuccess }: {
                                 <span className="text-[10px] text-muted-foreground italic flex items-center h-7 px-2">No categories selected</span>
                             )}
                         </div>
-                        <Select
-                            onValueChange={(val) => {
+                        <CategoryPicker
+                            categories={categories}
+                            selectedIds={formData.categoryIds}
+                            placeholder="Add a category..."
+                            onSelect={(val: string) => {
                                 if (!formData.categoryIds.includes(val)) {
                                     const cat = categories.find((c: any) => c.id === val);
                                     setFormData({
@@ -762,16 +844,7 @@ function CreateSeoPageDialog({ open, onOpenChange, onSuccess }: {
                                     });
                                 }
                             }}
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder="Add a category..." />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {categories.map((cat: any) => (
-                                    <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                        />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
