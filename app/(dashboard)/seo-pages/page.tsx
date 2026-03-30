@@ -341,31 +341,29 @@ function CategoryPicker({
             <PopoverContent className="w-full min-w-[280px] p-0 rounded-xl border-border/60 shadow-2xl blur-backdrop bg-popover/90 backdrop-blur-md" align="start">
                 <Command className="bg-transparent">
                     <CommandInput placeholder="Search categories..." className="h-11 border-none focus:ring-0" />
-                    <CommandList>
+                    <CommandList className="max-h-64 overflow-y-auto">
                         <CommandEmpty>No category found.</CommandEmpty>
-                        <ScrollArea className="h-72">
-                            <CommandGroup>
-                                {categories.map((category) => (
-                                    <CommandItem
-                                        key={category.id}
-                                        value={category.name}
-                                        onSelect={() => {
-                                            onSelect(category.id);
-                                            setOpen(false);
-                                        }}
-                                        className="flex items-center justify-between py-2.5 px-3 cursor-pointer hover:bg-accent/50 transition-colors"
-                                    >
-                                        <div className="flex flex-col">
-                                            <span className="font-medium text-sm">{category.name}</span>
-                                            <span className="text-[10px] text-muted-foreground font-mono">/{category.slug}</span>
-                                        </div>
-                                        {selectedIds.includes(category.id) && (
-                                            <Check className="h-4 w-4 text-primary" />
-                                        )}
-                                    </CommandItem>
-                                ))}
-                            </CommandGroup>
-                        </ScrollArea>
+                        <CommandGroup>
+                            {categories.map((category) => (
+                                <CommandItem
+                                    key={category.id}
+                                    value={category.name}
+                                    onSelect={() => {
+                                        onSelect(category.id);
+                                        setOpen(false);
+                                    }}
+                                    className="flex items-center justify-between py-2.5 px-3 cursor-pointer hover:bg-accent/50 transition-colors"
+                                >
+                                    <div className="flex flex-col">
+                                        <span className="font-medium text-sm">{category.name}</span>
+                                        <span className="text-[10px] text-muted-foreground font-mono">/{category.slug}</span>
+                                    </div>
+                                    {selectedIds.includes(category.id) && (
+                                        <Check className="h-4 w-4 text-primary" />
+                                    )}
+                                </CommandItem>
+                            ))}
+                        </CommandGroup>
                     </CommandList>
                 </Command>
             </PopoverContent>
