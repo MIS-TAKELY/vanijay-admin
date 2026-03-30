@@ -686,7 +686,7 @@ function EditSeoPageDialog({ open, onOpenChange, onSuccess, page }: {
                             />
                         </div>
                         <div className="space-y-2.5">
-                            <Label className="text-muted-foreground font-semibold text-xs uppercase tracking-wider">Price Under</Label>
+                            <Label className="text-muted-foreground font-semibold text-xs uppercase tracking-wider">Price Under (Optional)</Label>
                             <Input
                                 type="number"
                                 placeholder="e.g. 50000"
