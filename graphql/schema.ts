@@ -506,6 +506,7 @@ export const typeDefs = `
     metaTitle: String
     metaDescription: String
     pinnedProductIds: [String]
+    structuredData: String
   }
 
   input UpdateSeoPageInput {
@@ -515,6 +516,7 @@ export const typeDefs = `
     metaDescription: String
     priceThreshold: Int
     pinnedProductIds: [String]
+    structuredData: String
   }
 
   input BulkUpdateCategoryInput {

@@ -2056,13 +2056,21 @@ export const resolvers = {
                     }
                 }
 
-                const { pinnedProductIds, categoryIds, ...restInput } = input;
+                const { pinnedProductIds, categoryIds, structuredData, ...restInput } = input;
 
                 const createData: any = {
                     ...restInput,
                     pinnedProductIds: pinnedProductIds || [],
                     isStale: false
                 };
+
+                if (structuredData) {
+                    try {
+                        createData.structuredData = JSON.parse(structuredData);
+                    } catch (e) {
+                        createData.structuredData = structuredData;
+                    }
+                }
 
                 if (categoryIds && categoryIds.length > 0) {
                     createData.categories = {
@@ -2090,11 +2098,19 @@ export const resolvers = {
         },
         updateSeoPage: async (_: any, { id, input }: { id: string; input: any }) => {
             try {
-                const { pinnedProductIds, categoryIds, ...restInput } = input;
+                const { pinnedProductIds, categoryIds, structuredData, ...restInput } = input;
 
                 const data: any = { ...restInput };
                 if (pinnedProductIds !== undefined) {
                     data.pinnedProductIds = pinnedProductIds;
+                }
+
+                if (structuredData !== undefined) {
+                    try {
+                        data.structuredData = structuredData ? JSON.parse(structuredData) : null;
+                    } catch (e) {
+                         data.structuredData = structuredData;
+                    }
                 }
 
                 if (categoryIds !== undefined) {

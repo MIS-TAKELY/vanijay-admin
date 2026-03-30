@@ -605,6 +605,7 @@ export default function NewSeoPagePage() {
                         ? parseInt(meta.priceThreshold)
                         : null,
                     pinnedProductIds: allPinnedIds,
+                    structuredData: JSON.stringify(sections)
                 },
             },
         });
