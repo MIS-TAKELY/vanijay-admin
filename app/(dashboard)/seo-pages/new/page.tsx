@@ -50,6 +50,7 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 
 // ─── GraphQL ──────────────────────────────────────────────────────────────────
@@ -123,6 +124,7 @@ interface CategorySection {
     categorySlug: string;
     products: ProductMeta[];
     limit: number;
+    showPinnedOnly?: boolean;
     isExpanded: boolean;
 }
 
@@ -480,6 +482,27 @@ function CategorySectionCard({
                             </div>
                         </div>
 
+                        {/* Show Pinned Only toggle */}
+                        <div className="flex items-center justify-between p-3 rounded-xl bg-muted/30 border border-border/40">
+                            <div className="flex items-center gap-3">
+                                <Pin className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                                <div className="flex-1">
+                                    <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                                        Show Pinned Only
+                                    </Label>
+                                    <p className="text-[11px] text-muted-foreground mt-0.5">
+                                        Only show products you've manually pinned, ignoring the category limit and auto-fetching.
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <Switch
+                                    checked={section.showPinnedOnly}
+                                    onCheckedChange={(checked) => onUpdate({ showPinnedOnly: checked })}
+                                />
+                            </div>
+                        </div>
+
                         {/* Product picker */}
                         <div>
                             <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5 mb-2.5">
@@ -532,6 +555,7 @@ export default function NewSeoPagePage() {
             categorySlug: cat.slug,
             products: [],
             limit: 10,
+            showPinnedOnly: false,
             isExpanded: true,
         };
 
